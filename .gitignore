@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.venv/
+*.egg-info/
+
+# Node / React
+node_modules/
+build/
+dist/
+
+# Docker
+*.log
+*.pid
+*.sock
+.env
+.env.*
+db_data/
+docker-compose.override.yml
+
+# IDE / System
+.vscode/
+.idea/
+.DS_Store

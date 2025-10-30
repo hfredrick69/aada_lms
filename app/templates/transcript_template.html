@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Transcript</title></head>
+<body>
+  <h1>AADA Transcript</h1>
+  <p>Student: {{ student_name }}</p>
+  <p>Program: {{ program_name }}</p>
+  <table border="1" cellspacing="0" cellpadding="6">
+    <thead><tr><th>Module</th><th>Score</th><th>Status</th><th>Completed</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr><td>{{ row.title }}</td><td>{{ row.score }}</td><td>{{ row.status }}</td><td>{{ row.completed_at }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

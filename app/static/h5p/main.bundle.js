@@ -1,0 +1,1 @@
+Redirecting to /h5p-standalone@3.8.0/dist/main.bundle.js

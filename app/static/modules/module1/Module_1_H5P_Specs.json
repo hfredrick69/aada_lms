@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "title": "AADA Module 1 \u2013 Orientation & Professional Foundations",
+    "license": "CC-BY-NC"
+  },
+  "activities": [
+    {
+      "id": "M1_H5P_WelcomeCarousel",
+      "type": "CoursePresentation",
+      "brand": {
+        "primary": "#D5AA42",
+        "bg": "#FFFDF9"
+      },
+      "slides": [
+        {
+          "title": "Program Overview",
+          "body": "Welcome to AADA\u2019s Dental Assistant Certificate Program. You\u2019ll learn professionalism, HIPAA/OSHA essentials, communication, and student policies aligned to Georgia GNPEC.",
+          "voiceOver": "[TTS] Welcome to AADA's Dental Assistant Certificate Program."
+        },
+        {
+          "title": "Meet Your Instructors",
+          "body": "Your licensed dental professionals will coach you; unaccredited programs require live, meaningful interaction per GNPEC.",
+          "voiceOver": "[TTS] Let's meet your faculty and review live interaction expectations."
+        }
+      ]
+    },
+    {
+      "id": "M1_H5P_EthicsBranching",
+      "type": "BranchingScenario",
+      "intro": "Professionalism & Ethics \u2014 choose the best action for each scenario.",
+      "branches": [
+        {
+          "situation": "Coworker violates HIPAA (PHI visible on monitor). What do you do?",
+          "options": [
+            {
+              "label": "Report to supervisor and secure PHI",
+              "correct": true,
+              "feedback": "Correct\u2014reporting suspected breaches supports patient privacy and Georgia clinic policies."
+            },
+            {
+              "label": "Ignore; not your responsibility",
+              "correct": false,
+              "feedback": "Not acceptable; patient privacy is everyone\u2019s responsibility."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M1_H5P_HIPAAHotspot",
+      "type": "InteractiveVideo",
+      "media": "hipaa_intro.mp4",
+      "hotspots": [
+        {
+          "time": 12,
+          "action": "Cover patient file",
+          "feedback": "Always protect PHI from public view per HIPAA minimum necessary standard.",
+          "voiceOver": "[TTS] Always protect patient information."
+        }
+      ]
+    },
+    {
+      "id": "M1_H5P_PolicyMatch",
+      "type": "Match",
+      "title": "GNPEC Policy Match",
+      "pairs": [
+        {
+          "term": "Refund (Std 12)",
+          "definition": "Prorated before 50% completion; refund within 45 days; only certain fees nonrefundable."
+        },
+        {
+          "term": "Cancellation (Std 13)",
+          "definition": "Full refund within 72 hours of signing (less nonrefundable fees)."
+        },
+        {
+          "term": "Complaint (Std 14)",
+          "definition": "Internal process; right to appeal to GNPEC with agency contact provided."
+        }
+      ]
+    },
+    {
+      "id": "M1_H5P_DialogCards",
+      "type": "DialogCards",
+      "cards": [
+        {
+          "front": "Patient asks about delay",
+          "back": "Thank you for your patience\u2014we\u2019re preparing the operatory to ensure safety and quality."
+        },
+        {
+          "front": "Coworker forgot gloves",
+          "back": "Let\u2019s grab a new pair before we continue."
+        }
+      ]
+    }
+  ]
+}

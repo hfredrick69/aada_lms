@@ -1,0 +1,61 @@
+{
+  "module": "AADA/Module1",
+  "objects": {
+    "welcome": "https://aada.edu/xapi/m1/welcome-carousel",
+    "ethics": "https://aada.edu/xapi/m1/ethics-branching",
+    "hipaa": "https://aada.edu/xapi/m1/hipaa-hotspot",
+    "policy": "https://aada.edu/xapi/m1/policy-match",
+    "quiz": "https://aada.edu/xapi/m1/final-quiz",
+    "ack": "https://aada.edu/xapi/m1/acknowledgment",
+    "live": "https://aada.edu/xapi/m1/kickoff-live"
+  },
+  "verbs": [
+    "launched",
+    "experienced",
+    "answered",
+    "completed",
+    "passed",
+    "failed",
+    "attended",
+    "submitted"
+  ],
+  "statements": [
+    {
+      "verb": "experienced",
+      "object": "https://aada.edu/xapi/m1/welcome-carousel"
+    },
+    {
+      "verb": "experienced",
+      "object": "https://aada.edu/xapi/m1/ethics-branching"
+    },
+    {
+      "verb": "experienced",
+      "object": "https://aada.edu/xapi/m1/hipaa-hotspot"
+    },
+    {
+      "verb": "experienced",
+      "object": "https://aada.edu/xapi/m1/policy-match"
+    },
+    {
+      "verb": "answered",
+      "object": "https://aada.edu/xapi/m1/final-quiz"
+    },
+    {
+      "verb": "completed",
+      "object": "https://aada.edu/xapi/m1/final-quiz"
+    },
+    {
+      "verb": "attended",
+      "object": "https://aada.edu/xapi/m1/kickoff-live"
+    },
+    {
+      "verb": "submitted",
+      "object": "https://aada.edu/xapi/m1/acknowledgment"
+    }
+  ],
+  "contextExtensions": {
+    "deliveryType": "online_live",
+    "voiceAccent": "American Neutral",
+    "ga_gnpec_alignment": true
+  }
+}
