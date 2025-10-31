@@ -1,5 +1,6 @@
 # Re-export commonly used schema classes for convenience.
 from .attendance import AttendanceCreate, AttendanceRead, AttendanceUpdate
+from .auth import AuthUser, LoginRequest, TokenResponse
 from .complaints import ComplaintCreate, ComplaintRead, ComplaintUpdate, ComplaintStatus
 from .credentials import CredentialCreate, CredentialRead, CredentialUpdate
 from .externships import ExternshipCreate, ExternshipRead, ExternshipUpdate
@@ -19,6 +20,9 @@ __all__ = [
     "AttendanceCreate",
     "AttendanceRead",
     "AttendanceUpdate",
+    "AuthUser",
+    "LoginRequest",
+    "TokenResponse",
     "ComplaintCreate",
     "ComplaintRead",
     "ComplaintUpdate",

@@ -21,6 +21,7 @@ The AADA Learning Management System is a FastAPI application backed by PostgreSQ
 - **Configuration**: `app/core/config.py` loads environment variables for database URI, JWT settings, and compliance policy thresholds (`REFUND_DAYS_LIMIT`, `CANCELLATION_WINDOW_HOURS`, `PROGRESS_REFUND_THRESHOLD`).
 - **Persistence**: SQLAlchemy models in `app/db/models/**` map to Postgres schemas (general tables plus `compliance.*` schema).
 - **Routers & Business Logic**
+  - `app/routers/auth.py`: JWT login + profile endpoints backed by PostgreSQL users/roles.
   - `app/routers/attendance.py`: CRUD for live/lab/externship sessions with duration validation.
   - `app/routers/skills.py`: Skills checkoff workflow with evaluator approvals and status transitions.
   - `app/routers/externships.py`: Externship tracking with verification document enforcement.
@@ -63,6 +64,7 @@ The AADA Learning Management System is a FastAPI application backed by PostgreSQ
   ```
 - The script populates:
   - Users (students/admins), programs, modules, and enrollments.
+    * Default admin credential: `admin@aada.edu` / `AdminPass!23`.
   - Module progress, attendance logs, skills checkoffs, externships.
   - Financial ledgers, withdrawals, refunds (prorated and cancellation cases).
   - Complaints at various lifecycle stages.

@@ -11,6 +11,7 @@ from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from sqlalchemy import text
 
+from app.core.security import get_password_hash
 from app.db.models.compliance.attendance import AttendanceLog
 from app.db.models.compliance.complaint import Complaint
 from app.db.models.compliance.credential import Credential
@@ -21,6 +22,7 @@ from app.db.models.compliance.transcript import Transcript
 from app.db.models.compliance.withdraw_refund import Refund, Withdrawal
 from app.db.models.enrollment import Enrollment, ModuleProgress
 from app.db.models.program import Module, Program
+from app.db.models.role import Role
 from app.db.models.user import User
 from app.db.models.xapi import XapiStatement
 from app.db.session import SessionLocal
@@ -47,6 +49,8 @@ def _reset_database(session) -> None:
                 enrollments,
                 modules,
                 programs,
+                user_roles,
+                roles,
                 users,
                 xapi_statements
             RESTART IDENTITY CASCADE
@@ -121,22 +125,35 @@ def seed():
 
         admin = User(
             email="admin@aada.edu",
-            password_hash="hashed-admin",
+            password_hash=get_password_hash("AdminPass!23"),
             first_name="Ada",
             last_name="Administrator",
         )
         alice = User(
             email="alice.student@aada.edu",
-            password_hash="hashed-alice",
+            password_hash=get_password_hash("AlicePass!23"),
             first_name="Alice",
             last_name="Student",
         )
         bob = User(
             email="bob.student@aada.edu",
-            password_hash="hashed-bob",
+            password_hash=get_password_hash("BobPass!23"),
             first_name="Bob",
             last_name="Learner",
         )
+        session.add_all([admin, alice, bob])
+        session.commit()
+
+        admin_role = Role(name="Admin", description="Full system access")
+        instructor_role = Role(name="Instructor", description="Manage academics and externships")
+        finance_role = Role(name="Finance", description="Handle payments and refunds")
+        registrar_role = Role(name="Registrar", description="Manage students and records")
+        session.add_all([admin_role, instructor_role, finance_role, registrar_role])
+        session.commit()
+
+        admin.roles = [admin_role, finance_role]
+        alice.roles = [registrar_role]
+        bob.roles = [instructor_role]
         session.add_all([admin, alice, bob])
         session.commit()
 

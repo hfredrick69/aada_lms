@@ -24,6 +24,20 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    networks:
+      default:
+        aliases:
+          - backend
+
+  admin_portal:
+    build: ./admin_portal
+    container_name: aada_admin_portal
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
+    depends_on:
+      - web
 
 volumes:
   pgdata:

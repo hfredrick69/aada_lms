@@ -4,9 +4,11 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Iterable, List, Optional
 from uuid import UUID, uuid4
 
+from app.core.security import get_password_hash
 from app.db.models.compliance.finance import FinancialLedger
 from app.db.models.enrollment import Enrollment, ModuleProgress
 from app.db.models.program import Module, Program
+from app.db.models.role import Role
 from app.db.models.user import User
 
 ModuleProgressSeed = dict
@@ -35,14 +37,14 @@ def seed_student_program(
     student = User(
         id=student_id,
         email=f"{student_id.hex[:12]}@student.test",
-        password_hash="hashed",
+        password_hash=get_password_hash("StudentPass!23"),
         first_name="Test",
         last_name="Student",
     )
     admin = User(
         id=admin_id,
         email=f"{admin_id.hex[:12]}@admin.test",
-        password_hash="hashed",
+        password_hash=get_password_hash("AdminPass!23"),
         first_name="Admin",
         last_name="User",
     )
@@ -50,6 +52,25 @@ def seed_student_program(
     db.commit()
     db.refresh(student)
     db.refresh(admin)
+
+    admin_role = db.query(Role).filter(Role.name == "Admin").first()
+    if not admin_role:
+        admin_role = Role(name="Admin")
+        db.add(admin_role)
+
+    registrar_role = db.query(Role).filter(Role.name == "Registrar").first()
+    if not registrar_role:
+        registrar_role = Role(name="Registrar")
+        db.add(registrar_role)
+
+    db.commit()
+    db.refresh(admin_role)
+    db.refresh(registrar_role)
+
+    admin.roles = [admin_role]
+    student.roles = [registrar_role]
+    db.add_all([admin, student])
+    db.commit()
 
     program = Program(
         id=program_id,

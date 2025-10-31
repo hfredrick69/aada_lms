@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>HIPAA Hotspot Video</title>
+  <link type="text/css" rel="stylesheet" href="/static/h5p.css">
+  <script type="text/javascript" src="/static/h5p-main.js"></script>
+</head>
+<body style="margin: 0; padding: 0;">
+  <div id="h5p-container"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var container = document.getElementById('h5p-container');
+      var options = {
+        h5pJsonPath: '.',
+        frameJs: '/static/h5p-frame.js',
+        frameCss: '/static/h5p.css'
+      };
+
+      new H5PStandalone(container, options);
+    });
+  </script>
+</body>
+</html>

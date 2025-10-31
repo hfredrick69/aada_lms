@@ -13,6 +13,9 @@ node_modules/
 build/
 dist/
 
+# H5P cache
+app/static/.h5p_cache/
+
 # Docker
 *.log
 *.pid
@@ -26,3 +29,4 @@ docker-compose.override.yml
 .vscode/
 .idea/
 .DS_Store
+test_credentials.txt
