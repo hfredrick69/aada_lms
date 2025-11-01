@@ -1,0 +1,39 @@
+# ============================================================
+#  AADA Agent Configuration File
+# ============================================================
+
+version: 1.0
+environment: local
+log_dir: /tmp/agent_logs
+python_exec: python3
+
+defaults:
+  auto_commit: false
+  verbose: true
+  max_retries: 1
+  notify_on_complete: false
+
+agents:
+  supervisor:
+    run_order: [architect, developer, qa, devops, docs]
+  architect:
+    script: architect_agent.py
+  developer:
+    script: developer_agent.py
+  qa:
+    script: qa_agent.py
+  devops:
+    script: devops_agent.py
+  docs:
+    script: docs_agent.py
+
+tasks:
+  full_cycle:
+    description: Run all agents in sequence
+    agents: [architect, developer, qa, devops, docs]
+  quick_test:
+    description: Run lint + unit tests only
+    agents: [architect, developer]
+  deploy_prep:
+    description: Run QA + Docs only
+    agents: [qa, docs]
