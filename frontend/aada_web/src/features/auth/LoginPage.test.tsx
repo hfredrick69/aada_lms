@@ -39,11 +39,9 @@ describe('LoginPage', () => {
     mutateMock.mockReset();
     optionsSpy.mockReset();
     useAuthStore.setState({
-      accessToken: null,
       user: null,
       isAuthenticated: false,
     });
-    window.localStorage.clear();
   });
 
   it('renders login form fields', () => {
