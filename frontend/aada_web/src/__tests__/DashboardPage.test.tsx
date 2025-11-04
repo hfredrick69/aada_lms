@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import DashboardPage from '../../features/dashboard/DashboardPage';
+import DashboardPage from '../features/dashboard/DashboardPage';
 
 describe('Student Dashboard', () => {
   it('renders dashboard title', () => {

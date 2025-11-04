@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 
 from app.db import models  # noqa: F401 ensure model registration
+from app.middleware.security import SecurityHeadersMiddleware, AuditLoggingMiddleware
+
+# Configure logging for audit trail
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 from app.routers import (
     users, roles,
     auth,
@@ -26,6 +34,11 @@ from app.routers import (
 
 app = FastAPI(title="AADA LMS API", version="1.0")
 
+# Security middleware (order matters - first added = outermost layer)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(AuditLoggingMiddleware)
+
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -33,6 +46,8 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:5174",   # Student LMS Frontend
         "http://127.0.0.1:5174",
+        "https://localhost:5173",  # HTTPS versions
+        "https://localhost:5174",
     ],
     allow_credentials=True,
     allow_methods=["*"],

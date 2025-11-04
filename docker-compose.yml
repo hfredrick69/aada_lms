@@ -4,9 +4,9 @@ services:
     container_name: aada_lms-db-1
     restart: always
     environment:
-      POSTGRES_USER: aada
-      POSTGRES_PASSWORD: changeme
-      POSTGRES_DB: aada_lms
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -17,9 +17,15 @@ services:
     build: ./backend
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     environment:
-      - DATABASE_URL=postgresql+psycopg2://aada:changeme@db:5432/aada_lms
-      - BACKEND_BASE_URL=http://localhost:8000
+      - DATABASE_URL=${DATABASE_URL}
+      - BACKEND_BASE_URL=${BACKEND_BASE_URL}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      - JWT_EXPIRATION_MINUTES=${JWT_EXPIRATION_MINUTES}
+      - PASSWORD_MIN_LENGTH=${PASSWORD_MIN_LENGTH}
       - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
     volumes:
       - ./backend:/code
     ports:
@@ -60,6 +66,19 @@ services:
       - "5174:5173"  # student LMS frontend
     depends_on:
       - backend
+
+  # nginx:
+  #   container_name: aada_lms_nginx
+  #   build: ./nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   depends_on:
+  #     - backend
+  #     - admin_portal
+  #     - frontend
+  #   restart: unless-stopped
+  #   # Uncomment to enable HTTPS - requires updating frontend API URLs
 
 volumes:
   db_data:

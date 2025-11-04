@@ -1,0 +1,148 @@
+"""
+Security middleware for HIPAA/NIST compliance.
+
+Implements:
+- Security headers (HSTS, CSP, X-Frame-Options, etc.)
+- Audit logging for PHI access
+- Request/response logging
+"""
+from fastapi import Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.types import ASGIApp
+import time
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """
+    Add security headers to all responses per HIPAA/NIST requirements.
+
+    Headers added:
+    - Strict-Transport-Security (HSTS)
+    - X-Frame-Options
+    - X-Content-Type-Options
+    - X-XSS-Protection
+    - Content-Security-Policy
+    - Referrer-Policy
+    """
+
+    def __init__(self, app: ASGIApp):
+        super().__init__(app)
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+
+        # HSTS - Force HTTPS (31536000 seconds = 1 year)
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=31536000; includeSubDomains; preload"
+        )
+
+        # Prevent clickjacking attacks
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+
+        # Prevent MIME type sniffing
+        response.headers["X-Content-Type-Options"] = "nosniff"
+
+        # XSS Protection (legacy browsers)
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+
+        # Content Security Policy
+        # Restricts resource loading to prevent XSS attacks
+        csp_directives = [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",  # Vite dev needs unsafe-inline
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: https:",
+            "font-src 'self' data:",
+            "connect-src 'self' https:",
+            "frame-ancestors 'self'",
+            "base-uri 'self'",
+            "form-action 'self'",
+        ]
+        response.headers["Content-Security-Policy"] = "; ".join(csp_directives)
+
+        # Referrer Policy - Don't leak referrer info
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
+        # Permissions Policy (formerly Feature-Policy)
+        # Disable unnecessary browser features
+        response.headers["Permissions-Policy"] = (
+            "geolocation=(), microphone=(), camera=()"
+        )
+
+        return response
+
+
+class AuditLoggingMiddleware(BaseHTTPMiddleware):
+    """
+    Log all PHI access for HIPAA compliance audit trail.
+
+    Logs:
+    - User accessing the data
+    - Resource accessed
+    - Timestamp
+    - IP address
+    - Action performed
+    """
+
+    # PHI endpoints that require audit logging
+    PHI_ENDPOINTS = [
+        "/api/enrollments",
+        "/api/transcripts",
+        "/api/credentials",
+        "/api/externships",
+        "/api/attendance",
+        "/api/skills",
+        "/api/complaints",
+        "/api/finance",
+        "/api/users",  # Contains PII/PHI
+    ]
+
+    def __init__(self, app: ASGIApp):
+        super().__init__(app)
+
+    async def dispatch(self, request: Request, call_next):
+        start_time = time.time()
+
+        # Check if this is a PHI endpoint
+        is_phi_endpoint = any(
+            request.url.path.startswith(endpoint)
+            for endpoint in self.PHI_ENDPOINTS
+        )
+
+        # Get user info from request state (set by auth middleware)
+        user_id = getattr(request.state, "user_id", "anonymous")
+        user_email = getattr(request.state, "user_email", "unknown")
+
+        # Process request
+        response = await call_next(request)
+
+        # Calculate request duration
+        duration = time.time() - start_time
+
+        # Log PHI access
+        if is_phi_endpoint:
+            logger.info(
+                "PHI_ACCESS",
+                extra={
+                    "user_id": user_id,
+                    "user_email": user_email,
+                    "method": request.method,
+                    "path": request.url.path,
+                    "status_code": response.status_code,
+                    "ip_address": request.client.host if request.client else "unknown",
+                    "duration_ms": round(duration * 1000, 2),
+                    "timestamp": time.time(),
+                }
+            )
+
+        # Log all API requests (not just PHI)
+        logger.debug(
+            f"{request.method} {request.url.path} - "
+            f"{response.status_code} - {duration*1000:.2f}ms - "
+            f"user:{user_email}"
+        )
+
+        return response

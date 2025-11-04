@@ -2,53 +2,79 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Dashboard from '../pages/Dashboard';
-import { AuthContext } from '../context/AuthContext';
+import { AuthProvider } from '../context/AuthContext';
 
-const mockUser = {
-  id: '123',
-  email: 'admin@aada.edu',
-  first_name: 'Admin',
-  last_name: 'User',
-  roles: ['Admin']
-};
+vi.mock('../api/auth.js', () => ({
+  login: vi.fn(async () => ({ access_token: 'test-token' })),
+  me: vi.fn(async () => ({
+    id: '123',
+    email: 'admin@aada.edu',
+    first_name: 'Admin',
+    last_name: 'User',
+    roles: ['Admin']
+  }))
+}));
 
-const mockAuthContext = {
-  user: mockUser,
-  isAuthenticated: true,
-  loading: false,
-  login: vi.fn(),
-  logout: vi.fn(),
-  hasRole: vi.fn(() => true)
-};
+vi.mock('../api/students.js', () => ({
+  listStudents: vi.fn(async () => [
+    { id: '1', first_name: 'John', last_name: 'Doe' },
+    { id: '2', first_name: 'Jane', last_name: 'Smith' }
+  ])
+}));
+
+vi.mock('../api/courses.js', () => ({
+  listPrograms: vi.fn(async () => [
+    { id: '1', code: 'MA-101', name: 'Medical Assisting' }
+  ])
+}));
+
+vi.mock('../api/payments.js', () => ({
+  listInvoices: vi.fn(async () => [
+    { id: '1', status: 'open' },
+    { id: '2', status: 'paid' }
+  ])
+}));
+
+vi.mock('../api/externships.js', () => ({
+  listExternships: vi.fn(async () => [
+    { id: '1', status: 'active' }
+  ])
+}));
 
 describe('Dashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders dashboard with user greeting', () => {
+  it('renders dashboard header', () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={mockAuthContext}>
+        <AuthProvider>
           <Dashboard />
-        </AuthContext.Provider>
+        </AuthProvider>
       </BrowserRouter>
     );
 
-    expect(screen.getByText(/Welcome/i)).toBeInTheDocument();
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText(/Monitor enrollment/i)).toBeInTheDocument();
   });
 
-  it('displays metric cards', async () => {
+  it('displays metric cards after loading', async () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={mockAuthContext}>
+        <AuthProvider>
           <Dashboard />
-        </AuthContext.Provider>
+        </AuthProvider>
       </BrowserRouter>
     );
 
+    expect(screen.getByText('Loading metrics...')).toBeInTheDocument();
+
     await waitFor(() => {
-      expect(screen.getByText(/Students/i)).toBeInTheDocument();
+      expect(screen.getByText('Active Students')).toBeInTheDocument();
+      expect(screen.getByText('Programs & Modules')).toBeInTheDocument();
+      expect(screen.getByText('Open Invoices')).toBeInTheDocument();
+      expect(screen.getByText('Externship Placements')).toBeInTheDocument();
     });
   });
 });

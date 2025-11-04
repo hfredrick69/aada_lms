@@ -6,7 +6,7 @@ from uuid import UUID
 
 from app.db.session import get_db
 from app.db.models.role import Role
-from app.core.security import get_current_user
+from app.routers.auth import get_current_user
 from pydantic import BaseModel
 
 

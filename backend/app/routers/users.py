@@ -6,7 +6,8 @@ from uuid import UUID
 
 from app.db.session import get_db
 from app.db.models.user import User
-from app.core.security import get_current_user, hash_password
+from app.core.security import get_password_hash
+from app.routers.auth import get_current_user
 from pydantic import BaseModel, EmailStr
 
 
@@ -55,7 +56,7 @@ def create_user(data: UserCreate, db: Session = Depends(get_db), current_user: U
 
     user = User(
         email=data.email,
-        password_hash=hash_password(data.password),
+        password_hash=get_password_hash(data.password),
         first_name=data.first_name,
         last_name=data.last_name
     )

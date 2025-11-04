@@ -2,16 +2,21 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Courses from '../pages/Courses';
-import { AuthContext } from '../context/AuthContext';
-import axiosClient from '../utils/axiosClient';
+import { AuthProvider } from '../context/AuthContext';
+import axiosClient from '../api/axiosClient';
 
-vi.mock('../utils/axiosClient');
+vi.mock('../api/axiosClient');
 
-const mockAuthContext = {
-  user: { id: '123', roles: ['Admin'] },
-  isAuthenticated: true,
-  hasRole: vi.fn(() => true)
-};
+vi.mock('../api/auth.js', () => ({
+  login: vi.fn(async () => ({ access_token: 'test-token' })),
+  me: vi.fn(async () => ({
+    id: '123',
+    email: 'admin@aada.edu',
+    first_name: 'Admin',
+    last_name: 'User',
+    roles: ['Admin']
+  }))
+}));
 
 describe('Courses Page', () => {
   beforeEach(() => {
@@ -27,9 +32,9 @@ describe('Courses Page', () => {
   it('renders course list', async () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={mockAuthContext}>
+        <AuthProvider>
           <Courses />
-        </AuthContext.Provider>
+        </AuthProvider>
       </BrowserRouter>
     );
 
