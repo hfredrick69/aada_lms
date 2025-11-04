@@ -34,6 +34,8 @@ agents:
     script: test_suite_agent.py
   documentation:
     script: documentation_agent.py
+  frontend_test:
+    script: frontend_test_agent.py
 
 tasks:
   full_cycle:
@@ -54,3 +56,6 @@ tasks:
   complete_apis:
     description: "Complete remaining APIs, expand tests, seed data, and documentation"
     agents: [api_completion, seed_expansion, test_suite, qa, documentation]
+  frontend_tests:
+    description: "Create comprehensive frontend tests for both Admin and Student portals"
+    agents: [frontend_test]
