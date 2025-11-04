@@ -3,7 +3,8 @@ Expanded seed data for AADA LMS - 10 records per table
 """
 from datetime import datetime, timedelta
 from app.db.session import SessionLocal
-from app.db.models.user import User, Role, UserRole
+from app.db.models.user import User
+from app.db.models.role import Role, UserRole
 from app.db.models.program import Program, Module
 from app.db.models.enrollment import Enrollment
 from app.db.models.compliance.attendance import AttendanceLog
