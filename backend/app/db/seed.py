@@ -2,6 +2,7 @@
 Expanded seed data for AADA LMS - 10 records per table
 """
 from datetime import datetime, timedelta
+from sqlalchemy import text
 from app.db.session import SessionLocal
 from app.db.models.user import User
 from app.db.models.role import Role, UserRole
@@ -26,26 +27,26 @@ def reset_and_seed():
 
     try:
         # TRUNCATE all tables with CASCADE
-        db.execute(
+        db.execute(text(
             "TRUNCATE TABLE users, roles, user_roles, programs, modules, "
             "enrollments, module_progress, scorm_records, xapi_statements "
             "RESTART IDENTITY CASCADE"
-        )
-        db.execute(
+        ))
+        db.execute(text(
             "TRUNCATE TABLE compliance.attendance_logs, "
             "compliance.skills_checkoffs, compliance.externships "
             "RESTART IDENTITY CASCADE"
-        )
-        db.execute(
+        ))
+        db.execute(text(
             "TRUNCATE TABLE compliance.financial_ledgers, "
             "compliance.withdrawals, compliance.refunds "
             "RESTART IDENTITY CASCADE"
-        )
-        db.execute(
+        ))
+        db.execute(text(
             "TRUNCATE TABLE compliance.complaints, "
             "compliance.credentials, compliance.transcripts "
             "RESTART IDENTITY CASCADE"
-        )
+        ))
         db.commit()
         print("✅ Database reset complete")
 
