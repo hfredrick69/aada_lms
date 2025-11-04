@@ -10,7 +10,6 @@ Actions:
 3. Preserves recent logs and QA results for debugging.
 """
 
-import os
 import datetime
 from pathlib import Path
 import shutil
@@ -19,9 +18,11 @@ LOG_DIR = Path("/tmp/agent_logs")
 PROJECT_ROOT = Path(__file__).resolve().parents[1]  # one level up from /agents
 RETENTION_DAYS = 7
 
+
 def log(message: str):
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[Cleanup] {ts} | {message}")
+
 
 def cleanup_pyc_files():
     log("Starting .pyc and __pycache__ cleanup...")
@@ -42,6 +43,7 @@ def cleanup_pyc_files():
             log(f"⚠️ Could not delete {path}: {e}")
 
     log(f"✅ Removed {deleted_files} .pyc files and {deleted_dirs} __pycache__ directories.")
+
 
 def cleanup_old_logs():
     if not LOG_DIR.exists():
@@ -66,11 +68,13 @@ def cleanup_old_logs():
             age_days = (now - mtime).days
             log(f"🕒 Keeping recent log: {file.name} ({age_days} days old)")
 
+
 def main():
     log("===== AADA Cleanup Agent Starting =====")
     cleanup_pyc_files()
     cleanup_old_logs()
     log("===== Cleanup Agent Complete =====")
+
 
 if __name__ == "__main__":
     main()

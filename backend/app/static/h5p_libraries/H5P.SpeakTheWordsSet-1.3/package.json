@@ -1,0 +1,62 @@
+{
+  "name": "voice-recognition-question-set",
+  "version": "1.0.0",
+  "description": "A language task where you have to answer a set of questions using speech",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "cross-env NODE_ENV='production' webpack",
+    "build:watch": "cross-env NODE_ENV='development' webpack --watch"
+  },
+  "keywords": [
+    "language",
+    "translation",
+    "voice",
+    "recognition",
+    "mic",
+    "microphone",
+    "speech",
+    "question set",
+    "quiz"
+  ],
+  "author": "thomasmars",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.7.1",
+    "eslint": "^8.19.0",
+    "eslint-plugin-react": "^7.9.1",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "he": "^1.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "React": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "rules": {
+      "semi": 2
+    }
+  }
+}

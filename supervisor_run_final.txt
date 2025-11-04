@@ -1,0 +1,447 @@
+[Cleanup] 2025-11-01 19:02:12 | ===== AADA Cleanup Agent Starting =====
+[Cleanup] 2025-11-01 19:02:12 | Starting .pyc and __pycache__ cleanup...
+[Cleanup] 2025-11-01 19:02:13 | ✅ Removed 60 .pyc files and 10 __pycache__ directories.
+[Cleanup] 2025-11-01 19:02:13 | Cleaning logs older than 7 days...
+[Cleanup] 2025-11-01 19:02:13 | 🕒 Keeping recent log: qa_results.txt (0 days old)
+[Cleanup] 2025-11-01 19:02:13 | 🕒 Keeping recent log: supervisor.log (0 days old)
+[Cleanup] 2025-11-01 19:02:13 | ===== Cleanup Agent Complete =====
+app/core/config.py:4:1: E302 expected 2 blank lines, found 1
+app/core/config.py:5:80: E501 line too long (112 > 79 characters)
+app/core/config.py:8:80: E501 line too long (91 > 79 characters)
+app/core/config.py:10:80: E501 line too long (86 > 79 characters)
+app/core/config.py:11:80: E501 line too long (86 > 79 characters)
+app/core/config.py:13:1: E305 expected 2 blank lines after class or function definition, found 1
+app/core/security.py:15:80: E501 line too long (88 > 79 characters)
+app/core/security.py:17:80: E501 line too long (80 > 79 characters)
+app/core/security.py:20:80: E501 line too long (83 > 79 characters)
+app/core/security.py:24:80: E501 line too long (82 > 79 characters)
+app/db/models/__init__.py:1:1: F401 '.user.User' imported but unused
+app/db/models/__init__.py:2:1: F401 '.role.Role' imported but unused
+app/db/models/__init__.py:2:1: F401 '.role.UserRole' imported but unused
+app/db/models/__init__.py:3:1: F401 '.program.Program' imported but unused
+app/db/models/__init__.py:3:1: F401 '.program.Module' imported but unused
+app/db/models/__init__.py:4:1: F401 '.enrollment.Enrollment' imported but unused
+app/db/models/__init__.py:4:1: F401 '.enrollment.ModuleProgress' imported but unused
+app/db/models/__init__.py:5:1: F401 '.scorm.ScormRecord' imported but unused
+app/db/models/__init__.py:6:1: F401 '.xapi.XapiStatement' imported but unused
+app/db/models/__init__.py:9:1: F401 '.compliance.attendance.AttendanceLog' imported but unused
+app/db/models/__init__.py:10:1: F401 '.compliance.complaint.Complaint' imported but unused
+app/db/models/__init__.py:11:1: F401 '.compliance.credential.Credential' imported but unused
+app/db/models/__init__.py:12:1: F401 '.compliance.extern.Externship' imported but unused
+app/db/models/__init__.py:13:1: F401 '.compliance.finance.FinancialLedger' imported but unused
+app/db/models/__init__.py:14:1: F401 '.compliance.skills.SkillCheckoff' imported but unused
+app/db/models/__init__.py:15:1: F401 '.compliance.transcript.Transcript' imported but unused
+app/db/models/__init__.py:16:1: F401 '.compliance.withdraw_refund.Refund' imported but unused
+app/db/models/__init__.py:16:1: F401 '.compliance.withdraw_refund.Withdrawal' imported but unused
+app/db/models/compliance/attendance.py:1:1: F401 'sqlalchemy.Integer' imported but unused
+app/db/models/compliance/attendance.py:1:1: F401 'sqlalchemy.CheckConstraint' imported but unused
+app/db/models/compliance/attendance.py:1:80: E501 line too long (86 > 79 characters)
+app/db/models/compliance/attendance.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/attendance.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/attendance.py:11:80: E501 line too long (88 > 79 characters)
+app/db/models/compliance/audit.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/complaint.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/complaint.py:10:80: E501 line too long (85 > 79 characters)
+app/db/models/compliance/credential.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/credential.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/credential.py:11:80: E501 line too long (90 > 79 characters)
+app/db/models/compliance/extern.py:1:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/extern.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/extern.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/finance.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/finance.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/finance.py:11:80: E501 line too long (91 > 79 characters)
+app/db/models/compliance/skills.py:1:1: F401 'sqlalchemy.Boolean' imported but unused
+app/db/models/compliance/skills.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/skills.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/skills.py:11:80: E501 line too long (88 > 79 characters)
+app/db/models/compliance/skills.py:13:80: E501 line too long (91 > 79 characters)
+app/db/models/compliance/transcript.py:1:1: F401 'sqlalchemy.String' imported but unused
+app/db/models/compliance/transcript.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/transcript.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/transcript.py:11:80: E501 line too long (90 > 79 characters)
+app/db/models/compliance/transcript.py:12:27: E231 missing whitespace after ','
+app/db/models/compliance/withdraw_refund.py:1:1: F401 'sqlalchemy.String' imported but unused
+app/db/models/compliance/withdraw_refund.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/withdraw_refund.py:10:80: E501 line too long (96 > 79 characters)
+app/db/models/compliance/withdraw_refund.py:16:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/withdraw_refund.py:20:80: E501 line too long (107 > 79 characters)
+app/db/models/compliance/withdraw_refund.py:25:51: E261 at least two spaces before inline comment
+app/db/models/enrollment.py:1:1: F401 'sqlalchemy.Boolean' imported but unused
+app/db/models/enrollment.py:1:1: F401 'sqlalchemy.TIMESTAMP' imported but unused
+app/db/models/enrollment.py:1:80: E501 line too long (84 > 79 characters)
+app/db/models/enrollment.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/enrollment.py:9:80: E501 line too long (84 > 79 characters)
+app/db/models/enrollment.py:10:80: E501 line too long (90 > 79 characters)
+app/db/models/enrollment.py:15:1: E302 expected 2 blank lines, found 1
+app/db/models/enrollment.py:18:80: E501 line too long (96 > 79 characters)
+app/db/models/enrollment.py:19:80: E501 line too long (88 > 79 characters)
+app/db/models/program.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/program.py:14:1: E302 expected 2 blank lines, found 1
+app/db/models/program.py:17:80: E501 line too long (90 > 79 characters)
+app/db/models/program.py:20:80: E501 line too long (86 > 79 characters)
+app/db/models/role.py:22:80: E501 line too long (100 > 79 characters)
+app/db/models/role.py:23:80: E501 line too long (100 > 79 characters)
+app/db/models/scorm.py:1:1: F401 'sqlalchemy.TIMESTAMP' imported but unused
+app/db/models/scorm.py:1:1: F401 'sqlalchemy.Interval' imported but unused
+app/db/models/scorm.py:1:80: E501 line too long (85 > 79 characters)
+app/db/models/scorm.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/scorm.py:9:80: E501 line too long (84 > 79 characters)
+app/db/models/scorm.py:10:80: E501 line too long (88 > 79 characters)
+app/db/models/scorm.py:12:36: E231 missing whitespace after ','
+app/db/models/scorm.py:13:33: E231 missing whitespace after ','
+app/db/models/user.py:19:80: E501 line too long (94 > 79 characters)
+app/db/models/xapi.py:2:1: F401 'sqlalchemy.dialects.postgresql.CITEXT' imported but unused
+app/db/models/xapi.py:6:1: E302 expected 2 blank lines, found 1
+app/db/seed.py:7:1: F401 'uuid.uuid4' imported but unused
+app/db/seed.py:83:80: E501 line too long (83 > 79 characters)
+app/db/seed.py:90:80: E501 line too long (86 > 79 characters)
+app/db/seed.py:102:80: E501 line too long (113 > 79 characters)
+app/db/seed.py:103:80: E501 line too long (99 > 79 characters)
+app/db/seed.py:148:80: E501 line too long (97 > 79 characters)
+app/db/seed.py:149:80: E501 line too long (86 > 79 characters)
+app/db/seed.py:150:80: E501 line too long (90 > 79 characters)
+app/db/seed.py:151:80: E501 line too long (84 > 79 characters)
+app/db/seed.py:285:80: E501 line too long (80 > 79 characters)
+app/db/seed.py:305:80: E501 line too long (82 > 79 characters)
+app/db/seed.py:351:80: E501 line too long (101 > 79 characters)
+app/db/seed.py:355:80: E501 line too long (106 > 79 characters)
+app/db/seed.py:394:80: E501 line too long (98 > 79 characters)
+app/db/seed.py:405:80: E501 line too long (84 > 79 characters)
+app/db/seed.py:410:80: E501 line too long (105 > 79 characters)
+app/db/seed.py:416:80: E501 line too long (89 > 79 characters)
+app/db/seed.py:417:80: E501 line too long (105 > 79 characters)
+app/db/seed.py:418:80: E501 line too long (94 > 79 characters)
+app/db/seed.py:424:80: E501 line too long (89 > 79 characters)
+app/db/seed.py:425:80: E501 line too long (107 > 79 characters)
+app/db/seed.py:426:80: E501 line too long (94 > 79 characters)
+app/db/seed.py:432:80: E501 line too long (85 > 79 characters)
+app/db/seed.py:433:80: E501 line too long (109 > 79 characters)
+app/db/seed.py:434:80: E501 line too long (94 > 79 characters)
+app/db/session.py:12:1: E302 expected 2 blank lines, found 1
+app/main.py:4:1: F401 'app.db.base.Base' imported but unused
+app/main.py:5:1: F401 'app.db.session.engine' imported but unused
+app/main.py:25:80: E501 line too long (89 > 79 characters)
+app/main.py:26:1: E265 block comment should start with '# '
+app/main.py:59:1: E402 module level import not at top of file
+app/main.py:60:1: E402 module level import not at top of file
+app/main.py:69:1: E302 expected 2 blank lines, found 1
+app/routers/attendance.py:9:80: E501 line too long (85 > 79 characters)
+app/routers/attendance.py:23:80: E501 line too long (84 > 79 characters)
+app/routers/attendance.py:35:80: E501 line too long (89 > 79 characters)
+app/routers/attendance.py:38:80: E501 line too long (97 > 79 characters)
+app/routers/attendance.py:44:80: E501 line too long (81 > 79 characters)
+app/routers/attendance.py:48:80: E501 line too long (97 > 79 characters)
+app/routers/attendance.py:72:80: E501 line too long (82 > 79 characters)
+app/routers/attendance.py:75:80: E501 line too long (97 > 79 characters)
+app/routers/auth.py:30:80: E501 line too long (114 > 79 characters)
+app/routers/auth.py:36:80: E501 line too long (103 > 79 characters)
+app/routers/auth.py:38:80: E501 line too long (118 > 79 characters)
+app/routers/auth.py:41:80: E501 line too long (108 > 79 characters)
+app/routers/auth.py:45:80: E501 line too long (118 > 79 characters)
+app/routers/auth.py:49:80: E501 line too long (94 > 79 characters)
+app/routers/auth.py:51:80: E501 line too long (95 > 79 characters)
+app/routers/auth.py:63:80: E501 line too long (81 > 79 characters)
+app/routers/auth.py:64:80: E501 line too long (82 > 79 characters)
+app/routers/auth.py:66:80: E501 line too long (105 > 79 characters)
+app/routers/auth.py:68:80: E501 line too long (95 > 79 characters)
+app/routers/complaints.py:21:80: E501 line too long (83 > 79 characters)
+app/routers/complaints.py:22:80: E501 line too long (85 > 79 characters)
+app/routers/complaints.py:28:80: E501 line too long (81 > 79 characters)
+app/routers/complaints.py:45:80: E501 line too long (83 > 79 characters)
+app/routers/complaints.py:75:80: E501 line too long (89 > 79 characters)
+app/routers/complaints.py:84:80: E501 line too long (96 > 79 characters)
+app/routers/complaints.py:90:80: E501 line too long (104 > 79 characters)
+app/routers/complaints.py:99:80: E501 line too long (86 > 79 characters)
+app/routers/complaints.py:102:80: E501 line too long (96 > 79 characters)
+app/routers/complaints.py:107:80: E501 line too long (80 > 79 characters)
+app/routers/complaints.py:110:80: E501 line too long (96 > 79 characters)
+app/routers/credentials.py:21:80: E501 line too long (81 > 79 characters)
+app/routers/credentials.py:24:80: E501 line too long (83 > 79 characters)
+app/routers/credentials.py:40:80: E501 line too long (106 > 79 characters)
+app/routers/credentials.py:46:80: E501 line too long (90 > 79 characters)
+app/routers/credentials.py:50:80: E501 line too long (115 > 79 characters)
+app/routers/credentials.py:55:80: E501 line too long (84 > 79 characters)
+app/routers/credentials.py:58:80: E501 line too long (83 > 79 characters)
+app/routers/credentials.py:73:80: E501 line too long (84 > 79 characters)
+app/routers/credentials.py:81:80: E501 line too long (87 > 79 characters)
+app/routers/credentials.py:94:80: E501 line too long (89 > 79 characters)
+app/routers/credentials.py:97:80: E501 line too long (97 > 79 characters)
+app/routers/credentials.py:103:80: E501 line too long (81 > 79 characters)
+app/routers/credentials.py:107:80: E501 line too long (97 > 79 characters)
+app/routers/credentials.py:120:80: E501 line too long (82 > 79 characters)
+app/routers/credentials.py:123:80: E501 line too long (97 > 79 characters)
+app/routers/enrollments.py:4:1: F401 'app.db.models.enrollment.ModuleProgress' imported but unused
+app/routers/enrollments.py:8:1: E302 expected 2 blank lines, found 1
+app/routers/externships.py:20:80: E501 line too long (83 > 79 characters)
+app/routers/externships.py:26:80: E501 line too long (82 > 79 characters)
+app/routers/externships.py:30:80: E501 line too long (105 > 79 characters)
+app/routers/externships.py:41:80: E501 line too long (89 > 79 characters)
+app/routers/externships.py:46:80: E501 line too long (84 > 79 characters)
+app/routers/externships.py:60:80: E501 line too long (89 > 79 characters)
+app/routers/externships.py:63:80: E501 line too long (97 > 79 characters)
+app/routers/externships.py:69:80: E501 line too long (81 > 79 characters)
+app/routers/externships.py:73:80: E501 line too long (97 > 79 characters)
+app/routers/externships.py:85:80: E501 line too long (82 > 79 characters)
+app/routers/externships.py:88:80: E501 line too long (97 > 79 characters)
+app/routers/finance.py:29:80: E501 line too long (97 > 79 characters)
+app/routers/finance.py:36:80: E501 line too long (93 > 79 characters)
+app/routers/finance.py:43:80: E501 line too long (97 > 79 characters)
+app/routers/finance.py:50:80: E501 line too long (96 > 79 characters)
+app/routers/finance.py:54:80: E501 line too long (89 > 79 characters)
+app/routers/finance.py:83:80: E501 line too long (80 > 79 characters)
+app/routers/finance.py:84:80: E501 line too long (84 > 79 characters)
+app/routers/finance.py:87:80: E501 line too long (93 > 79 characters)
+app/routers/finance.py:93:80: E501 line too long (82 > 79 characters)
+app/routers/finance.py:96:80: E501 line too long (82 > 79 characters)
+app/routers/finance.py:105:80: E501 line too long (96 > 79 characters)
+app/routers/finance.py:118:80: E501 line too long (89 > 79 characters)
+app/routers/finance.py:124:80: E501 line too long (81 > 79 characters)
+app/routers/finance.py:131:80: E501 line too long (101 > 79 characters)
+app/routers/finance.py:138:80: E501 line too long (86 > 79 characters)
+app/routers/finance.py:139:80: E501 line too long (82 > 79 characters)
+app/routers/finance.py:147:80: E501 line too long (92 > 79 characters)
+app/routers/finance.py:150:80: E501 line too long (88 > 79 characters)
+app/routers/finance.py:151:80: E501 line too long (86 > 79 characters)
+app/routers/finance.py:186:80: E501 line too long (110 > 79 characters)
+app/routers/h5p.py:26:80: E501 line too long (141 > 79 characters)
+app/routers/h5p.py:36:80: E501 line too long (83 > 79 characters)
+app/routers/h5p.py:71:80: E501 line too long (140 > 79 characters)
+app/routers/h5p.py:120:80: E501 line too long (209 > 79 characters)
+app/routers/h5p.py:125:80: E501 line too long (97 > 79 characters)
+app/routers/h5p.py:128:80: E501 line too long (151 > 79 characters)
+app/routers/h5p.py:131:80: E501 line too long (145 > 79 characters)
+app/routers/h5p.py:132:80: E501 line too long (91 > 79 characters)
+app/routers/h5p.py:165:80: E501 line too long (92 > 79 characters)
+app/routers/h5p.py:182:80: E501 line too long (94 > 79 characters)
+app/routers/h5p.py:186:80: E501 line too long (81 > 79 characters)
+app/routers/h5p.py:189:5: F841 local variable 'cache_key' is assigned to but never used
+app/routers/h5p.py:200:80: E501 line too long (104 > 79 characters)
+app/routers/h5p.py:201:80: E501 line too long (97 > 79 characters)
+app/routers/h5p.py:231:80: E501 line too long (98 > 79 characters)
+app/routers/h5p.py:232:80: E501 line too long (98 > 79 characters)
+app/routers/h5p.py:251:80: E501 line too long (83 > 79 characters)
+app/routers/h5p.py:255:80: E501 line too long (94 > 79 characters)
+app/routers/h5p.py:270:80: E501 line too long (83 > 79 characters)
+app/routers/modules.py:8:1: E302 expected 2 blank lines, found 1
+app/routers/modules.py:11:80: E501 line too long (97 > 79 characters)
+app/routers/modules.py:19:80: E501 line too long (82 > 79 characters)
+app/routers/modules.py:37:80: E501 line too long (94 > 79 characters)
+app/routers/modules.py:46:80: E501 line too long (93 > 79 characters)
+app/routers/programs.py:8:1: E302 expected 2 blank lines, found 1
+app/routers/programs.py:12:1: E302 expected 2 blank lines, found 1
+app/routers/programs.py:14:53: E225 missing whitespace around operator
+app/routers/reports.py:5:1: F401 'typing.Iterable' imported but unused
+app/routers/reports.py:42:80: E501 line too long (95 > 79 characters)
+app/routers/reports.py:48:80: E501 line too long (82 > 79 characters)
+app/routers/reports.py:59:80: E501 line too long (86 > 79 characters)
+app/routers/reports.py:63:80: E501 line too long (82 > 79 characters)
+app/routers/reports.py:95:80: E501 line too long (86 > 79 characters)
+app/routers/reports.py:116:80: E501 line too long (85 > 79 characters)
+app/routers/scorm.py:4:1: E302 expected 2 blank lines, found 1
+app/routers/skills.py:29:80: E501 line too long (87 > 79 characters)
+app/routers/skills.py:38:80: E501 line too long (94 > 79 characters)
+app/routers/skills.py:51:80: E501 line too long (83 > 79 characters)
+app/routers/skills.py:56:80: E501 line too long (102 > 79 characters)
+app/routers/skills.py:60:80: E501 line too long (100 > 79 characters)
+app/routers/skills.py:88:80: E501 line too long (101 > 79 characters)
+app/routers/skills.py:103:80: E501 line too long (101 > 79 characters)
+app/routers/skills.py:108:80: E501 line too long (84 > 79 characters)
+app/routers/skills.py:111:80: E501 line too long (101 > 79 characters)
+app/routers/transcripts.py:20:80: E501 line too long (84 > 79 characters)
+app/routers/transcripts.py:27:80: E501 line too long (83 > 79 characters)
+app/routers/transcripts.py:30:80: E501 line too long (83 > 79 characters)
+app/routers/transcripts.py:79:80: E501 line too long (94 > 79 characters)
+app/routers/transcripts.py:117:80: E501 line too long (86 > 79 characters)
+app/routers/transcripts.py:135:80: E501 line too long (94 > 79 characters)
+app/routers/transcripts.py:154:80: E501 line too long (81 > 79 characters)
+app/routers/transcripts.py:163:80: E501 line too long (84 > 79 characters)
+app/routers/transcripts.py:179:80: E501 line too long (80 > 79 characters)
+app/routers/transcripts.py:189:80: E501 line too long (89 > 79 characters)
+app/routers/transcripts.py:192:80: E501 line too long (97 > 79 characters)
+app/routers/transcripts.py:193:80: E501 line too long (82 > 79 characters)
+app/routers/transcripts.py:199:80: E501 line too long (96 > 79 characters)
+app/routers/transcripts.py:202:80: E501 line too long (105 > 79 characters)
+app/routers/transcripts.py:205:80: E501 line too long (109 > 79 characters)
+app/routers/transcripts.py:206:80: E501 line too long (92 > 79 characters)
+app/routers/transcripts.py:210:80: E501 line too long (82 > 79 characters)
+app/routers/transcripts.py:213:80: E501 line too long (97 > 79 characters)
+app/routers/xapi.py:14:1: E302 expected 2 blank lines, found 1
+app/routers/xapi.py:14:80: E501 line too long (97 > 79 characters)
+app/routers/xapi.py:16:80: E501 line too long (92 > 79 characters)
+app/routers/xapi.py:17:80: E501 line too long (106 > 79 characters)
+app/routers/xapi.py:26:80: E501 line too long (104 > 79 characters)
+app/routers/xapi.py:27:80: E501 line too long (96 > 79 characters)
+app/routers/xapi.py:28:80: E501 line too long (114 > 79 characters)
+app/routers/xapi.py:29:80: E501 line too long (90 > 79 characters)
+app/routers/xapi.py:34:80: E501 line too long (81 > 79 characters)
+app/schemas/__init__.py:4:80: E501 line too long (88 > 79 characters)
+app/schemas/attendance.py:35:80: E501 line too long (82 > 79 characters)
+app/schemas/finance.py:12:80: E501 line too long (81 > 79 characters)
+app/schemas/finance.py:22:80: E501 line too long (81 > 79 characters)
+app/schemas/transcripts.py:35:80: E501 line too long (96 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:15:1: F401 'os' imported but unused
+app/static/modules/module1/init_module1_doc.py:15:16: E401 multiple imports on one line
+app/static/modules/module1/init_module1_doc.py:19:80: E501 line too long (94 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:25:80: E501 line too long (93 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:46:80: E501 line too long (85 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:46:86: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:47:80: E501 line too long (160 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:58:80: E501 line too long (86 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:59:80: E501 line too long (88 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:60:80: E501 line too long (82 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:64:80: E501 line too long (85 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:66:80: E501 line too long (107 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:77:34: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:78:80: E501 line too long (130 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:78:131: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:79:80: E501 line too long (165 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:79:166: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:83:65: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:84:52: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:85:80: E501 line too long (97 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:85:98: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:94:80: E501 line too long (157 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:97:51: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:98:65: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:99:42: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:102:80: E501 line too long (81 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:105:80: E501 line too long (110 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:105:111: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:106:80: E501 line too long (108 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:106:109: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:107:80: E501 line too long (95 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:109:80: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:110:67: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:111:51: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:118:80: E501 line too long (137 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:118:138: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:119:80: E501 line too long (101 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:119:102: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:120:80: E501 line too long (91 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:123:18: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:124:31: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:125:53: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:126:39: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:130:80: E501 line too long (97 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:132:78: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:133:80: E501 line too long (88 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:139:33: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:140:40: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:141:73: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:145:80: E501 line too long (84 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:145:85: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:146:72: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:149:72: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:150:77: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:156:53: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:157:73: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:161:80: E501 line too long (134 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:161:135: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:162:80: E501 line too long (121 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:162:122: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:163:80: E501 line too long (108 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:163:109: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:166:72: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:172:47: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:173:71: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:174:62: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:175:80: E501 line too long (84 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:180:80: E501 line too long (110 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:180:111: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:181:39: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:198:60: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:199:64: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:200:64: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:201:58: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:202:56: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:203:52: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:204:60: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:207:80: E501 line too long (111 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:212:60: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:213:57: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:248:80: E501 line too long (101 > 79 characters)
+app/tests/test_auth_endpoints.py:12:80: E501 line too long (84 > 79 characters)
+app/tests/test_auth_endpoints.py:50:80: E501 line too long (90 > 79 characters)
+app/tests/test_auth_endpoints.py:56:80: E501 line too long (90 > 79 characters)
+app/tests/test_auth_endpoints.py:68:80: E501 line too long (93 > 79 characters)
+app/tests/test_auth_endpoints.py:72:80: E501 line too long (113 > 79 characters)
+app/tests/test_basic.py:4:1: E302 expected 2 blank lines, found 1
+app/tests/test_complaint_flow.py:38:80: E501 line too long (89 > 79 characters)
+app/tests/test_refund_policy.py:18:80: E501 line too long (100 > 79 characters)
+app/tests/test_refund_policy.py:19:80: E501 line too long (98 > 79 characters)
+app/tests/test_refund_policy.py:74:80: E501 line too long (130 > 79 characters)
+app/tests/test_transcript_generation.py:16:80: E501 line too long (118 > 79 characters)
+app/tests/test_transcript_generation.py:17:80: E501 line too long (128 > 79 characters)
+app/tests/test_xapi_filters.py:23:80: E501 line too long (80 > 79 characters)
+app/tests/test_xapi_filters.py:32:80: E501 line too long (92 > 79 characters)
+app/tests/test_xapi_filters.py:33:80: E501 line too long (94 > 79 characters)
+app/tests/test_xapi_filters.py:38:80: E501 line too long (90 > 79 characters)
+app/tests/test_xapi_filters.py:46:80: E501 line too long (84 > 79 characters)
+app/tests/test_xapi_filters.py:52:80: E501 line too long (82 > 79 characters)
+app/tests/utils.py:5:1: F401 'uuid.UUID' imported but unused
+app/utils/h5p_handler.py:12:1: E302 expected 2 blank lines, found 1
+app/utils/h5p_handler.py:34:80: E501 line too long (103 > 79 characters)
+app/utils/h5p_handler.py:37:80: E501 line too long (95 > 79 characters)
+app/utils/h5p_handler.py:50:80: E501 line too long (91 > 79 characters)
+app/utils/h5p_handler.py:82:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:26:80: E501 line too long (83 > 79 characters)
+app/utils/h5p_matching_builder.py:61:80: E501 line too long (85 > 79 characters)
+app/utils/h5p_matching_builder.py:72:80: E501 line too long (92 > 79 characters)
+app/utils/h5p_matching_builder.py:80:80: E501 line too long (84 > 79 characters)
+app/utils/h5p_matching_builder.py:104:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:109:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:126:80: E501 line too long (80 > 79 characters)
+app/utils/h5p_matching_builder.py:127:80: E501 line too long (90 > 79 characters)
+app/utils/h5p_matching_builder.py:147:80: E501 line too long (104 > 79 characters)
+app/utils/h5p_matching_builder.py:178:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:190:80: E501 line too long (102 > 79 characters)
+app/utils/h5p_matching_builder.py:206:80: E501 line too long (100 > 79 characters)
+app/utils/h5p_matching_builder.py:211:80: E501 line too long (84 > 79 characters)
+app/utils/h5p_matching_builder.py:222:80: E501 line too long (81 > 79 characters)
+app/utils/h5p_matching_builder.py:246:80: E501 line too long (80 > 79 characters)
+app/utils/h5p_matching_builder.py:270:80: E501 line too long (87 > 79 characters)
+app/utils/h5p_matching_builder.py:274:80: E501 line too long (87 > 79 characters)
+app/utils/h5p_matching_builder.py:290:80: E501 line too long (111 > 79 characters)
+app/utils/h5p_matching_builder.py:309:80: E501 line too long (103 > 79 characters)
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+[Architect] 2025-11-01 19:02:13 | Checking Python code style with flake8...
+[Architect] 2025-11-01 19:02:13 | Running Alembic migrations...
+[Architect] 2025-11-01 19:02:13 | Architect tasks complete.
+...FFF[Developer] 2025-11-01 19:02:14 | Running Python unit tests...
+Traceback (most recent call last):
+  File "/Users/herbert/Projects/AADA/OnlineCourse/aada_lms/agents/developer_agent.py", line 28, in <module>
+    main()
+  File "/Users/herbert/Projects/AADA/OnlineCourse/aada_lms/agents/developer_agent.py", line 20, in main
+    subprocess.run(["pytest", "-q"], check=False)
+[Supervisor] 2025-11-01 19:02:12 | Running Cleanup Agent before workflow...
+[Supervisor] 2025-11-01 19:02:13 | Cleanup Agent complete. Continuing workflow...
+[Supervisor] 2025-11-01 19:02:13 | Running full agent cycle (default mode)
+[Supervisor] 2025-11-01 19:02:13 | Running architect_agent.py ...
+[Supervisor] 2025-11-01 19:02:14 | ✅ Completed architect_agent.py
+[Supervisor] 2025-11-01 19:02:14 | Running developer_agent.py ...
+Traceback (most recent call last):
+  File "/Users/herbert/Projects/AADA/OnlineCourse/aada_lms/agents/supervisor_agent.py", line 77, in <module>
+    main()
+  File "/Users/herbert/Projects/AADA/OnlineCourse/aada_lms/agents/supervisor_agent.py", line 73, in main
+    run_agent(script_name)
+  File "/Users/herbert/Projects/AADA/OnlineCourse/aada_lms/agents/supervisor_agent.py", line 33, in run_agent
+    subprocess.run(["python3", f"agents/{script}"], check=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 1201, in communicate
+    self.wait()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 2053, in _wait
+    (pid, sts) = self._try_wait(0)
+                 ^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 2011, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

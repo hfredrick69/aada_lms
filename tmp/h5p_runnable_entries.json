@@ -1,0 +1,410 @@
+[
+  {
+    "machine": "H5P.Accordion",
+    "title": "Accordion",
+    "version": "1.0.40",
+    "description": "",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ArithmeticQuiz",
+    "title": "Arithmetic Quiz",
+    "version": "1.1.25",
+    "description": "Arithmetic quiz containing addition, division, multiplication, subtraction and linear equations",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Audio",
+    "title": "Audio",
+    "version": "1.5.18",
+    "description": "Simple library that displays an audio player.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.AudioMinimal",
+    "title": "Audio Minimal",
+    "version": "1.0.0",
+    "description": "Simple minimalistic audio player.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.AudioRecorder",
+    "title": "Audio Recorder",
+    "version": "1.0.41",
+    "description": "Record audio and download it",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Boardgame",
+    "title": "Board Game",
+    "version": "1.6.1",
+    "description": "The user is presented with a board with several hotspots. By clicking a hotspot he invokes a mini-game.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.BranchingScenario",
+    "title": "Branching Scenario",
+    "version": "1.8.13",
+    "description": "description",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Chart",
+    "title": "Chart",
+    "version": "1.2.27",
+    "description": "Create different charts",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Collage",
+    "title": "Collage",
+    "version": "0.3.26",
+    "description": "",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.AdvancedBlanks",
+    "title": "Complex fill the blanks",
+    "version": "1.2.7",
+    "description": "Fill the blanks exercise with individual feedback",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.CoursePresentation",
+    "title": "Course Presentation",
+    "version": "1.26.2",
+    "description": "Library",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Dialogcards",
+    "title": "Dialog Cards",
+    "version": "1.9.17",
+    "description": "Makes it possible to create learning tasks for your site visitors.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.DocumentationTool",
+    "title": "Documentation Tool",
+    "version": "1.8.31",
+    "description": "Documentation tool for educational assessment.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.DragQuestion",
+    "title": "Drag and Drop",
+    "version": "1.14.28",
+    "description": "Drag and drop the elements into the correct drop zones.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.DragText",
+    "title": "Drag the Words",
+    "version": "1.10.24",
+    "description": "Drag and drop pieces of text to create complete sentences.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.FacebookPageFeed",
+    "title": "Facebook Page Feed",
+    "version": "1.0.15",
+    "description": "Displays a Facebook Page Feed",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Feedback",
+    "title": "Feedback",
+    "version": "1.0.0",
+    "description": "H5P content type for getting user feedback",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Blanks",
+    "title": "Fill in the Blanks",
+    "version": "1.14.21",
+    "description": "Test your users with fill in the blanks tasks(Cloze tests).",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ImageMultipleHotspotQuestion",
+    "title": "Find Multiple Hotspots",
+    "version": "1.0.1",
+    "description": "A question that is answered by pressing all the correct hotspots.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ImageHotspotQuestion",
+    "title": "Find the Hotspot",
+    "version": "1.8.30",
+    "description": "A question that is answered by pressing the correct hotspot.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Flashcards",
+    "title": "Flashcards",
+    "version": "1.7.9",
+    "description": "Create cards where the user has to guess the answer.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.GreetingCard",
+    "title": "Greeting Card",
+    "version": "1.0.9",
+    "description": "Displays a greeting card",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.GuessTheAnswer",
+    "title": "Guess the Answer",
+    "version": "1.5.9",
+    "description": "Set up a task where the user will just click to see the answer. No input.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.HelloWorld",
+    "title": "Hello world",
+    "version": "1.0.0",
+    "description": "Example H5P content type for getting started",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.IFrameEmbed",
+    "title": "Iframe Embedder",
+    "version": "1.0.29",
+    "description": "Embed internal or external html files",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ImageHotspots",
+    "title": "Image Hotspots",
+    "version": "1.10.19",
+    "description": "Add hotspots with useful information and media to an image.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ImageSlider",
+    "title": "Image Slider",
+    "version": "1.1.15",
+    "description": "Image Slider",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ImageGallery",
+    "title": "Image gallery",
+    "version": "1.0.0",
+    "description": "Image gallery content type with a lightbox",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ImpressPresentation",
+    "title": "Impressive Presentation",
+    "version": "1.3.0",
+    "description": "Impressive Presentation tool.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.InteractiveBook",
+    "title": "Interactive Book",
+    "version": "1.11.12",
+    "description": "An interactive book which displays content in pages and sections",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.InteractiveVideo",
+    "title": "Interactive Video",
+    "version": "1.27.15",
+    "description": "Put texts, tasks and other medias on top of your video.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.MarkTheWords",
+    "title": "Mark the Words",
+    "version": "1.11.16",
+    "description": "Test your users by making them select the correct words from a text.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Matching",
+    "title": "Matching",
+    "version": "1.0.0",
+    "description": "Match two texts, or an image and a text",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.MemoryGame",
+    "title": "Memory Game",
+    "version": "1.3.36",
+    "description": "See how many cards you can remember!",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.MiniCourse",
+    "title": "Mini course",
+    "version": "1.1.0",
+    "description": "Mini course consisting of lessons",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.MultiMediaChoice",
+    "title": "Multimedia Choice",
+    "version": "0.3.45",
+    "description": "Create a Multimedia Choice",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.MultiChoice",
+    "title": "Multiple Choice",
+    "version": "1.16.22",
+    "description": "Question",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.PdfViewer",
+    "title": "PDF Viewer",
+    "version": "1.0.0",
+    "description": "PDF Viewer",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Column",
+    "title": "Page",
+    "version": "1.18.6",
+    "description": "Content holder displaying content in a column.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.QuestionSet",
+    "title": "Question Set",
+    "version": "1.20.31",
+    "description": "Put together a set of different questions that has to be solved. (Quiz)",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Questionnaire",
+    "title": "Questionnaire",
+    "version": "1.3.11",
+    "description": "Create a questionnaire",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.SingleChoiceSet",
+    "title": "Single Choice Set",
+    "version": "1.11.53",
+    "description": "Create sets of single choice tasks",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.SpeakTheWords",
+    "title": "Speak the Words",
+    "version": "1.5.7",
+    "description": "A task where you have to answer a question using speech",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.SpeakTheWordsSet",
+    "title": "Speak the Words Set",
+    "version": "1.3.4",
+    "description": "Answer a set of questions using your speech",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Summary",
+    "title": "Summary",
+    "version": "1.10.29",
+    "description": "Test your users with fill in the summary tasks.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.TextGrouping",
+    "title": "Text Grouping",
+    "version": "1.0.0",
+    "description": "Create a Text Grouping",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.Timeline",
+    "title": "Timeline",
+    "version": "1.1.25",
+    "description": "Create good loking timelines",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.TrueFalse",
+    "title": "True/False Question",
+    "version": "1.8.18",
+    "description": "Test your users with 'True or False' type questions",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.TwitterUserFeed",
+    "title": "Twitter User Feed",
+    "version": "1.0.21",
+    "description": "Displays a Twitter User Feed",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.ThreeImage",
+    "title": "Virtual Tour (360)",
+    "version": "0.5.9",
+    "description": "Explore an interactive world in 3D.",
+    "categories": [],
+    "keywords": []
+  },
+  {
+    "machine": "H5P.AppearIn",
+    "title": "appear.in for Chat and Talk",
+    "version": "1.0.14",
+    "description": "To create a room to chat and talk together",
+    "categories": [],
+    "keywords": []
+  }
+]

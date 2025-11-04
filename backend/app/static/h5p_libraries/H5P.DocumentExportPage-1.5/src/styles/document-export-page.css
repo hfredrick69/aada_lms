@@ -1,0 +1,278 @@
+.h5p-document-export-page .export-description {
+  padding: var(--h5p-theme-spacing-s) 0em;
+}
+
+.h5p-document-export-page .export-document-button:before {
+  font-family: "h5p-theme";
+  content: "\e904";
+  position: relative;
+}
+
+/* --------------------------- Required inputs not filled ------------------- */
+.h5p-document-export-page .export-error-message {
+  display: none;
+  padding: var(--h5p-theme-spacing-xs);
+  color: var(--h5p-theme-feedback-incorrect-main);
+  border:solid 1px var(--h5p-theme-feedback-incorrect-third);
+  background-color: var(--h5p-theme-feedback-incorrect-secondary);
+  margin-bottom: var(--h5p-theme-spacing-xs);
+  border-radius: var(--h5p-theme-border-radius-medium);
+}
+
+.h5p-document-export-page .export-error-message > ul:first-child {
+  margin-top: var(--h5p-theme-spacing-xxs);
+}
+
+.h5p-document-export-page.required-inputs-not-filled .export-error-message {
+  display: block;
+}
+
+.h5p-document-export-page.required-inputs-not-filled .export-document-button {
+  opacity: 0.5;
+  cursor: inherit;
+  pointer-events: none;
+}
+
+/* Override export page styling */
+
+.joubel-exportable-area h2{
+  color: var(--h5p-theme-text-primary);
+}
+.joubel-exportable-area p{
+  color: var(--h5p-theme-text-secondary);
+}
+.joubel-exportable-area span{
+  color: var(--h5p-theme-text-third);
+}
+
+.joubel-exportable-area .goals-output p.category {
+  margin-bottom: 0;
+}
+
+.joubel-exportable-area .goals-output ul {
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.textfields-output > p {
+  min-height: 1px; /* Include margins for empty p tags */
+}
+
+/* ------------------------------ popup main container ---------------------- */
+.joubel-create-document {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  background: var(--h5p-theme-alternative-base);
+  z-index: 3;
+  height: 100%;
+}
+
+/*popup when inside column*/
+.joubel-create-document {
+  width: calc(100% - var(--h5p-theme-spacing-m));
+  left: calc(var(--h5p-theme-spacing-m)/2);
+  background: var(--h5p-theme-alternative-base);
+  height: calc(100% - var(--h5p-theme-spacing-m));
+}
+
+/* ------------------------------- main elements ---------------------------- */
+
+.joubel-exportable-header {
+  height: calc(var(--h5p-theme-spacing-s) * 3.5);
+  color: var(--h5p-theme-text-primary);
+  background-color: var(--h5p-theme-ui-base);
+  border-bottom: 1px solid var(--h5p-theme-stroke-1);
+  padding: var(--h5p-theme-spacing-xxs);
+}
+
+.joubel-exportable-body {
+  max-width: 800px;
+  margin: auto;
+}
+
+.joubel-exportable-header-inner {
+  height: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  align-content: space-between;
+  align-items: center;
+  justify-content: center;
+}
+
+.h5p-column-content .joubel-exportable-header-inner {
+  justify-content: flex-start;
+}
+
+
+.joubel-exportable-body {
+  padding-top: calc(var(--h5p-theme-spacing-s)*2);
+  padding-bottom: var(--h5p-theme-spacing-l);
+  width: 100%;
+  height: calc(100% - 7.5em);
+}
+
+.joubel-exportable-body.joubel-has-success {
+  height: calc(100% - 10em);
+}
+
+/* ----------------------------- header elements ---------------------------- */
+
+.joubel-exportable-header-text {
+  float: left;
+  margin-left: var(--h5p-theme-spacing-s);
+  line-height: calc(var(--h5p-theme-font-size-xl)*2);
+  font-size: var(--h5p-theme-font-size-xl);
+}
+
+
+/* Buttons */
+.joubel-create-document .joubel-exportable-header-inner button {
+  float: right;
+  cursor: pointer;
+  padding: var(--h5p-theme-spacing-xxs) var(--h5p-theme-spacing-s) !important;
+  margin: 0 calc(var(--h5p-theme-spacing-xxs)/2);
+  box-sizing: border-box;
+  line-height: 1.5;
+  color: var(--h5p-theme-text-primary);
+  font-size: var(--h5p-theme-font-size-s);
+  background-color: var(--h5p-theme-alternative-base);
+  border-radius: var(--h5p-theme-border-radius-medium);
+  font-weight: 600;
+  border: solid 1px var(--h5p-theme-alternative-dark);
+}
+
+.joubel-create-document .joubel-exportable-header-inner button:before {
+  font-family: 'h5p-theme';
+  font-size: var(--h5p-theme-font-size-m);
+}
+
+/* Hover effects on buttons */
+.joubel-create-document .joubel-exportable-header-inner button:hover {
+  color: var(--h5p-theme-text-primary);
+  background-color: var(--h5p-theme-alternative-light);
+}
+
+.joubel-create-document .joubel-exportable-header-inner button:focus {
+  outline: 2px ridge var(--h5p-theme-main-cta-base);
+  border-radius: 4px;
+  outline-offset: 2px;
+}
+
+.joubel-create-document .joubel-exportable-header-inner button:active {
+   background-color: var(--h5p-theme-alternative-dark);
+}
+
+.joubel-create-document .joubel-exportable-header-inner button.joubel-export-page-close {
+  position: relative;
+}
+
+.joubel-create-document .header-buttons {
+  order: 2;
+}
+
+.joubel-create-document .header-buttons button {
+  display: flex;
+  align-items: center;
+}
+
+.joubel-create-document .header-buttons button:before {
+  margin-right: var(--h5p-theme-spacing-xxs);
+}
+
+.joubel-create-document .joubel-exportable-export-button:before {
+  content: "\e911";
+}
+
+.joubel-create-document .joubel-exportable-copy-button:before {
+  content: "\e91d";
+}
+
+.joubel-create-document .header-buttons .joubel-export-page-close:before {
+  content: '\e910';
+  margin-right: 0;
+}
+
+/* ----------------------------- body elements ------------------------------ */
+
+.joubel-exportable-area {
+  margin: 0em var(--h5p-theme-spacing-s);
+  padding: calc(var(--h5p-theme-spacing-s) * 1.5) calc(var(--h5p-theme-spacing-s) * 2);
+  color: var(--h5p-theme-text-third);
+  background-color: var(--h5p-theme-ui-base);
+  box-shadow: 0 0 5px 1px var(--h5p-theme-alternative-darker);
+
+  overflow: auto;
+  box-sizing: border-box;
+  max-width: 800px;
+  position: absolute;
+  height: calc(100% - 7.5em);
+  width: calc(100% - calc(2*var(--h5p-theme-spacing-s)));
+}
+
+.joubel-exportable-success-message {
+  margin-top: 0;
+  margin-right: var(--h5p-theme-spacing-s);
+  margin-bottom: var(--h5p-theme-spacing-s);
+  margin-left: var(--h5p-theme-spacing-s);
+  text-align: center;
+  background: var(--h5p-theme-feedback-correct-secondary);
+  padding: calc(var(--h5p-theme-spacing-s)*0.6);
+  color: var(--h5p-theme-feedback-correct-main);
+}
+
+.joubel-exportable-success-message.joubel-narrow-view {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.joubel-create-document .joubel-exportable-header-inner button:disabled {
+  color: #A8A8A8;
+  cursor: default;
+}
+
+
+/* ----------------------------- Responsive Design -------------------------- */
+
+.joubel-create-document.responsive {
+  background: var(--h5p-theme-ui-base);
+}
+
+.joubel-create-document.responsive .joubel-exportable-area {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+
+  margin: 0;
+  width: 100%;
+}
+
+.joubel-create-document.responsive .joubel-exportable-body {
+  padding: 0;
+  height: calc(100% - 3.5em);
+}
+
+.joubel-create-document.responsive .joubel-export-page-close {
+  margin-right: 0;
+}
+
+.joubel-create-document.responsive .joubel-exportable-submit-button span,
+.joubel-create-document.responsive .joubel-exportable-export-button span,
+.joubel-create-document.responsive .joubel-exportable-copy-button span {
+  display: none;
+}
+
+/* Responsive button margins */
+.joubel-create-document.responsive .joubel-exportable-submit-button:before,
+.joubel-create-document.responsive .joubel-exportable-export-button:before,
+.joubel-create-document.responsive .joubel-exportable-copy-button:before {
+  margin-right: 0;
+}
+
+/* No title threshold */
+
+.joubel-create-document.responsive.no-title .joubel-exportable-header-text {
+  display: none;
+  order: 1;
+}

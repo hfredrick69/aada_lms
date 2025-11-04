@@ -1,0 +1,48 @@
+{
+  "semantics": [
+    {
+      "label": "URL para a página do Facebook",
+      "description": "URL para a página do Facebook"
+    },
+    {
+      "label": "Esquema de cores da caixa",
+      "options": [
+        {
+          "label": "Leve"
+        },
+        {
+          "label": "Escuro"
+        }
+      ],
+      "description": "Determinar o esquema de cores a usar"
+    },
+    {
+      "label": "Apenas Check-ins",
+      "description": "Especifica se o fluxo contém postagens pela Página ou apenas Check-ins de amigos"
+    },
+    {
+      "label": "Mostrar Cabeçalho",
+      "description": "Especifica se o cabeçalho deve estar visível ou não"
+    },
+    {
+      "label": "Mostrar Borda",
+      "description": "Especifica se as bordas devem ou não estar visíveis"
+    },
+    {
+      "label": "Mostrar Faces",
+      "description": "Especifica se deve exibir fotos de perfil de pessoas que gostam da página."
+    },
+    {
+      "label": "Mostrar fluxo (stream)",
+      "description": "especifica se o fluxo (stream) da página está visível ou não"
+    },
+    {
+      "label": "Altura",
+      "description": "Definir a Altura do Feed da Página do Facebook"
+    },
+    {
+      "label": "Largura",
+      "description": "Definir a Largura do Feed da Página do Facebook"
+    }
+  ]
+}

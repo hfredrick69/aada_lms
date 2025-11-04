@@ -1,0 +1,6 @@
+node_modules
+.eslintrc
+.idea
+.h5pignore
+package.json
+README.md

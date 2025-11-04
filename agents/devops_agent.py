@@ -11,9 +11,11 @@ from pathlib import Path
 LOG_DIR = Path("/tmp/agent_logs")
 LOG_DIR.mkdir(exist_ok=True)
 
+
 def log(msg):
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[DevOps] {ts} | {msg}")
+
 
 def container_exists(name: str) -> bool:
     result = subprocess.run(
@@ -21,6 +23,7 @@ def container_exists(name: str) -> bool:
         capture_output=True, text=True
     )
     return name in result.stdout.splitlines()
+
 
 def main():
     log("Checking running containers...")
@@ -38,6 +41,7 @@ def main():
     subprocess.run(["docker", "ps", "-a"], check=False)
 
     log("DevOps tasks complete.")
+
 
 if __name__ == "__main__":
     main()

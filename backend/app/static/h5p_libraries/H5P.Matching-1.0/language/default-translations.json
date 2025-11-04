@@ -1,0 +1,11 @@
+{
+  "checkAnswer": "Check",
+  "showSolutionButton": "Show solution",
+  "tryAgain": "Retry",
+  "correct": "Correct!",
+  "incorrect": "Incorrect!",
+  "correctSolution": "Correct solution",
+  "choiceUnMatched": "@title. Unmatched",
+  "choiceMatched": "@title matched with @oppositeTitle",
+  "choiceShouldBeMatched": "@title should have been matched with @oppositeTitle"
+}

@@ -1,0 +1,48 @@
+{
+  "semantics": [
+    {
+      "label": "URL uz Facebook lapu",
+      "description": "Facebook lapas URL"
+    },
+    {
+      "label": "Krāsu shēma uz kastes",
+      "options": [
+        {
+          "label": "Gaiša"
+        },
+        {
+          "label": "Tumša"
+        }
+      ],
+      "description": "Iestatiet, kuru krāsu shēmu izmantot"
+    },
+    {
+      "label": "Tikai atzīmēšanās",
+      "description": "Nosaka, vai straume atspoguļos lapas ziņas vai tikai draugu atzīmēšanās (check-ins)"
+    },
+    {
+      "label": "Rādīt galveni",
+      "description": "Norāda, vai galvenei jābūt redzamai vai nē"
+    },
+    {
+      "label": "Rādīt apmales",
+      "description": "Norāda, vai apmalēm jābūt redzamām"
+    },
+    {
+      "label": "Rādīt sejas",
+      "description": "Norāda, vai rādīt to cilvēku profila fotoattēlus, kuriem lapa patīk."
+    },
+    {
+      "label": "Rādīt straumi",
+      "description": "norāda, vai lapas straume ir redzama vai nē"
+    },
+    {
+      "label": "Augstums",
+      "description": "Iestatiet Facebook lapas plūsmas augstumu"
+    },
+    {
+      "label": "Platums",
+      "description": "Iestatiet Facebook lapas plūsmas platumu"
+    }
+  ]
+}

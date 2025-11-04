@@ -1,0 +1,2376 @@
+[Cleanup] 2025-11-01 18:32:30 | ===== AADA Cleanup Agent Starting =====
+[Cleanup] 2025-11-01 18:32:30 | Starting .pyc and __pycache__ cleanup...
+[Cleanup] 2025-11-01 18:32:31 | ✅ Removed 60 .pyc files and 10 __pycache__ directories.
+[Cleanup] 2025-11-01 18:32:31 | Cleaning logs older than 7 days...
+[Cleanup] 2025-11-01 18:32:31 | 🕒 Keeping recent log: qa_results.txt (0 days old)
+[Cleanup] 2025-11-01 18:32:31 | 🕒 Keeping recent log: supervisor.log (0 days old)
+[Cleanup] 2025-11-01 18:32:31 | ===== Cleanup Agent Complete =====
+app/core/config.py:4:1: E302 expected 2 blank lines, found 1
+app/core/config.py:5:80: E501 line too long (112 > 79 characters)
+app/core/config.py:8:80: E501 line too long (91 > 79 characters)
+app/core/config.py:10:80: E501 line too long (86 > 79 characters)
+app/core/config.py:11:80: E501 line too long (86 > 79 characters)
+app/core/config.py:13:1: E305 expected 2 blank lines after class or function definition, found 1
+app/core/security.py:15:80: E501 line too long (88 > 79 characters)
+app/core/security.py:17:80: E501 line too long (80 > 79 characters)
+app/core/security.py:20:80: E501 line too long (83 > 79 characters)
+app/core/security.py:24:80: E501 line too long (82 > 79 characters)
+app/db/models/__init__.py:1:1: F401 '.user.User' imported but unused
+app/db/models/__init__.py:2:1: F401 '.role.Role' imported but unused
+app/db/models/__init__.py:2:1: F401 '.role.UserRole' imported but unused
+app/db/models/__init__.py:3:1: F401 '.program.Program' imported but unused
+app/db/models/__init__.py:3:1: F401 '.program.Module' imported but unused
+app/db/models/__init__.py:4:1: F401 '.enrollment.Enrollment' imported but unused
+app/db/models/__init__.py:4:1: F401 '.enrollment.ModuleProgress' imported but unused
+app/db/models/__init__.py:5:1: F401 '.scorm.ScormRecord' imported but unused
+app/db/models/__init__.py:6:1: F401 '.xapi.XapiStatement' imported but unused
+app/db/models/__init__.py:9:1: F401 '.compliance.attendance.AttendanceLog' imported but unused
+app/db/models/__init__.py:10:1: F401 '.compliance.complaint.Complaint' imported but unused
+app/db/models/__init__.py:11:1: F401 '.compliance.credential.Credential' imported but unused
+app/db/models/__init__.py:12:1: F401 '.compliance.extern.Externship' imported but unused
+app/db/models/__init__.py:13:1: F401 '.compliance.finance.FinancialLedger' imported but unused
+app/db/models/__init__.py:14:1: F401 '.compliance.skills.SkillCheckoff' imported but unused
+app/db/models/__init__.py:15:1: F401 '.compliance.transcript.Transcript' imported but unused
+app/db/models/__init__.py:16:1: F401 '.compliance.withdraw_refund.Refund' imported but unused
+app/db/models/__init__.py:16:1: F401 '.compliance.withdraw_refund.Withdrawal' imported but unused
+app/db/models/compliance/attendance.py:1:1: F401 'sqlalchemy.Integer' imported but unused
+app/db/models/compliance/attendance.py:1:1: F401 'sqlalchemy.CheckConstraint' imported but unused
+app/db/models/compliance/attendance.py:1:80: E501 line too long (86 > 79 characters)
+app/db/models/compliance/attendance.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/attendance.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/attendance.py:11:80: E501 line too long (88 > 79 characters)
+app/db/models/compliance/audit.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/complaint.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/complaint.py:10:80: E501 line too long (85 > 79 characters)
+app/db/models/compliance/credential.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/credential.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/credential.py:11:80: E501 line too long (90 > 79 characters)
+app/db/models/compliance/extern.py:1:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/extern.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/extern.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/finance.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/finance.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/finance.py:11:80: E501 line too long (91 > 79 characters)
+app/db/models/compliance/skills.py:1:1: F401 'sqlalchemy.Boolean' imported but unused
+app/db/models/compliance/skills.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/skills.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/skills.py:11:80: E501 line too long (88 > 79 characters)
+app/db/models/compliance/skills.py:13:80: E501 line too long (91 > 79 characters)
+app/db/models/compliance/transcript.py:1:1: F401 'sqlalchemy.String' imported but unused
+app/db/models/compliance/transcript.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/transcript.py:10:80: E501 line too long (84 > 79 characters)
+app/db/models/compliance/transcript.py:11:80: E501 line too long (90 > 79 characters)
+app/db/models/compliance/transcript.py:12:27: E231 missing whitespace after ','
+app/db/models/compliance/withdraw_refund.py:1:1: F401 'sqlalchemy.String' imported but unused
+app/db/models/compliance/withdraw_refund.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/withdraw_refund.py:10:80: E501 line too long (96 > 79 characters)
+app/db/models/compliance/withdraw_refund.py:16:1: E302 expected 2 blank lines, found 1
+app/db/models/compliance/withdraw_refund.py:20:80: E501 line too long (107 > 79 characters)
+app/db/models/compliance/withdraw_refund.py:25:51: E261 at least two spaces before inline comment
+app/db/models/enrollment.py:1:1: F401 'sqlalchemy.Boolean' imported but unused
+app/db/models/enrollment.py:1:1: F401 'sqlalchemy.TIMESTAMP' imported but unused
+app/db/models/enrollment.py:1:80: E501 line too long (84 > 79 characters)
+app/db/models/enrollment.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/enrollment.py:9:80: E501 line too long (84 > 79 characters)
+app/db/models/enrollment.py:10:80: E501 line too long (90 > 79 characters)
+app/db/models/enrollment.py:15:1: E302 expected 2 blank lines, found 1
+app/db/models/enrollment.py:18:80: E501 line too long (96 > 79 characters)
+app/db/models/enrollment.py:19:80: E501 line too long (88 > 79 characters)
+app/db/models/program.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/program.py:14:1: E302 expected 2 blank lines, found 1
+app/db/models/program.py:17:80: E501 line too long (90 > 79 characters)
+app/db/models/program.py:20:80: E501 line too long (86 > 79 characters)
+app/db/models/role.py:22:80: E501 line too long (100 > 79 characters)
+app/db/models/role.py:23:80: E501 line too long (100 > 79 characters)
+app/db/models/scorm.py:1:1: F401 'sqlalchemy.TIMESTAMP' imported but unused
+app/db/models/scorm.py:1:1: F401 'sqlalchemy.Interval' imported but unused
+app/db/models/scorm.py:1:80: E501 line too long (85 > 79 characters)
+app/db/models/scorm.py:6:1: E302 expected 2 blank lines, found 1
+app/db/models/scorm.py:9:80: E501 line too long (84 > 79 characters)
+app/db/models/scorm.py:10:80: E501 line too long (88 > 79 characters)
+app/db/models/scorm.py:12:36: E231 missing whitespace after ','
+app/db/models/scorm.py:13:33: E231 missing whitespace after ','
+app/db/models/user.py:19:80: E501 line too long (94 > 79 characters)
+app/db/models/xapi.py:2:1: F401 'sqlalchemy.dialects.postgresql.CITEXT' imported but unused
+app/db/models/xapi.py:6:1: E302 expected 2 blank lines, found 1
+app/db/seed.py:7:1: F401 'uuid.uuid4' imported but unused
+app/db/seed.py:83:80: E501 line too long (83 > 79 characters)
+app/db/seed.py:90:80: E501 line too long (86 > 79 characters)
+app/db/seed.py:102:80: E501 line too long (113 > 79 characters)
+app/db/seed.py:103:80: E501 line too long (99 > 79 characters)
+app/db/seed.py:148:80: E501 line too long (97 > 79 characters)
+app/db/seed.py:149:80: E501 line too long (86 > 79 characters)
+app/db/seed.py:150:80: E501 line too long (90 > 79 characters)
+app/db/seed.py:151:80: E501 line too long (84 > 79 characters)
+app/db/seed.py:285:80: E501 line too long (80 > 79 characters)
+app/db/seed.py:305:80: E501 line too long (82 > 79 characters)
+app/db/seed.py:351:80: E501 line too long (101 > 79 characters)
+app/db/seed.py:355:80: E501 line too long (106 > 79 characters)
+app/db/seed.py:394:80: E501 line too long (98 > 79 characters)
+app/db/seed.py:405:80: E501 line too long (84 > 79 characters)
+app/db/seed.py:410:80: E501 line too long (105 > 79 characters)
+app/db/seed.py:416:80: E501 line too long (89 > 79 characters)
+app/db/seed.py:417:80: E501 line too long (105 > 79 characters)
+app/db/seed.py:418:80: E501 line too long (94 > 79 characters)
+app/db/seed.py:424:80: E501 line too long (89 > 79 characters)
+app/db/seed.py:425:80: E501 line too long (107 > 79 characters)
+app/db/seed.py:426:80: E501 line too long (94 > 79 characters)
+app/db/seed.py:432:80: E501 line too long (85 > 79 characters)
+app/db/seed.py:433:80: E501 line too long (109 > 79 characters)
+app/db/seed.py:434:80: E501 line too long (94 > 79 characters)
+app/db/session.py:12:1: E302 expected 2 blank lines, found 1
+app/main.py:4:1: F401 'app.db.base.Base' imported but unused
+app/main.py:5:1: F401 'app.db.session.engine' imported but unused
+app/main.py:25:80: E501 line too long (89 > 79 characters)
+app/main.py:26:1: E265 block comment should start with '# '
+app/main.py:59:1: E402 module level import not at top of file
+app/main.py:60:1: E402 module level import not at top of file
+app/main.py:69:1: E302 expected 2 blank lines, found 1
+app/routers/attendance.py:9:80: E501 line too long (85 > 79 characters)
+app/routers/attendance.py:23:80: E501 line too long (84 > 79 characters)
+app/routers/attendance.py:35:80: E501 line too long (89 > 79 characters)
+app/routers/attendance.py:38:80: E501 line too long (97 > 79 characters)
+app/routers/attendance.py:44:80: E501 line too long (81 > 79 characters)
+app/routers/attendance.py:48:80: E501 line too long (97 > 79 characters)
+app/routers/attendance.py:72:80: E501 line too long (82 > 79 characters)
+app/routers/attendance.py:75:80: E501 line too long (97 > 79 characters)
+app/routers/auth.py:30:80: E501 line too long (114 > 79 characters)
+app/routers/auth.py:36:80: E501 line too long (103 > 79 characters)
+app/routers/auth.py:38:80: E501 line too long (118 > 79 characters)
+app/routers/auth.py:41:80: E501 line too long (108 > 79 characters)
+app/routers/auth.py:45:80: E501 line too long (118 > 79 characters)
+app/routers/auth.py:49:80: E501 line too long (94 > 79 characters)
+app/routers/auth.py:51:80: E501 line too long (95 > 79 characters)
+app/routers/auth.py:63:80: E501 line too long (81 > 79 characters)
+app/routers/auth.py:64:80: E501 line too long (82 > 79 characters)
+app/routers/auth.py:66:80: E501 line too long (105 > 79 characters)
+app/routers/auth.py:68:80: E501 line too long (95 > 79 characters)
+app/routers/complaints.py:21:80: E501 line too long (83 > 79 characters)
+app/routers/complaints.py:22:80: E501 line too long (85 > 79 characters)
+app/routers/complaints.py:28:80: E501 line too long (81 > 79 characters)
+app/routers/complaints.py:45:80: E501 line too long (83 > 79 characters)
+app/routers/complaints.py:75:80: E501 line too long (89 > 79 characters)
+app/routers/complaints.py:84:80: E501 line too long (96 > 79 characters)
+app/routers/complaints.py:90:80: E501 line too long (104 > 79 characters)
+app/routers/complaints.py:99:80: E501 line too long (86 > 79 characters)
+app/routers/complaints.py:102:80: E501 line too long (96 > 79 characters)
+app/routers/complaints.py:107:80: E501 line too long (80 > 79 characters)
+app/routers/complaints.py:110:80: E501 line too long (96 > 79 characters)
+app/routers/credentials.py:21:80: E501 line too long (81 > 79 characters)
+app/routers/credentials.py:24:80: E501 line too long (83 > 79 characters)
+app/routers/credentials.py:40:80: E501 line too long (106 > 79 characters)
+app/routers/credentials.py:46:80: E501 line too long (90 > 79 characters)
+app/routers/credentials.py:50:80: E501 line too long (115 > 79 characters)
+app/routers/credentials.py:55:80: E501 line too long (84 > 79 characters)
+app/routers/credentials.py:58:80: E501 line too long (83 > 79 characters)
+app/routers/credentials.py:73:80: E501 line too long (84 > 79 characters)
+app/routers/credentials.py:81:80: E501 line too long (87 > 79 characters)
+app/routers/credentials.py:94:80: E501 line too long (89 > 79 characters)
+app/routers/credentials.py:97:80: E501 line too long (97 > 79 characters)
+app/routers/credentials.py:103:80: E501 line too long (81 > 79 characters)
+app/routers/credentials.py:107:80: E501 line too long (97 > 79 characters)
+app/routers/credentials.py:120:80: E501 line too long (82 > 79 characters)
+app/routers/credentials.py:123:80: E501 line too long (97 > 79 characters)
+app/routers/enrollments.py:4:1: F401 'app.db.models.enrollment.ModuleProgress' imported but unused
+app/routers/enrollments.py:8:1: E302 expected 2 blank lines, found 1
+app/routers/externships.py:20:80: E501 line too long (83 > 79 characters)
+app/routers/externships.py:26:80: E501 line too long (82 > 79 characters)
+app/routers/externships.py:30:80: E501 line too long (105 > 79 characters)
+app/routers/externships.py:41:80: E501 line too long (89 > 79 characters)
+app/routers/externships.py:46:80: E501 line too long (84 > 79 characters)
+app/routers/externships.py:60:80: E501 line too long (89 > 79 characters)
+app/routers/externships.py:63:80: E501 line too long (97 > 79 characters)
+app/routers/externships.py:69:80: E501 line too long (81 > 79 characters)
+app/routers/externships.py:73:80: E501 line too long (97 > 79 characters)
+app/routers/externships.py:85:80: E501 line too long (82 > 79 characters)
+app/routers/externships.py:88:80: E501 line too long (97 > 79 characters)
+app/routers/finance.py:29:80: E501 line too long (97 > 79 characters)
+app/routers/finance.py:36:80: E501 line too long (93 > 79 characters)
+app/routers/finance.py:43:80: E501 line too long (97 > 79 characters)
+app/routers/finance.py:50:80: E501 line too long (96 > 79 characters)
+app/routers/finance.py:54:80: E501 line too long (89 > 79 characters)
+app/routers/finance.py:83:80: E501 line too long (80 > 79 characters)
+app/routers/finance.py:84:80: E501 line too long (84 > 79 characters)
+app/routers/finance.py:87:80: E501 line too long (93 > 79 characters)
+app/routers/finance.py:93:80: E501 line too long (82 > 79 characters)
+app/routers/finance.py:96:80: E501 line too long (82 > 79 characters)
+app/routers/finance.py:105:80: E501 line too long (96 > 79 characters)
+app/routers/finance.py:118:80: E501 line too long (89 > 79 characters)
+app/routers/finance.py:124:80: E501 line too long (81 > 79 characters)
+app/routers/finance.py:131:80: E501 line too long (101 > 79 characters)
+app/routers/finance.py:138:80: E501 line too long (86 > 79 characters)
+app/routers/finance.py:139:80: E501 line too long (82 > 79 characters)
+app/routers/finance.py:147:80: E501 line too long (92 > 79 characters)
+app/routers/finance.py:150:80: E501 line too long (88 > 79 characters)
+app/routers/finance.py:151:80: E501 line too long (86 > 79 characters)
+app/routers/finance.py:186:80: E501 line too long (110 > 79 characters)
+app/routers/h5p.py:26:80: E501 line too long (141 > 79 characters)
+app/routers/h5p.py:36:80: E501 line too long (83 > 79 characters)
+app/routers/h5p.py:71:80: E501 line too long (140 > 79 characters)
+app/routers/h5p.py:120:80: E501 line too long (209 > 79 characters)
+app/routers/h5p.py:125:80: E501 line too long (97 > 79 characters)
+app/routers/h5p.py:128:80: E501 line too long (151 > 79 characters)
+app/routers/h5p.py:131:80: E501 line too long (145 > 79 characters)
+app/routers/h5p.py:132:80: E501 line too long (91 > 79 characters)
+app/routers/h5p.py:165:80: E501 line too long (92 > 79 characters)
+app/routers/h5p.py:182:80: E501 line too long (94 > 79 characters)
+app/routers/h5p.py:186:80: E501 line too long (81 > 79 characters)
+app/routers/h5p.py:189:5: F841 local variable 'cache_key' is assigned to but never used
+app/routers/h5p.py:200:80: E501 line too long (104 > 79 characters)
+app/routers/h5p.py:201:80: E501 line too long (97 > 79 characters)
+app/routers/h5p.py:231:80: E501 line too long (98 > 79 characters)
+app/routers/h5p.py:232:80: E501 line too long (98 > 79 characters)
+app/routers/h5p.py:251:80: E501 line too long (83 > 79 characters)
+app/routers/h5p.py:255:80: E501 line too long (94 > 79 characters)
+app/routers/h5p.py:270:80: E501 line too long (83 > 79 characters)
+app/routers/modules.py:8:1: E302 expected 2 blank lines, found 1
+app/routers/modules.py:11:80: E501 line too long (97 > 79 characters)
+app/routers/modules.py:19:80: E501 line too long (82 > 79 characters)
+app/routers/modules.py:37:80: E501 line too long (94 > 79 characters)
+app/routers/modules.py:46:80: E501 line too long (93 > 79 characters)
+app/routers/programs.py:8:1: E302 expected 2 blank lines, found 1
+app/routers/programs.py:12:1: E302 expected 2 blank lines, found 1
+app/routers/programs.py:14:53: E225 missing whitespace around operator
+app/routers/reports.py:5:1: F401 'typing.Iterable' imported but unused
+app/routers/reports.py:42:80: E501 line too long (95 > 79 characters)
+app/routers/reports.py:48:80: E501 line too long (82 > 79 characters)
+app/routers/reports.py:59:80: E501 line too long (86 > 79 characters)
+app/routers/reports.py:63:80: E501 line too long (82 > 79 characters)
+app/routers/reports.py:95:80: E501 line too long (86 > 79 characters)
+app/routers/reports.py:116:80: E501 line too long (85 > 79 characters)
+app/routers/scorm.py:4:1: E302 expected 2 blank lines, found 1
+app/routers/skills.py:29:80: E501 line too long (87 > 79 characters)
+app/routers/skills.py:38:80: E501 line too long (94 > 79 characters)
+app/routers/skills.py:51:80: E501 line too long (83 > 79 characters)
+app/routers/skills.py:56:80: E501 line too long (102 > 79 characters)
+app/routers/skills.py:60:80: E501 line too long (100 > 79 characters)
+app/routers/skills.py:88:80: E501 line too long (101 > 79 characters)
+app/routers/skills.py:103:80: E501 line too long (101 > 79 characters)
+app/routers/skills.py:108:80: E501 line too long (84 > 79 characters)
+app/routers/skills.py:111:80: E501 line too long (101 > 79 characters)
+app/routers/transcripts.py:20:80: E501 line too long (84 > 79 characters)
+app/routers/transcripts.py:27:80: E501 line too long (83 > 79 characters)
+app/routers/transcripts.py:30:80: E501 line too long (83 > 79 characters)
+app/routers/transcripts.py:79:80: E501 line too long (94 > 79 characters)
+app/routers/transcripts.py:117:80: E501 line too long (86 > 79 characters)
+app/routers/transcripts.py:135:80: E501 line too long (94 > 79 characters)
+app/routers/transcripts.py:154:80: E501 line too long (81 > 79 characters)
+app/routers/transcripts.py:163:80: E501 line too long (84 > 79 characters)
+app/routers/transcripts.py:179:80: E501 line too long (80 > 79 characters)
+app/routers/transcripts.py:189:80: E501 line too long (89 > 79 characters)
+app/routers/transcripts.py:192:80: E501 line too long (97 > 79 characters)
+app/routers/transcripts.py:193:80: E501 line too long (82 > 79 characters)
+app/routers/transcripts.py:199:80: E501 line too long (96 > 79 characters)
+app/routers/transcripts.py:202:80: E501 line too long (105 > 79 characters)
+app/routers/transcripts.py:205:80: E501 line too long (109 > 79 characters)
+app/routers/transcripts.py:206:80: E501 line too long (92 > 79 characters)
+app/routers/transcripts.py:210:80: E501 line too long (82 > 79 characters)
+app/routers/transcripts.py:213:80: E501 line too long (97 > 79 characters)
+app/routers/xapi.py:14:1: E302 expected 2 blank lines, found 1
+app/routers/xapi.py:14:80: E501 line too long (97 > 79 characters)
+app/routers/xapi.py:16:80: E501 line too long (92 > 79 characters)
+app/routers/xapi.py:17:80: E501 line too long (106 > 79 characters)
+app/routers/xapi.py:26:80: E501 line too long (104 > 79 characters)
+app/routers/xapi.py:27:80: E501 line too long (96 > 79 characters)
+app/routers/xapi.py:28:80: E501 line too long (114 > 79 characters)
+app/routers/xapi.py:29:80: E501 line too long (90 > 79 characters)
+app/routers/xapi.py:34:80: E501 line too long (81 > 79 characters)
+app/schemas/__init__.py:4:80: E501 line too long (88 > 79 characters)
+app/schemas/attendance.py:35:80: E501 line too long (82 > 79 characters)
+app/schemas/finance.py:12:80: E501 line too long (81 > 79 characters)
+app/schemas/finance.py:22:80: E501 line too long (81 > 79 characters)
+app/schemas/transcripts.py:35:80: E501 line too long (96 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:15:1: F401 'os' imported but unused
+app/static/modules/module1/init_module1_doc.py:15:16: E401 multiple imports on one line
+app/static/modules/module1/init_module1_doc.py:19:80: E501 line too long (94 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:25:80: E501 line too long (93 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:46:80: E501 line too long (85 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:46:86: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:47:80: E501 line too long (160 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:58:80: E501 line too long (86 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:59:80: E501 line too long (88 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:60:80: E501 line too long (82 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:64:80: E501 line too long (85 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:66:80: E501 line too long (107 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:77:34: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:78:80: E501 line too long (130 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:78:131: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:79:80: E501 line too long (165 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:79:166: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:83:65: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:84:52: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:85:80: E501 line too long (97 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:85:98: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:94:80: E501 line too long (157 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:97:51: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:98:65: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:99:42: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:102:80: E501 line too long (81 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:105:80: E501 line too long (110 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:105:111: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:106:80: E501 line too long (108 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:106:109: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:107:80: E501 line too long (95 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:109:80: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:110:67: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:111:51: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:118:80: E501 line too long (137 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:118:138: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:119:80: E501 line too long (101 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:119:102: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:120:80: E501 line too long (91 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:123:18: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:124:31: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:125:53: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:126:39: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:130:80: E501 line too long (97 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:132:78: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:133:80: E501 line too long (88 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:139:33: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:140:40: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:141:73: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:145:80: E501 line too long (84 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:145:85: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:146:72: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:149:72: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:150:77: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:156:53: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:157:73: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:161:80: E501 line too long (134 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:161:135: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:162:80: E501 line too long (121 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:162:122: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:163:80: E501 line too long (108 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:163:109: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:166:72: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:172:47: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:173:71: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:174:62: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:175:80: E501 line too long (84 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:180:80: E501 line too long (110 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:180:111: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:181:39: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:198:60: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:199:64: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:200:64: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:201:58: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:202:56: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:203:52: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:204:60: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:207:80: E501 line too long (111 > 79 characters)
+app/static/modules/module1/init_module1_doc.py:212:60: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:213:57: W291 trailing whitespace
+app/static/modules/module1/init_module1_doc.py:248:80: E501 line too long (101 > 79 characters)
+app/tests/test_auth_endpoints.py:12:80: E501 line too long (84 > 79 characters)
+app/tests/test_auth_endpoints.py:50:80: E501 line too long (90 > 79 characters)
+app/tests/test_auth_endpoints.py:56:80: E501 line too long (90 > 79 characters)
+app/tests/test_auth_endpoints.py:68:80: E501 line too long (93 > 79 characters)
+app/tests/test_auth_endpoints.py:72:80: E501 line too long (113 > 79 characters)
+app/tests/test_basic.py:4:1: E302 expected 2 blank lines, found 1
+app/tests/test_complaint_flow.py:38:80: E501 line too long (89 > 79 characters)
+app/tests/test_refund_policy.py:18:80: E501 line too long (100 > 79 characters)
+app/tests/test_refund_policy.py:19:80: E501 line too long (98 > 79 characters)
+app/tests/test_refund_policy.py:74:80: E501 line too long (130 > 79 characters)
+app/tests/test_transcript_generation.py:16:80: E501 line too long (118 > 79 characters)
+app/tests/test_transcript_generation.py:17:80: E501 line too long (128 > 79 characters)
+app/tests/test_xapi_filters.py:23:80: E501 line too long (80 > 79 characters)
+app/tests/test_xapi_filters.py:32:80: E501 line too long (92 > 79 characters)
+app/tests/test_xapi_filters.py:33:80: E501 line too long (94 > 79 characters)
+app/tests/test_xapi_filters.py:38:80: E501 line too long (90 > 79 characters)
+app/tests/test_xapi_filters.py:46:80: E501 line too long (84 > 79 characters)
+app/tests/test_xapi_filters.py:52:80: E501 line too long (82 > 79 characters)
+app/tests/utils.py:5:1: F401 'uuid.UUID' imported but unused
+app/utils/h5p_handler.py:12:1: E302 expected 2 blank lines, found 1
+app/utils/h5p_handler.py:34:80: E501 line too long (103 > 79 characters)
+app/utils/h5p_handler.py:37:80: E501 line too long (95 > 79 characters)
+app/utils/h5p_handler.py:50:80: E501 line too long (91 > 79 characters)
+app/utils/h5p_handler.py:82:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:26:80: E501 line too long (83 > 79 characters)
+app/utils/h5p_matching_builder.py:61:80: E501 line too long (85 > 79 characters)
+app/utils/h5p_matching_builder.py:72:80: E501 line too long (92 > 79 characters)
+app/utils/h5p_matching_builder.py:80:80: E501 line too long (84 > 79 characters)
+app/utils/h5p_matching_builder.py:104:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:109:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:126:80: E501 line too long (80 > 79 characters)
+app/utils/h5p_matching_builder.py:127:80: E501 line too long (90 > 79 characters)
+app/utils/h5p_matching_builder.py:147:80: E501 line too long (104 > 79 characters)
+app/utils/h5p_matching_builder.py:178:80: E501 line too long (82 > 79 characters)
+app/utils/h5p_matching_builder.py:190:80: E501 line too long (102 > 79 characters)
+app/utils/h5p_matching_builder.py:206:80: E501 line too long (100 > 79 characters)
+app/utils/h5p_matching_builder.py:211:80: E501 line too long (84 > 79 characters)
+app/utils/h5p_matching_builder.py:222:80: E501 line too long (81 > 79 characters)
+app/utils/h5p_matching_builder.py:246:80: E501 line too long (80 > 79 characters)
+app/utils/h5p_matching_builder.py:270:80: E501 line too long (87 > 79 characters)
+app/utils/h5p_matching_builder.py:274:80: E501 line too long (87 > 79 characters)
+app/utils/h5p_matching_builder.py:290:80: E501 line too long (111 > 79 characters)
+app/utils/h5p_matching_builder.py:309:80: E501 line too long (103 > 79 characters)
+Traceback (most recent call last):
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py", line 3302, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py", line 308, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+    self.__connect()
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+    with util.safe_reraise():
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py", line 643, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py", line 621, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/herbert/Library/Python/3.12/bin/alembic", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/alembic/config.py", line 636, in main
+    CommandLine(prog=prog).main(argv=argv)
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/alembic/config.py", line 626, in main
+    self.run_cmd(cfg, options)
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/alembic/config.py", line 603, in run_cmd
+    fn(
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/alembic/command.py", line 406, in upgrade
+    script.run_env()
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/alembic/script/base.py", line 586, in run_env
+    util.load_python_file(self.dir, "env.py")
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/alembic/util/pyfiles.py", line 95, in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/alembic/util/pyfiles.py", line 113, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/Users/herbert/Projects/AADA/OnlineCourse/aada_lms/alembic/env.py", line 43, in <module>
+    run_migrations_online()
+  File "/Users/herbert/Projects/AADA/OnlineCourse/aada_lms/alembic/env.py", line 35, in run_migrations_online
+    with connectable.connect() as connection:
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py", line 3278, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py", line 148, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py", line 2442, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py", line 3302, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py", line 308, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+    self.__connect()
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+    with util.safe_reraise():
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py", line 643, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py", line 621, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/herbert/Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[Architect] 2025-11-01 18:32:31 | Checking Python code style with flake8...
+[Architect] 2025-11-01 18:32:31 | Running Alembic migrations...
+[Architect] 2025-11-01 18:32:31 | Architect tasks complete.
+FF.FFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+____________________________ test_login_and_me_flow ____________________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x103f1f590>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_login_and_me_flow():
+        email = "auth.test@aada.edu"
+        password = "TestPass!23"
+>       _create_user(email, password, roles=["Admin", "Finance"])
+
+app/tests/test_auth_endpoints.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_auth_endpoints.py:15: in _create_user
+    user = session.query(User).filter(User.email == email).first()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/query.py:2728: in first
+    return self.limit(1)._iter().first()  # type: ignore
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/query.py:2827: in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+__________________ test_login_invalid_credentials_returns_401 __________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x108e658e0>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_login_invalid_credentials_returns_401():
+        email = "invalid@aada.edu"
+        password = "InvalidPass!23"
+>       _create_user(email, password, roles=["Registrar"])
+
+app/tests/test_auth_endpoints.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_auth_endpoints.py:15: in _create_user
+    user = session.query(User).filter(User.email == email).first()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/query.py:2728: in first
+    return self.limit(1)._iter().first()  # type: ignore
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/query.py:2827: in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+___________________________ test_complaint_lifecycle ___________________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x108f1fbf0>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_complaint_lifecycle():
+>       _clear_complaints_table()
+
+app/tests/test_complaint_flow.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_complaint_flow.py:13: in _clear_complaints_table
+    db.execute(text("DELETE FROM compliance.complaints"))
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+______________________________ test_refunds_list _______________________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x109023530>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_refunds_list():
+>       _reset_finance_tables()
+
+app/tests/test_refund_policy.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_refund_policy.py:16: in _reset_finance_tables
+    db.execute(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+_______________________ test_prorated_refund_calculation _______________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x109023a70>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_prorated_refund_calculation():
+>       _reset_finance_tables()
+
+app/tests/test_refund_policy.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_refund_policy.py:16: in _reset_finance_tables
+    db.execute(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+________________________ test_cancellation_full_refund _________________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x1090216d0>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_cancellation_full_refund():
+>       _reset_finance_tables()
+
+app/tests/test_refund_policy.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_refund_policy.py:16: in _reset_finance_tables
+    db.execute(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+_______________________ test_transcript_generation_flow ________________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x103f489b0>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_transcript_generation_flow():
+>       _reset_academic_tables()
+
+app/tests/test_transcript_generation.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_transcript_generation.py:14: in _reset_academic_tables
+    db.execute(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+_____________________ test_xapi_filters_by_agent_and_since _____________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x103ee7650>
+engine = Engine(postgresql+psycopg2://aada:***@localhost:5432/aada_lms)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+    def test_xapi_filters_by_agent_and_since():
+>       _clear_xapi()
+
+app/tests/test_xapi_filters.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/tests/test_xapi_filters.py:13: in _clear_xapi
+    db.execute(text("TRUNCATE xapi_statements RESTART IDENTITY CASCADE"))
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2362: in execute
+    return self._execute_internal(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2237: in _execute_internal
+    conn = self._connection_for_bind(bind)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:2106: in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+<string>:2: in _connection_for_bind
+    ???
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/orm/session.py:1189: in _connection_for_bind
+    conn = bind.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3278: in connect
+    return self._connection_cls(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:148: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:2442: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:146: in __init__
+    self._dbapi_connection = engine.raw_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/base.py:3302: in raw_connection
+    return self.pool.connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:449: in connect
+    return _ConnectionFairy._checkout(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:1263: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:712: in checkout
+    rec = pool._do_get()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:179: in _do_get
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/impl.py:177: in _do_get
+    return self._create_connection()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:390: in _create_connection
+    return _ConnectionRecord(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:674: in __init__
+    self.__connect()
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:900: in __connect
+    with util.safe_reraise():
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/pool/base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/create.py:643: in connect
+    return dialect.connect(*cargs, **cparams)
+../../../../Library/Python/3.12/lib/python/site-packages/sqlalchemy/engine/default.py:621: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'host=localhost dbname=aada_lms user=aada password=changeme port=5432'
+connection_factory = None, cursor_factory = None
+kwargs = {'dbname': 'aada_lms', 'host': 'localhost', 'password': 'changeme', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+E       sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "aada" does not exist
+E       
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+../../../../Library/Python/3.12/lib/python/site-packages/psycopg2/__init__.py:122: OperationalError
+=============================== warnings summary ===============================
+../../../../Library/Python/3.12/lib/python/site-packages/pydantic/_internal/_config.py:291
+  /Users/herbert/Library/Python/3.12/lib/python/site-packages/pydantic/_internal/_config.py:291: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.9/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+../../../../Library/Python/3.12/lib/python/site-packages/reportlab/lib/rl_safe_eval.py:12
+  /Users/herbert/Library/Python/3.12/lib/python/site-packages/reportlab/lib/rl_safe_eval.py:12: DeprecationWarning: ast.NameConstant is deprecated and will be removed in Python 3.14; use ast.Constant instead
+    haveNameConstant = hasattr(ast,'NameConstant')
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED app/tests/test_auth_endpoints.py::test_login_and_me_flow - sqlalchemy....
+FAILED app/tests/test_auth_endpoints.py::test_login_invalid_credentials_returns_401
+FAILED app/tests/test_complaint_flow.py::test_complaint_lifecycle - sqlalchem...
+FAILED app/tests/test_refund_policy.py::test_refunds_list - sqlalchemy.exc.Op...
+FAILED app/tests/test_refund_policy.py::test_prorated_refund_calculation - sq...
+FAILED app/tests/test_refund_policy.py::test_cancellation_full_refund - sqlal...
+FAILED app/tests/test_transcript_generation.py::test_transcript_generation_flow
+FAILED app/tests/test_xapi_filters.py::test_xapi_filters_by_agent_and_since
+8 failed, 1 passed, 2 warnings in 1.62s
+
+> aada-admin-portal@0.1.0 build
+> vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 105 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.50 kB │ gzip:  0.33 kB
+dist/assets/index-Cbes7h0F.css   15.36 kB │ gzip:  3.50 kB
+dist/assets/index-DlOXuv2X.js   234.08 kB │ gzip: 75.27 kB
+✓ built in 493ms
+[Developer] 2025-11-01 18:32:31 | Running Python unit tests...
+[Developer] 2025-11-01 18:32:33 | Attempting to build React admin portal (if dependencies installed)...
+[Developer] 2025-11-01 18:32:34 | Developer tasks complete.
+[QA] 2025-11-01 18:32:34 | Killing any existing pytest processes...
+[QA] 2025-11-01 18:32:34 | ⚠️  'pkill' not found in container; skipping container cleanup.
+[QA] 2025-11-01 18:32:34 | Running backend tests (pytest)...
+[QA] 2025-11-01 18:32:35 | Backend tests finished.
+[QA] 2025-11-01 18:32:35 | Running frontend tests (npm test)...
+[QA] 2025-11-01 18:32:36 | Frontend tests finished.
+[QA] 2025-11-01 18:32:36 | QA Agent tasks complete.
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS        PORTS                                         NAMES
+f3622a9e5a42   aada_lms-web                    "uvicorn app.main:ap…"   19 hours ago   Up 5 hours    0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   aada_lms-web-1
+76ae0954d58b   aada_lms-admin_portal           "docker-entrypoint.s…"   30 hours ago   Up 19 hours   0.0.0.0:5173->5173/tcp, [::]:5173->5173/tcp   aada_admin_portal
+98ce2bf803ab   postgres:16                     "docker-entrypoint.s…"   30 hours ago   Up 19 hours   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   aada_lms-db-1
+9af27b9565b6   moby/buildkit:buildx-stable-1   "buildkitd --allow-i…"   4 months ago   Up 3 days                                                   buildx_buildkit_aada-builder0
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS                    PORTS                                         NAMES
+f3622a9e5a42   aada_lms-web                    "uvicorn app.main:ap…"   19 hours ago   Up 5 hours                0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   aada_lms-web-1
+76ae0954d58b   aada_lms-admin_portal           "docker-entrypoint.s…"   30 hours ago   Up 19 hours               0.0.0.0:5173->5173/tcp, [::]:5173->5173/tcp   aada_admin_portal
+98ce2bf803ab   postgres:16                     "docker-entrypoint.s…"   30 hours ago   Up 19 hours               0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   aada_lms-db-1
+9af27b9565b6   moby/buildkit:buildx-stable-1   "buildkitd --allow-i…"   4 months ago   Up 3 days                                                               buildx_buildkit_aada-builder0
+2d07072fa6ca   219142fb3924                    "uvicorn main:app --…"   4 months ago   Exited (1) 4 months ago                                                 aada-backend-container
+878738717dcb   moby/buildkit:buildx-stable-1   "buildkitd --allow-i…"   4 months ago   Exited (1) 4 months ago                                                 buildx_buildkit_relaxed_zhukovsky0
+[DevOps] 2025-11-01 18:32:36 | Checking running containers...
+[DevOps] 2025-11-01 18:32:36 | ✅ Found container 'aada_lms-web-1'. No rebuild needed.
+[DevOps] 2025-11-01 18:32:36 | ✅ Found container 'aada_admin_portal'. No rebuild needed.
+[DevOps] 2025-11-01 18:32:36 | ✅ Found container 'aada_lms-db-1'. No rebuild needed.
+[DevOps] 2025-11-01 18:32:36 | Listing all containers for verification:
+[DevOps] 2025-11-01 18:32:36 | DevOps tasks complete.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 46975  100 46975    0     0  18.3M      0 --:--:-- --:--:-- --:--:-- 22.3M
+[Docs] 2025-11-01 18:32:36 | Attempting to export OpenAPI schema...
+[Docs] 2025-11-01 18:32:36 | Docs Agent tasks complete.
+[Supervisor] 2025-11-01 18:32:30 | Running Cleanup Agent before workflow...
+[Supervisor] 2025-11-01 18:32:31 | Cleanup Agent complete. Continuing workflow...
+[Supervisor] 2025-11-01 18:32:31 | Running full agent cycle (default mode)
+[Supervisor] 2025-11-01 18:32:31 | Running architect_agent.py ...
+[Supervisor] 2025-11-01 18:32:31 | ✅ Completed architect_agent.py
+[Supervisor] 2025-11-01 18:32:31 | Running developer_agent.py ...
+[Supervisor] 2025-11-01 18:32:34 | ✅ Completed developer_agent.py
+[Supervisor] 2025-11-01 18:32:34 | Running qa_agent.py ...
+[Supervisor] 2025-11-01 18:32:36 | ✅ Completed qa_agent.py
+[Supervisor] 2025-11-01 18:32:36 | Running devops_agent.py ...
+[Supervisor] 2025-11-01 18:32:36 | ✅ Completed devops_agent.py
+[Supervisor] 2025-11-01 18:32:36 | Running docs_agent.py ...
+[Supervisor] 2025-11-01 18:32:36 | ✅ Completed docs_agent.py
+[Supervisor] 2025-11-01 18:32:36 | All agents complete.

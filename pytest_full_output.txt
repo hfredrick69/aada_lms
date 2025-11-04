@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.4, pytest-8.3.3, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/herbert/Projects/AADA/OnlineCourse/aada_lms
+configfile: pytest.ini
+plugins: anyio-3.7.1
+collecting ... collected 9 items
+
+app/tests/test_auth_endpoints.py::test_login_and_me_flow PASSED          [ 11%]
+app/tests/test_auth_endpoints.py::test_login_invalid_credentials_returns_401 PASSED [ 22%]
+app/tests/test_basic.py::test_healthcheck PASSED                         [ 33%]
+app/tests/test_complaint_flow.py::test_complaint_lifecycle FAILED        [ 44%]
+app/tests/test_refund_policy.py::test_refunds_list FAILED                [ 55%]
+app/tests/test_refund_policy.py::test_prorated_refund_calculation FAILED [ 66%]
+app/tests/test_refund_policy.py::test_cancellation_full_refund 

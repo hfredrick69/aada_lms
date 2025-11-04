@@ -5,6 +5,7 @@ ROOT = Path(__file__).parent
 AGENTS_DIR = ROOT / "agents"
 RUNNER = ROOT / "run_agents.sh"
 
+
 def main():
     AGENTS_DIR.mkdir(parents=True, exist_ok=True)
     runner_content = "#!/bin/bash\n" \
@@ -16,6 +17,7 @@ def main():
     print("✅ Created/verified:")
     print(f" - agents/ -> {AGENTS_DIR.resolve()}")
     print(f" - run_agents.sh -> {RUNNER.resolve()}")
+
 
 if __name__ == "__main__":
     main()

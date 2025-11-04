@@ -1,0 +1,32 @@
+@use 'colors' as colors;
+@use 'sizes' as sizes;
+
+@mixin solution-button($icon, $color) {
+  position: absolute;
+  top: -0.75em;
+  animation: slide-right-fade 0.25s forwards ease-out;
+
+  font-family: 'h5p-theme';
+  font-size: sizes.$option-icon;
+  content: $icon;
+  color: $color;
+
+  // Creates the white background and border
+  border-radius: 50%;
+  line-height: 1em;
+  border: solid 2px;
+
+  z-index: 2;
+}
+
+@mixin hover-overlay() {
+  // Adds the overlay effect
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: colors.$color-border-interaction;
+  opacity: 0.15;
+}

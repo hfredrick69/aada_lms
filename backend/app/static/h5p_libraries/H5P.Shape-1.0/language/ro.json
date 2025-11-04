@@ -1,0 +1,87 @@
+{
+  "semantics": [
+    {
+      "label": "Tip",
+      "options": [
+        {
+          "label": "Dreptunghi"
+        },
+        {
+          "label": "Cerc"
+        },
+        {
+          "label": "Linie verticală"
+        },
+        {
+          "label": "Linie orizontală"
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "Culoare de umplere"
+        },
+        {
+          "label": "Culoare margine"
+        },
+        {
+          "label": "Grosime margine"
+        },
+        {
+          "label": "Stil margine",
+          "options": [
+            {
+              "label": "Solidă"
+            },
+            {
+              "label": "Punctată"
+            },
+            {
+              "label": "Liniată"
+            },
+            {
+              "label": "Dublă"
+            },
+            {
+              "label": "Interioară"
+            },
+            {
+              "label": "Exterioară"
+            }
+          ]
+        },
+        {
+          "label": "Rază margine"
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "Culoare linie"
+        },
+        {
+          "label": "Grosime linie"
+        },
+        {
+          "label": "Stil linie",
+          "options": [
+            {
+              "label": "Solidă"
+            },
+            {
+              "label": "Punctată"
+            },
+            {
+              "label": "Liniată"
+            },
+            {
+              "label": "Dublă"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

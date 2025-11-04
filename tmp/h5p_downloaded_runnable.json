@@ -1,0 +1,2576 @@
+[
+  {
+    "title": "Accordion",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 40,
+    "embedTypes": [
+      "iframe"
+    ],
+    "runnable": 1,
+    "fullscreen": 0,
+    "machineName": "H5P.Accordion",
+    "author": "Joubel",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 5
+    },
+    "license": "MIT",
+    "preloadedJs": [
+      {
+        "path": "h5p-accordion.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "h5p-accordion.css"
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Accordion-1.0/library.json"
+  },
+  {
+    "title": "Complex fill the blanks",
+    "description": "Fill the blanks exercise with individual feedback",
+    "majorVersion": 1,
+    "minorVersion": 2,
+    "patchVersion": 7,
+    "runnable": 1,
+    "author": "S. Rettig",
+    "license": "MIT",
+    "machineName": "H5P.AdvancedBlanks",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 6
+    },
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/ractive.min.js"
+      },
+      {
+        "path": "dist/h5p-advanced-blanks.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 4
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.AdvancedBlanks-1.2/library.json"
+  },
+  {
+    "title": "appear.in for Chat and Talk",
+    "description": "To create a room to chat and talk together",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 14,
+    "runnable": 1,
+    "author": "griffen",
+    "license": "MIT",
+    "machineName": "H5P.AppearIn",
+    "preloadedJs": [
+      {
+        "path": "h5p-appear-in.js"
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.AppearIn-1.0/library.json"
+  },
+  {
+    "title": "Arithmetic Quiz",
+    "description": "Arithmetic quiz containing addition, division, multiplication, subtraction and linear equations",
+    "majorVersion": 1,
+    "minorVersion": 1,
+    "patchVersion": 25,
+    "runnable": 1,
+    "author": "H5P Group, fabforge",
+    "license": "MIT",
+    "machineName": "H5P.ArithmeticQuiz",
+    "fullscreen": 0,
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "js/algebra.min.js"
+      },
+      {
+        "path": "js/arithmetic-quiz.js"
+      },
+      {
+        "path": "js/sound-effects.js"
+      },
+      {
+        "path": "js/countdown-widget.js"
+      },
+      {
+        "path": "js/timer-widget.js"
+      },
+      {
+        "path": "js/intro-page.js"
+      },
+      {
+        "path": "js/qe-generator.js"
+      },
+      {
+        "path": "js/qa-generator.js"
+      },
+      {
+        "path": "js/game-page.js"
+      },
+      {
+        "path": "js/result-page.js"
+      },
+      {
+        "path": "js/odometer.min.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "css/arithmetic-quiz.css"
+      },
+      {
+        "path": "css/odometer-theme-default.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ArithmeticQuiz-1.1/library.json"
+  },
+  {
+    "title": "Audio",
+    "contentType": "Media",
+    "description": "Simple library that displays an audio player.",
+    "majorVersion": 1,
+    "minorVersion": 5,
+    "patchVersion": 18,
+    "runnable": 1,
+    "machineName": "H5P.Audio",
+    "embedTypes": [
+      "iframe"
+    ],
+    "author": "Joubel",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "preloadedJs": [
+      {
+        "path": "scripts/audio.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "styles/audio.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Audio-1.5/library.json"
+  },
+  {
+    "title": "Audio Minimal",
+    "description": "Simple minimalistic audio player.",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 1,
+    "machineName": "H5P.AudioMinimal",
+    "license": "cc-by-sa",
+    "author": "Joubel AS",
+    "preloadedCss": [
+      {
+        "path": "css/audioMinimal.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "scripts/audioMinimal.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 1
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.AudioMinimal-1.0/library.json"
+  },
+  {
+    "title": "Audio Recorder",
+    "description": "Record audio and download it",
+    "machineName": "H5P.AudioRecorder",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 41,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedCss": [
+      {
+        "path": "fonts/h5p-audio-recorder-font-open-sans.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-audio-recorder.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.FontIcons",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5P.Components",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.AudioRecorder-1.0/library.json"
+  },
+  {
+    "title": "Fill in the Blanks",
+    "description": "Test your users with fill in the blanks tasks(Cloze tests).",
+    "machineName": "H5P.Blanks",
+    "majorVersion": 1,
+    "minorVersion": 14,
+    "patchVersion": 21,
+    "runnable": 1,
+    "license": "MIT",
+    "author": "Joubel",
+    "embedTypes": [
+      "iframe"
+    ],
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "preloadedCss": [
+      {
+        "path": "css/blanks.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "js/blanks.js"
+      },
+      {
+        "path": "js/cloze.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.TextUtilities",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Blanks-1.14/library.json"
+  },
+  {
+    "title": "Board Game",
+    "description": "The user is presented with a board with several hotspots. By clicking a hotspot he invokes a mini-game.",
+    "majorVersion": 1,
+    "minorVersion": 6,
+    "patchVersion": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "runnable": 1,
+    "machineName": "H5P.Boardgame",
+    "author": "Amendor AS",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 6
+    },
+    "license": "cc-by-sa",
+    "preloadedDependencies": [
+      {
+        "machineName": "EmbeddedJS",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5P.Video",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5P.QuestionSet",
+        "majorVersion": 1,
+        "minorVersion": 6
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "css/boardgame.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "js/boardgame.js"
+      }
+    ],
+    "width": 635,
+    "height": 500,
+    "_path": "app/static/h5p_libraries/H5P.Boardgame-1.6/library.json"
+  },
+  {
+    "title": "Branching Scenario",
+    "description": "description",
+    "majorVersion": 1,
+    "minorVersion": 8,
+    "patchVersion": 13,
+    "runnable": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 26
+    },
+    "author": "Joubel AS",
+    "license": "MIT",
+    "machineName": "H5P.BranchingScenario",
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-branching-scenario.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-branching-scenario.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5P.BranchingScenario",
+        "majorVersion": 1,
+        "minorVersion": 8
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.BranchingScenario",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.BranchingScenario-1.8/library.json"
+  },
+  {
+    "title": "Chart",
+    "description": "Create different charts",
+    "majorVersion": 1,
+    "minorVersion": 2,
+    "patchVersion": 27,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.Chart",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 21
+    },
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedCss": [
+      {
+        "path": "chart.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "chart.js"
+      },
+      {
+        "path": "d3.js"
+      },
+      {
+        "path": "pie.js"
+      },
+      {
+        "path": "bar.js"
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ColorSelector",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Chart-1.2/library.json"
+  },
+  {
+    "machineName": "H5P.Collage",
+    "title": "Collage",
+    "license": "MIT",
+    "author": "Joubel",
+    "majorVersion": 0,
+    "minorVersion": 3,
+    "patchVersion": 26,
+    "runnable": 1,
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 7
+    },
+    "preloadedJs": [
+      {
+        "path": "collage.js"
+      },
+      {
+        "path": "template.js"
+      },
+      {
+        "path": "clip.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "collage.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Components",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.Collage",
+        "majorVersion": 0,
+        "minorVersion": 3
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Collage-0.3/library.json"
+  },
+  {
+    "machineName": "H5P.Column",
+    "title": "Page",
+    "description": "Content holder displaying content in a column.",
+    "contentType": "instructional",
+    "license": "MIT",
+    "author": "Joubel",
+    "majorVersion": 1,
+    "minorVersion": 18,
+    "patchVersion": 6,
+    "runnable": 1,
+    "fullscreen": 0,
+    "embedTypes": [
+      "iframe"
+    ],
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 27
+    },
+    "preloadedJs": [
+      {
+        "path": "scripts/h5p-column.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "styles/h5p-column.css"
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Column-1.18/library.json"
+  },
+  {
+    "title": "Course Presentation",
+    "contentType": "Library",
+    "majorVersion": 1,
+    "minorVersion": 26,
+    "patchVersion": 2,
+    "runnable": 1,
+    "fullscreen": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "machineName": "H5P.CoursePresentation",
+    "author": "Joubel",
+    "license": "MIT",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 27
+    },
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-course-presentation.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-course-presentation.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.FontIcons",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5P.CoursePresentation",
+        "majorVersion": 1,
+        "minorVersion": 26
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.CoursePresentation",
+        "majorVersion": 1,
+        "minorVersion": 25
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.CoursePresentation-1.26/library.json"
+  },
+  {
+    "title": "Dialog Cards",
+    "description": "Makes it possible to create learning tasks for your site visitors.",
+    "majorVersion": 1,
+    "minorVersion": 9,
+    "patchVersion": 17,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.Dialogcards",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 26
+    },
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-dialogcards.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-dialogcards.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Audio",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Dialogcards-1.9/library.json"
+  },
+  {
+    "title": "Documentation Tool",
+    "description": "Documentation tool for educational assessment.",
+    "majorVersion": 1,
+    "minorVersion": 8,
+    "patchVersion": 31,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.DocumentationTool",
+    "embedTypes": [
+      "iframe"
+    ],
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "preloadedCss": [
+      {
+        "path": "navigation-menu.css"
+      },
+      {
+        "path": "documentation-tool.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "navigation-menu.js"
+      },
+      {
+        "path": "documentation-tool.js"
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Components",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.DocumentationTool-1.8/library.json"
+  },
+  {
+    "title": "Drag and Drop",
+    "description": "Drag and drop the elements into the correct drop zones.",
+    "contentType": "Question",
+    "majorVersion": 1,
+    "minorVersion": 14,
+    "patchVersion": 28,
+    "embedTypes": [
+      "iframe"
+    ],
+    "runnable": 1,
+    "fullscreen": 0,
+    "author": "Joubel",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 23
+    },
+    "license": "MIT",
+    "machineName": "H5P.DragQuestion",
+    "preloadedJs": [
+      {
+        "path": "h5p-drag-question.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "css/dragquestion.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "jQuery.ui",
+        "majorVersion": 1,
+        "minorVersion": 10
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.DragQuestion",
+        "majorVersion": 1,
+        "minorVersion": 10
+      },
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.DragQuestion-1.14/library.json"
+  },
+  {
+    "title": "Drag the Words",
+    "description": "Drag and drop pieces of text to create complete sentences.",
+    "majorVersion": 1,
+    "minorVersion": 10,
+    "patchVersion": 24,
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "runnable": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.DragText",
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-drag-text.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-drag-text.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "jQuery.ui",
+        "majorVersion": 1,
+        "minorVersion": 10
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.DragText-1.10/library.json"
+  },
+  {
+    "title": "Facebook Page Feed",
+    "description": "Displays a Facebook Page Feed",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 15,
+    "runnable": 1,
+    "author": "GGW",
+    "license": "MIT",
+    "machineName": "H5P.FacebookPageFeed",
+    "preloadedJs": [
+      {
+        "path": "fb-page-feed.js"
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.FacebookPageFeed-1.0/library.json"
+  },
+  {
+    "title": "Feedback",
+    "description": "H5P content type for getting user feedback",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 1,
+    "author": "Tom Arild Jakobsen <tom.arild.jakobsen@joubel.com>",
+    "license": "MIT",
+    "machineName": "H5P.Feedback",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-feedback.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-feedback.css"
+      }
+    ],
+    "preloadedDependencies": [],
+    "editorDependencies": [],
+    "_path": "app/static/h5p_libraries/H5P.Feedback-1.0/library.json"
+  },
+  {
+    "title": "Flashcards",
+    "description": "Create cards where the user has to guess the answer.",
+    "majorVersion": 1,
+    "minorVersion": 7,
+    "patchVersion": 9,
+    "runnable": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "author": "Joubel",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 4
+    },
+    "license": "MIT",
+    "machineName": "H5P.Flashcards",
+    "preloadedCss": [
+      {
+        "path": "css/flashcards.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "js/xapi.js"
+      },
+      {
+        "path": "js/flashcards.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.FontIcons",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Flashcards-1.7/library.json"
+  },
+  {
+    "title": "Greeting Card",
+    "description": "Displays a greeting card",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 9,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.GreetingCard",
+    "preloadedJs": [
+      {
+        "path": "greetingcard.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "greetingcard.css"
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.GreetingCard-1.0/library.json"
+  },
+  {
+    "title": "Guess the Answer",
+    "description": "Set up a task where the user will just click to see the answer. No input.",
+    "majorVersion": 1,
+    "minorVersion": 5,
+    "patchVersion": 9,
+    "runnable": 1,
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "embedTypes": [
+      "iframe"
+    ],
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.GuessTheAnswer",
+    "preloadedCss": [
+      {
+        "path": "guess-the-answer.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "guess-the-answer.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Components",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.GuessTheAnswer-1.5/library.json"
+  },
+  {
+    "title": "Hello world",
+    "description": "Example H5P content type for getting started",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.HelloWorld",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-hello-world.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-hello-world.css"
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.HelloWorld-1.0/library.json"
+  },
+  {
+    "title": "Iframe Embedder",
+    "description": "Embed internal or external html files",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 29,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.IFrameEmbed",
+    "preloadedJs": [
+      {
+        "path": "iframe-embed.js"
+      }
+    ],
+    "fullscreen": 1,
+    "_path": "app/static/h5p_libraries/H5P.IFrameEmbed-1.0/library.json"
+  },
+  {
+    "title": "Image gallery",
+    "description": "Image gallery content type with a lightbox",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.ImageGallery",
+    "preloadedJs": [
+      {
+        "path": "imageGallery.js"
+      },
+      {
+        "path": "gallery.js"
+      },
+      {
+        "path": "lightbox.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "imageGallery.css"
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ImageGallery-1.0/library.json"
+  },
+  {
+    "title": "Find the Hotspot",
+    "description": "A question that is answered by pressing the correct hotspot.",
+    "contentType": "Question",
+    "majorVersion": 1,
+    "minorVersion": 8,
+    "patchVersion": 30,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 23
+    },
+    "machineName": "H5P.ImageHotspotQuestion",
+    "preloadedCss": [
+      {
+        "path": "image-hotspot-question.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "image-hotspot-question.js"
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.Wizard",
+        "majorVersion": 1,
+        "minorVersion": 2
+      },
+      {
+        "machineName": "H5PEditor.ImageHotspotQuestion",
+        "majorVersion": 1,
+        "minorVersion": 8
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ImageHotspotQuestion-1.8/library.json"
+  },
+  {
+    "title": "Image Hotspots",
+    "description": "Add hotspots with useful information and media to an image.",
+    "majorVersion": 1,
+    "minorVersion": 10,
+    "patchVersion": 19,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.ImageHotspots",
+    "fullscreen": 1,
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "scripts/image-hotspots.js"
+      },
+      {
+        "path": "scripts/hotspot.js"
+      },
+      {
+        "path": "scripts/popup.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "styles/image-hotspots.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Transition",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ImageCoordinateSelector",
+        "majorVersion": 1,
+        "minorVersion": 2
+      },
+      {
+        "machineName": "H5PEditor.ColorSelector",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ImageHotspots-1.10/library.json"
+  },
+  {
+    "title": "Find Multiple Hotspots",
+    "description": "A question that is answered by pressing all the correct hotspots.",
+    "contentType": "Question",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 1,
+    "runnable": 1,
+    "author": "Luke Muller",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 6
+    },
+    "machineName": "H5P.ImageMultipleHotspotQuestion",
+    "preloadedCss": [
+      {
+        "path": "image-multiple-hotspot-question.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "image-multiple-hotspot-question.js"
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.Wizard",
+        "majorVersion": 1,
+        "minorVersion": 2
+      },
+      {
+        "machineName": "H5PEditor.ImageMultipleHotspotQuestion",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 4
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ImageMultipleHotspotQuestion-1.0/library.json"
+  },
+  {
+    "title": "Image Slider",
+    "description": "Image Slider",
+    "majorVersion": 1,
+    "minorVersion": 1,
+    "patchVersion": 15,
+    "runnable": 1,
+    "author": "Falcon",
+    "license": "MIT",
+    "fullscreen": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "machineName": "H5P.ImageSlider",
+    "preloadedJs": [
+      {
+        "path": "image-slider.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "image-slider.css"
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ImageSlider-1.1/library.json"
+  },
+  {
+    "title": "Impressive Presentation",
+    "description": "Impressive Presentation tool.",
+    "majorVersion": 1,
+    "minorVersion": 3,
+    "patchVersion": 0,
+    "runnable": 1,
+    "fullscreen": 1,
+    "author": "Thomasmars",
+    "embedTypes": [
+      "iframe"
+    ],
+    "license": "MIT",
+    "machineName": "H5P.ImpressPresentation",
+    "preloadedCss": [
+      {
+        "path": "impress-presentation.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "scripts/jmpress.js"
+      },
+      {
+        "path": "scripts/step.js"
+      },
+      {
+        "path": "scripts/impress-presentation.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 2
+      },
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ImpressPresentation",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ColorSelector",
+        "majorVersion": 1,
+        "minorVersion": 1
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ImpressPresentation-1.3/library.json"
+  },
+  {
+    "title": "Interactive Book",
+    "description": "An interactive book which displays content in pages and sections",
+    "majorVersion": 1,
+    "minorVersion": 11,
+    "patchVersion": 12,
+    "runnable": 1,
+    "fullscreen": 1,
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 27
+    },
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.InteractiveBook",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-interactive-book.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-interactive-book.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ColorSelector",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.InteractiveBook-1.11/library.json"
+  },
+  {
+    "title": "Interactive Video",
+    "description": "Put texts, tasks and other medias on top of your video.",
+    "license": "MIT",
+    "contentType": "Media",
+    "majorVersion": 1,
+    "minorVersion": 27,
+    "patchVersion": 15,
+    "machineName": "H5P.InteractiveVideo",
+    "author": "Joubel",
+    "embedTypes": [
+      "iframe"
+    ],
+    "runnable": 1,
+    "fullscreen": 1,
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 27
+    },
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-interactive-video.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-interactive-video.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "jQuery.ui",
+        "majorVersion": 1,
+        "minorVersion": 10
+      },
+      {
+        "machineName": "H5P.Video",
+        "majorVersion": 1,
+        "minorVersion": 6
+      },
+      {
+        "machineName": "H5P.DragNBar",
+        "majorVersion": 1,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Components",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5P.InteractiveVideo",
+        "majorVersion": 1,
+        "minorVersion": 27
+      },
+      {
+        "machineName": "H5PEditor.Wizard",
+        "majorVersion": 1,
+        "minorVersion": 2
+      },
+      {
+        "machineName": "H5PEditor.InteractiveVideo",
+        "majorVersion": 1,
+        "minorVersion": 25
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.InteractiveVideo-1.27/library.json"
+  },
+  {
+    "title": "Mark the Words",
+    "description": "Test your users by making them select the correct words from a text.",
+    "majorVersion": 1,
+    "minorVersion": 11,
+    "patchVersion": 16,
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 27
+    },
+    "runnable": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.MarkTheWords",
+    "preloadedCss": [
+      {
+        "path": "styles/mark-the-words.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "scripts/keyboard-nav.js"
+      },
+      {
+        "path": "scripts/xAPI-generator.js"
+      },
+      {
+        "path": "scripts/word.js"
+      },
+      {
+        "path": "scripts/mark-the-words.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.MarkTheWords-1.11/library.json"
+  },
+  {
+    "title": "Matching",
+    "description": "Match two texts, or an image and a text",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.Matching",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-matching.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-matching.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Matching-1.0/library.json"
+  },
+  {
+    "title": "Memory Game",
+    "description": "See how many cards you can remember!",
+    "majorVersion": 1,
+    "minorVersion": 3,
+    "patchVersion": 36,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.MemoryGame",
+    "preloadedCss": [
+      {
+        "path": "memory-game.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "memory-game.js"
+      },
+      {
+        "path": "card.js"
+      },
+      {
+        "path": "counter.js"
+      },
+      {
+        "path": "popup.js"
+      },
+      {
+        "path": "timer.js"
+      },
+      {
+        "path": "aria-live-region.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Timer",
+        "majorVersion": 0,
+        "minorVersion": 4
+      },
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Components",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ColorSelector",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.AudioRecorder",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.MemoryGame-1.3/library.json"
+  },
+  {
+    "title": "Mini course",
+    "description": "Mini course consisting of lessons",
+    "machineName": "H5P.MiniCourse",
+    "majorVersion": 1,
+    "minorVersion": 1,
+    "patchVersion": 0,
+    "runnable": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "license": "MIT",
+    "author": "Joubel AS (fnoks)",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 6
+    },
+    "preloadedCss": [
+      {
+        "path": "styles/mini-course.css"
+      },
+      {
+        "path": "styles/h5p-mini-course-max-score-widget.css"
+      },
+      {
+        "path": "styles/progress-circle.css"
+      },
+      {
+        "path": "styles/course-unit.css"
+      },
+      {
+        "path": "styles/h5p-mini-course-summary.css"
+      },
+      {
+        "path": "styles/h5p-mini-course-popup.css"
+      },
+      {
+        "path": "styles/overrides.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "scripts/mini-course.js"
+      },
+      {
+        "path": "scripts/h5p-mini-course-max-score-widget.js"
+      },
+      {
+        "path": "scripts/progress-circle.js"
+      },
+      {
+        "path": "scripts/course-unit.js"
+      },
+      {
+        "path": "scripts/h5p-mini-course-summary.js"
+      },
+      {
+        "path": "scripts/h5p-mini-course-popup.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 2
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ColorSelector",
+        "majorVersion": 1,
+        "minorVersion": 2
+      },
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.SelectToggleFields",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.MiniCourse-1.1/library.json"
+  },
+  {
+    "title": "Multiple Choice",
+    "contentType": "Question",
+    "majorVersion": 1,
+    "minorVersion": 16,
+    "patchVersion": 22,
+    "runnable": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "machineName": "H5P.MultiChoice",
+    "author": "Joubel",
+    "license": "MIT",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 27
+    },
+    "preloadedJs": [
+      {
+        "path": "js/multichoice.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "css/multichoice.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.MultiChoice-1.16/library.json"
+  },
+  {
+    "title": "Multimedia Choice",
+    "description": "Create a Multimedia Choice",
+    "majorVersion": 0,
+    "minorVersion": 3,
+    "patchVersion": 45,
+    "runnable": 1,
+    "author": "H5P Group AS",
+    "license": "MIT",
+    "machineName": "H5P.MultiMediaChoice",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 27
+    },
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-multi-media-choice.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-multi-media-choice.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Image",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5P.MaterialDesignIcons",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.MultiMediaChoice-0.3/library.json"
+  },
+  {
+    "title": "PDF Viewer",
+    "description": "PDF Viewer",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.PdfViewer",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/pdf-viewer.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/pdf-viewer.css"
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.PdfViewer-1.0/library.json"
+  },
+  {
+    "title": "Question Set",
+    "description": "Put together a set of different questions that has to be solved. (Quiz)",
+    "contentType": "question",
+    "majorVersion": 1,
+    "minorVersion": 20,
+    "patchVersion": 31,
+    "embedTypes": [
+      "iframe"
+    ],
+    "runnable": 1,
+    "fullscreen": 0,
+    "machineName": "H5P.QuestionSet",
+    "author": "Joubel",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 26
+    },
+    "license": "MIT",
+    "preloadedJs": [
+      {
+        "path": "js/questionset.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "css/questionset.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Video",
+        "majorVersion": 1,
+        "minorVersion": 6
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.QuestionSetTextualEditor",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.QuestionSet-1.20/library.json"
+  },
+  {
+    "title": "Questionnaire",
+    "description": "Create a questionnaire",
+    "majorVersion": 1,
+    "minorVersion": 3,
+    "patchVersion": 11,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.Questionnaire",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/dist.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/styles.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.OpenEndedQuestion",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5P.SimpleMultiChoice",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Questionnaire-1.3/library.json"
+  },
+  {
+    "machineName": "H5P.SingleChoiceSet",
+    "title": "Single Choice Set",
+    "description": "Create sets of single choice tasks",
+    "license": "MIT",
+    "author": "Joubel",
+    "majorVersion": 1,
+    "minorVersion": 11,
+    "patchVersion": 53,
+    "runnable": 1,
+    "fullscreen": 0,
+    "embedTypes": [
+      "iframe"
+    ],
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "preloadedCss": [
+      {
+        "path": "styles/single-choice-set.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "scripts/stop-watch.js"
+      },
+      {
+        "path": "scripts/sound-effects.js"
+      },
+      {
+        "path": "scripts/xapi-event-builder.js"
+      },
+      {
+        "path": "scripts/result-slide.js"
+      },
+      {
+        "path": "scripts/solution-view.js"
+      },
+      {
+        "path": "scripts/single-choice-alternative.js"
+      },
+      {
+        "path": "scripts/single-choice.js"
+      },
+      {
+        "path": "scripts/single-choice-set.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Transition",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.SingleChoiceSetTextualEditor",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.SingleChoiceSet-1.11/library.json"
+  },
+  {
+    "title": "Speak the Words",
+    "description": "A task where you have to answer a question using speech",
+    "majorVersion": 1,
+    "minorVersion": 5,
+    "patchVersion": 7,
+    "runnable": 1,
+    "author": "Thomasmars",
+    "license": "MIT",
+    "machineName": "H5P.SpeakTheWords",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-speak-the-words.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-speak-the-words.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.SpeakTheWords-1.5/library.json"
+  },
+  {
+    "title": "Speak the Words Set",
+    "description": "Answer a set of questions using your speech",
+    "majorVersion": 1,
+    "minorVersion": 3,
+    "patchVersion": 4,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.SpeakTheWordsSet",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/dist.js"
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.VerticalTabs",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.SpeakTheWordsSet-1.3/library.json"
+  },
+  {
+    "title": "Summary",
+    "description": "Test your users with fill in the summary tasks.",
+    "majorVersion": 1,
+    "minorVersion": 10,
+    "patchVersion": 29,
+    "runnable": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "machineName": "H5P.Summary",
+    "license": "MIT",
+    "author": "Joubel",
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "preloadedCss": [
+      {
+        "path": "css/summary.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "js/stop-watch.js"
+      },
+      {
+        "path": "js/xapi-event-builder.js"
+      },
+      {
+        "path": "js/summary.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.SummaryTextualEditor",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Summary-1.10/library.json"
+  },
+  {
+    "title": "Text Grouping",
+    "description": "Create a Text Grouping",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 1,
+    "author": "Joubel AS",
+    "license": "MIT",
+    "machineName": "H5P.TextGrouping",
+    "embedTypes": [
+      "iframe"
+    ],
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-text-grouping.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-text-grouping.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 4
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.Image",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5P.MaterialDesignIcons",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RangeList",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.TextGrouping-1.0/library.json"
+  },
+  {
+    "machineName": "H5P.ThreeImage",
+    "title": "Virtual Tour (360)",
+    "description": "Explore an interactive world in 3D.",
+    "license": "MIT",
+    "author": "Joubel AS",
+    "majorVersion": 0,
+    "minorVersion": 5,
+    "patchVersion": 9,
+    "runnable": 1,
+    "fullscreen": 1,
+    "embedTypes": [
+      "iframe"
+    ],
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 20
+    },
+    "preloadedJs": [
+      {
+        "path": "dist/h5p-three-image.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "dist/h5p-three-image.css"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "H5P.ThreeSixty",
+        "majorVersion": 0,
+        "minorVersion": 3
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.ThreeImage",
+        "majorVersion": 0,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.GoToScene",
+        "majorVersion": 0,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5PEditor.RadioGroup",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      },
+      {
+        "machineName": "H5PEditor.AudioRecorder",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.ThreeImage-0.5/library.json"
+  },
+  {
+    "title": "Timeline",
+    "description": "Create good loking timelines",
+    "majorVersion": 1,
+    "minorVersion": 1,
+    "patchVersion": 25,
+    "runnable": 1,
+    "fullscreen": 1,
+    "machineName": "H5P.Timeline",
+    "preloadedDependencies": [
+      {
+        "machineName": "TimelineJS",
+        "majorVersion": 1,
+        "minorVersion": 1
+      }
+    ],
+    "author": "Joubel",
+    "license": "MIT",
+    "preloadedJs": [
+      {
+        "path": "timeline.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "timeline.css"
+      }
+    ],
+    "embedTypes": [
+      "iframe"
+    ],
+    "_path": "app/static/h5p_libraries/H5P.Timeline-1.1/library.json"
+  },
+  {
+    "title": "True/False Question",
+    "description": "Test your users with 'True or False' type questions",
+    "machineName": "H5P.TrueFalse",
+    "majorVersion": 1,
+    "minorVersion": 8,
+    "patchVersion": 18,
+    "runnable": 1,
+    "license": "MIT",
+    "author": "Joubel",
+    "embedTypes": [
+      "iframe"
+    ],
+    "coreApi": {
+      "majorVersion": 1,
+      "minorVersion": 19
+    },
+    "preloadedCss": [
+      {
+        "path": "styles/h5p-true-false.css"
+      }
+    ],
+    "preloadedJs": [
+      {
+        "path": "scripts/h5p-true-false.js"
+      },
+      {
+        "path": "scripts/h5p-true-false-answer-group.js"
+      },
+      {
+        "path": "scripts/h5p-true-false-answer.js"
+      }
+    ],
+    "preloadedDependencies": [
+      {
+        "machineName": "FontAwesome",
+        "majorVersion": 4,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.Question",
+        "majorVersion": 1,
+        "minorVersion": 5
+      },
+      {
+        "machineName": "H5P.JoubelUI",
+        "majorVersion": 1,
+        "minorVersion": 3
+      },
+      {
+        "machineName": "H5P.FontIcons",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "editorDependencies": [
+      {
+        "machineName": "H5PEditor.RadioGroup",
+        "majorVersion": 1,
+        "minorVersion": 1
+      },
+      {
+        "machineName": "H5PEditor.ShowWhen",
+        "majorVersion": 1,
+        "minorVersion": 0
+      }
+    ],
+    "_path": "app/static/h5p_libraries/H5P.TrueFalse-1.8/library.json"
+  },
+  {
+    "title": "Twitter User Feed",
+    "description": "Displays a Twitter User Feed",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 21,
+    "runnable": 1,
+    "author": "Joubel",
+    "license": "MIT",
+    "machineName": "H5P.TwitterUserFeed",
+    "preloadedJs": [
+      {
+        "path": "twitter-user-feed.js"
+      }
+    ],
+    "preloadedCss": [
+      {
+        "path": "twitter-user-feed.css"
+      }
+    ],
+    "metadataSettings": {
+      "disable": 1,
+      "disableExtraTitleField": 1
+    },
+    "_path": "app/static/h5p_libraries/H5P.TwitterUserFeed-1.0/library.json"
+  }
+]

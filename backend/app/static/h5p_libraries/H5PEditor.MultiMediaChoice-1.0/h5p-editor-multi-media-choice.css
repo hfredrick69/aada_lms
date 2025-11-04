@@ -1,0 +1,5 @@
+/* Hide "Player mode" and "Fit to wrapper" options for audio while */
+.h5p-multimediachoice-editor .h5p-audio-editor .field-name-playerMode,
+.h5p-multimediachoice-editor .h5p-audio-editor .field-name-fitToWrapper {
+  display: none;
+}

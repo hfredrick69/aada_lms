@@ -1,0 +1,13 @@
+{
+  "semantics": [
+    {
+      "label": "Texto de saudação",
+      "default": "Olá mundo!",
+      "description": "O texto de saudação mostrado ao utilizador final."
+    },
+    {
+      "label": "Imagem do cartão",
+      "description": "Imagem mostrada no cartão é opcional. Sem isso, o cartão irá mostrar apenas o texto."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "h5p-question-set-textual-editor",
+  "version": "1.1.2",
+  "description": "Makes it fast and easy to create summary tasks through text input",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack",
+    "build": "cross-env NODE_ENV=production webpack"
+  },
+  "keywords": [
+    "h5p",
+    "library",
+    "editor"
+  ],
+  "author": "Joubel AS",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.18.6",
+    "@babel/core": "^7.18.6",
+    "@babel/plugin-transform-object-assign": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "babel-loader": "^8.2.5",
+    "babel-runtime": "^6.26.0",
+    "cross-env": "^7.0.3",
+    "exports-loader": "^4.0.0",
+    "expose-loader": "^4.0.0",
+    "file-loader": "^6.2.0",
+    "h5p-view": "^1.0.3",
+    "imports-loader": "^4.0.0",
+    "jasmine-core": "^4.2.0",
+    "json-loader": "^0.5.7",
+    "webpack": "^5.76.0",
+    "webpack-cli": "^4.10.0"
+  }
+}

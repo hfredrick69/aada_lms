@@ -1,0 +1,341 @@
+@import 'variables';
+
+.h5p-vtab-wrapper:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: ' ';
+  clear: both;
+  height: 0;
+}
+
+.h5p-vtabs {
+  float: left;
+  width: $tabs-width;
+  position: relative;
+  padding: 0;
+
+  &.is-collapsed {
+    width: $tabs-width-collapsed;
+    + .h5p-vtab-forms {
+      margin-left: $tabs-width-collapsed + 5px;
+    }
+  }
+}
+
+.h5p-vtab-forms {
+  border: 1px solid $form-border-color;
+  margin-left: $tabs-width + 5px;
+}
+.h5p-vtab-form {
+  position: relative;
+  display: none;
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+.h5p-vtab-form.h5p-current {
+  display: block;
+}
+.h5p-vtab-form > .field {
+  margin: 0;
+}
+.h5p-vtabs-container {
+  border: solid 1px $form-border-color;
+  width: calc(100% - 15px);
+}
+.h5p-vtabs-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: $spacing-xxl;
+  padding: 0 0 0 $spacing-sm;
+
+  > span {
+    color: $primary;
+    flex: 1;
+  }
+
+  .is-collapsed & {
+    padding: 0 $spacing-sm;
+    justify-content: center;
+    > span {
+      display: none;
+    }
+  }
+}
+
+.h5p-vtabs-expand-collapse {
+  @include button-tertiary;
+  & {
+    height: 100%;
+    line-height: 1;
+    transform: rotate(180deg);
+    cursor: pointer;
+  }
+
+  &:before {
+    font-family: "H5P";
+    content: "\e566";
+  }
+
+  .is-collapsed & {
+    transform: rotate(0);
+  }
+}
+
+.h5p-vtabs .h5p-vtab-li,
+.h5p-vtabs .h5p-placeholder {
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+.h5p-vtab-a {
+  background-color: $subtle;
+  height: $spacing-xxl;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: $spacing-xxl;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 0 3.7rem 0 $spacing-sm;
+  margin: 0;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  outline: none;
+
+  &:hover {
+    background-color: $muted;
+  }
+
+  .is-collapsed & {
+    text-align: center;
+    padding: 0 $spacing-sm;
+    > *:not(.h5p-index-label) {
+      display: none;
+    }
+  }
+}
+
+.h5p-vtab-li {
+  &:has(:hover) {
+    .h5p-vtab-a {
+      background-color: $muted;
+    }
+  }
+  > .vtab-order-wrapper {
+    > .order-up,
+    > .order-down {
+      &[aria-disabled="false"]:hover {
+        color: $primary;
+      }
+    }
+  }
+}
+
+.h5p-vtabs.is-collapsed .h5p-vtab-li.h5p-current:after {
+  left: 45px;
+}
+.h5p-vtabs .h5p-vtab-li.h5p-current {
+  .h5p-vtab-a {
+    background: $primary-dark;
+    border-right: 0;
+    color: white;
+  }
+
+  &:after,
+  &:before {
+    position: absolute;
+    left: 197px;
+    content: " ";
+    width: 0;
+    height: 0;
+  }
+
+  &:after {
+    top: 0;
+    border-top: 24px solid transparent;
+    border-bottom: 24px solid transparent;
+    border-left: 12px solid $primary-dark;
+  }
+
+  > .vtab-order-wrapper {
+    > .order-up,
+    > .order-down {
+      background: $primary-dark;
+
+      &[aria-disabled="false"]:hover {
+        background: $primary;
+      }
+
+      &:after {
+        color: white;
+      }
+    }
+  }
+}
+
+.h5p-placeholder > .h5p-vtab-a {
+  background: $tab-dropzone-background;
+  border: dashed 2px $tab-dropzone-border;
+  height: 44px;
+}
+
+.h5p-vtabs .h5p-moving {
+  position: absolute;
+  z-index: 1;
+
+  > .h5p-vtab-a {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+}
+
+.vtab-order-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  > .order-up,
+  > .order-down {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    cursor: pointer;
+    text-align: center;
+
+    &[aria-disabled="false"]:hover {
+      background: $subtle;
+    }
+
+    &:before {
+      right: auto;
+      left: -5px;
+    }
+
+    &[aria-disabled="true"] {
+      cursor: default;
+
+      &:after {
+        opacity: 0;
+      }
+    }
+  }
+
+  > .order-up:after {
+    font-family: "H5P";
+    content: "\e58e";
+  }
+
+  > .order-down {
+    top: auto;
+    bottom: 1px;
+
+    &:after {
+      font-family: "H5P";
+      content: "\e58f";
+    }
+  }
+}
+
+.is-collapsed .vtab-remove-wrapper,
+.is-collapsed .vtab-order-wrapper {
+  display: none;
+}
+.vtab-remove-wrapper {
+  position: absolute;
+  top: 0;
+  right: 24px;
+
+  &:hover {
+    background: $subtle;
+  }
+
+  &:hover {
+    .h5p-current & {
+      background: $primary;
+    }
+  }
+
+  > .remove {
+    cursor: pointer;
+    width: 1.25em;
+    height: $spacing-xxl;
+    font-size: 1.75em;
+    text-align: center;
+
+    &:after {
+      font-family: "H5P";
+      content: "\e912";
+      color: #6f6f71;
+      display: inline-block;
+      line-height: $spacing-xxl;
+      font-size: 0.6em;
+    }
+  }
+}
+
+.h5p-current > .vtab-remove-wrapper > .remove:after {
+  color: #fff;
+}
+
+.h5p-vtab-li:not(.h5p-current) > .vtab-remove-wrapper {
+  display: none;
+}
+
+
+.add-entity {
+  width: 200px;
+  height: 40px;
+  background: $form-item-importance-high-background linear-gradient($form-item-importance-high-background-highlight 50%, transparent 50%, transparent);
+  font-family: 'Open Sans', sans-serif;
+  border: 1px solid $form-item-importance-high-border-color;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  box-sizing: border-box;
+  text-align: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  line-height: 38px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 5px;
+  border-radius: 3px;
+  margin-top: 5px;
+
+  &:hover {
+    background: $form-item-importance-high-background-hover linear-gradient($form-item-importance-high-background-hover-highlight 50%, transparent 50%, transparent);
+  }
+
+  &:before {
+    font-family: "H5P";
+    content: "\e902";
+    margin-right: 6px;
+    font-weight: 400;
+    font-size: 1.5em;
+    vertical-align: bottom;
+  }
+
+  .is-collapsed & {
+    width: $spacing-xxl;
+    &:before {
+      margin-right: 0;
+    }
+  }
+}
+
+.h5p-vtab-form {
+  > .library,
+  > .list,
+  > .group > .content {
+    padding: 10px;
+    border: none;
+  }
+}

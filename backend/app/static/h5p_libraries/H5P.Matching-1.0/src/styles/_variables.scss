@@ -1,0 +1,10 @@
+$width-component: 60em;
+
+$displacement: 0.1; // displace choice 10% of full possible width
+$choice-width: 100% - (100% * $displacement);
+$element-displacement: 100% / (1 - $displacement) * $displacement;
+
+$choice-padding: 1.458em;
+$choice-height: 1em + ($choice-padding * 2);
+
+$border-radius-choice: 0.5em;

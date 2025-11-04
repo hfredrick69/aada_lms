@@ -37,3 +37,9 @@ tasks:
   deploy_prep:
     description: Run QA + Docs only
     agents: [qa, docs]
+  generate_frontend:
+    description: "Generate new React/Flutter UI components via Codex"
+    agents: [frontend_generator]
+  review_frontend:
+    description: "Claude-Code holistic review of recent frontend commits"
+    agents: [frontend_reviewer]

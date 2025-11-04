@@ -16,6 +16,7 @@ CONFIG_PATH = Path("agents/config.yaml")
 LOG_DIR = Path("/tmp/agent_logs")
 LOG_DIR.mkdir(exist_ok=True)
 
+
 def log(message: str):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = f"[Supervisor] {timestamp} | {message}"
@@ -23,9 +24,11 @@ def log(message: str):
     with open(LOG_DIR / "supervisor.log", "a") as f:
         f.write(msg + "\n")
 
+
 def load_config():
     with open(CONFIG_PATH, "r") as f:
         return yaml.safe_load(f)
+
 
 def run_agent(script: str):
     try:
@@ -35,23 +38,36 @@ def run_agent(script: str):
     except subprocess.CalledProcessError as e:
         log(f"❌ Error running {script}: {e}")
 
+
 def run_cleanup_agent():
     """Run cleanup_agent.py before each full cycle."""
     log("Running Cleanup Agent before workflow...")
     subprocess.run(["python3", "agents/cleanup_agent.py"], check=False)
     log("Cleanup Agent complete. Continuing workflow...")
 
+
 def run_task(task_name: str, cfg: dict):
-    """Runs a named task from the config file"""
+    """Runs a named task from the config file."""
     if task_name not in cfg["tasks"]:
         log(f"Unknown task '{task_name}'")
         return
+
+    # Handle custom AI generation/review tasks
+    if task_name == "generate_frontend":
+        run_agent("frontend_generator_agent.py")
+        return
+    elif task_name == "review_frontend":
+        run_agent("frontend_reviewer_agent.py")
+        return
+
+    # Normal task flow from config.yaml
     agents = cfg["tasks"][task_name]["agents"]
     log(f"Executing task '{task_name}' with agents: {', '.join(agents)}")
     for agent in agents:
         script_name = f"{agent}_agent.py"
         run_agent(script_name)
     log(f"Task '{task_name}' complete.")
+
 
 def main():
     cfg = load_config()
@@ -72,6 +88,7 @@ def main():
             script_name = f"{agent}_agent.py"
             run_agent(script_name)
         log("All agents complete.")
+
 
 if __name__ == "__main__":
     main()

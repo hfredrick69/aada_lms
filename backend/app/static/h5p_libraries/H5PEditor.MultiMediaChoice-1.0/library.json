@@ -1,0 +1,15 @@
+{
+  "machineName": "H5PEditor.MultiMediaChoice",
+  "title": "Multimedia Choice editor customizations",
+  "description": "Customizations for the Multimedia Choice editor",
+  "author": "H5P Group AS",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 0,
+  "runnable": 0,
+  "preloadedCss": [
+    {
+      "path": "h5p-editor-multi-media-choice.css"
+    }
+  ]
+}

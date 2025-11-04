@@ -1,0 +1,48 @@
+{
+  "semantics": [
+    {
+      "label": "URL da páxina de Facebook",
+      "description": "URL da páxina de Facebook"
+    },
+    {
+      "label": "Esquema de cores na caixa",
+      "options": [
+        {
+          "label": "Claro"
+        },
+        {
+          "label": "Escuro"
+        }
+      ],
+      "description": "Determina que esquema de cores usar"
+    },
+    {
+      "label": "Só Check-in",
+      "description": "Especifica se o fluxo contén publicacións da páxina ou só rexistros de amigos"
+    },
+    {
+      "label": "Amosar cabeceira",
+      "description": "Especifica se a cabeceira debe ser visible ou non"
+    },
+    {
+      "label": "Amosar borde",
+      "description": "Especifica se os bordes deben ser visibles ou non"
+    },
+    {
+      "label": "Amosar Caras",
+      "description": "Especifica se queres amosar as fotos de perfil das persoas ás que lles gusta a páxina."
+    },
+    {
+      "label": "Amosar fluxo",
+      "description": "Especifica se o fluxo da páxina é visible ou non"
+    },
+    {
+      "label": "Altura",
+      "description": "Establece a altura da fonte de páxina de Facebook"
+    },
+    {
+      "label": "Anchura",
+      "description": "Establece a anchura da fonte da páxina de Facebook"
+    }
+  ]
+}

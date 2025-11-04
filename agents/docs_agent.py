@@ -14,9 +14,11 @@ LOG_DIR.mkdir(exist_ok=True)
 DOCS_DIR = Path("docs")
 DOCS_DIR.mkdir(exist_ok=True)
 
+
 def log(msg):
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[Docs] {ts} | {msg}")
+
 
 def main():
     log("Attempting to export OpenAPI schema...")
@@ -30,6 +32,7 @@ def main():
         f.write(f"- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} Docs updated locally.\n")
 
     log("Docs Agent tasks complete.")
+
 
 if __name__ == "__main__":
     main()
