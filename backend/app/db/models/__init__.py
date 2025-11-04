@@ -5,6 +5,7 @@ from .enrollment import Enrollment, ModuleProgress  # noqa: F401
 from .scorm import ScormRecord  # noqa: F401
 from .xapi import XapiStatement  # noqa: F401
 from .audit_log import AuditLog  # noqa: F401
+from .refresh_token import RefreshToken  # noqa: F401
 
 # Compliance models
 from .compliance.attendance import AttendanceLog  # noqa: F401

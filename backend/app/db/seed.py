@@ -17,8 +17,15 @@ from app.db.models.compliance.complaint import Complaint
 from app.db.models.compliance.credential import Credential
 from app.db.models.compliance.transcript import Transcript
 from app.db.models.xapi import XapiStatement
-from app.core.security import get_password_hash
+import bcrypt
 from uuid import uuid4
+
+
+def hash_password_for_seed(password: str) -> str:
+    """Hash password using bcrypt directly (avoids passlib version detection bug)."""
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
 
 
 def reset_and_seed():
@@ -64,7 +71,7 @@ def reset_and_seed():
             user = User(
                 id=uuid4(),
                 email=f"user{i}@aada.edu",
-                password_hash=get_password_hash("Pass123!Word"),
+                password_hash=hash_password_for_seed("Pass123!Word"),
                 first_name=f"Student{i}",
                 last_name="Tester",
                 status="active"

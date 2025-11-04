@@ -17,8 +17,11 @@ class Settings(BaseModel):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
         os.getenv(
             "JWT_EXPIRATION_MINUTES",
-            os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60")
+            os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "15")
         )
+    )
+    REFRESH_TOKEN_EXPIRE_DAYS: int = int(
+        os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7")
     )
 
     # Password Policy (HIPAA/NIST compliant)

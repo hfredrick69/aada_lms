@@ -17,3 +17,4 @@ class User(Base):
     status = Column(String, server_default="active")
 
     roles = relationship("Role", secondary=UserRole.__table__, lazy="joined", backref="users")
+    refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
