@@ -26,6 +26,14 @@ agents:
     script: devops_agent.py
   docs:
     script: docs_agent.py
+  api_completion:
+    script: api_completion_agent.py
+  seed_expansion:
+    script: seed_expansion_agent.py
+  test_suite:
+    script: test_suite_agent.py
+  documentation:
+    script: documentation_agent.py
 
 tasks:
   full_cycle:
@@ -43,3 +51,6 @@ tasks:
   review_frontend:
     description: "Claude-Code holistic review of recent frontend commits"
     agents: [frontend_reviewer]
+  complete_apis:
+    description: "Complete remaining APIs, expand tests, seed data, and documentation"
+    agents: [api_completion, seed_expansion, test_suite, qa, documentation]
