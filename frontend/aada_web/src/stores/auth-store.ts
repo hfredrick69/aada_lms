@@ -1,41 +1,30 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import type { AuthUser } from '@/api/generated/models';
 
 interface AuthState {
-  accessToken: string | null;
   user: AuthUser | null;
   isAuthenticated: boolean;
-  setToken: (token: string | null) => void;
   setUser: (user: AuthUser | null) => void;
+  setAuthenticated: (authenticated: boolean) => void;
   clearSession: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      accessToken: null,
+export const useAuthStore = create<AuthState>()((set) => ({
+  user: null,
+  isAuthenticated: false,
+
+  setUser: (user) =>
+    set({
+      user,
+      isAuthenticated: !!user,
+    }),
+
+  setAuthenticated: (authenticated) =>
+    set({ isAuthenticated: authenticated }),
+
+  clearSession: () =>
+    set({
       user: null,
       isAuthenticated: false,
-
-      setToken: (token) =>
-        set({
-          accessToken: token,
-          isAuthenticated: !!token,
-        }),
-
-      setUser: (user) => set({ user }),
-
-      clearSession: () =>
-        set({
-          accessToken: null,
-          user: null,
-          isAuthenticated: false,
-        }),
     }),
-    {
-      name: 'aada-auth',
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
+}));

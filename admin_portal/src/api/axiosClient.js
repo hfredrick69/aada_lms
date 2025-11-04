@@ -12,33 +12,62 @@ const inferBrowserBase = () => {
 
 const baseURL = envBase || inferBrowserBase();
 
-let authToken = null;
-
-export const setAuthToken = (token) => {
-  authToken = token;
-};
-
 const axiosClient = axios.create({
   baseURL,
-  timeout: 15000
+  timeout: 15000,
+  withCredentials: true,  // Enable httpOnly cookies
 });
 
-axiosClient.interceptors.request.use(
-  (config) => {
-    if (authToken) {
-      config.headers.Authorization = `Bearer ${authToken}`;
+// Token refresh interceptor for expired access tokens
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  });
+  failedQueue = [];
+};
 
 axiosClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      console.warn("Unauthorized request detected");
+  async (error) => {
+    const originalRequest = error.config;
+
+    // If 401 and not already retrying, attempt token refresh
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // Queue this request until refresh completes
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => axiosClient(originalRequest))
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // Attempt to refresh token (cookie-based)
+        await axiosClient.post('/auth/refresh');
+        processQueue();
+        isRefreshing = false;
+        return axiosClient(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError);
+        isRefreshing = false;
+        // Redirect to login or show error
+        console.warn("Session expired - please log in again");
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
     }
+
     return Promise.reject(error);
   }
 );

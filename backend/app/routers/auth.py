@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, Cookie
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
+from typing import Optional
 import jwt
 import uuid
 
@@ -20,6 +21,14 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
+# Cookie settings for httpOnly tokens
+COOKIE_SETTINGS = {
+    "httponly": True,
+    "secure": False,  # Set to True in production with HTTPS
+    "samesite": "lax",
+    "path": "/",
+}
+
 
 def _get_user_roles(user: User) -> list[str]:
     return [role.name for role in (user.roles or [])]
@@ -27,11 +36,19 @@ def _get_user_roles(user: User) -> list[str]:
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    access_token: Optional[str] = Cookie(default=None),
     db: Session = Depends(get_db),
 ) -> AuthUser:
-    if credentials is None:
+    """
+    Get current user from either httpOnly cookie or Authorization header.
+    Supports both authentication methods for backwards compatibility.
+    """
+    # Try to get token from cookie first, then fall back to Authorization header
+    token = access_token if access_token else (credentials.credentials if credentials else None)
+
+    if token is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing authentication credentials")
-    token = credentials.credentials
+
     try:
         payload = decode_token(token)
         subject = payload.get("sub")
@@ -66,6 +83,7 @@ def get_current_user(
 def login(
     payload: LoginRequest,
     request: Request,
+    response: Response,
     db: Session = Depends(get_db)
 ) -> TokenResponse:
     user: User | None = db.query(User).filter(User.email == payload.email).first()
@@ -87,6 +105,20 @@ def login(
         user_agent=user_agent
     )
 
+    # Set httpOnly cookies for enhanced security
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        max_age=15 * 60,  # 15 minutes in seconds
+        **COOKIE_SETTINGS
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        max_age=7 * 24 * 60 * 60,  # 7 days in seconds
+        **COOKIE_SETTINGS
+    )
+
     return TokenResponse(
         access_token=access_token,
         refresh_token=refresh_token
@@ -95,18 +127,26 @@ def login(
 
 @router.post("/refresh", response_model=TokenResponse)
 def refresh(
-    payload: RefreshRequest,
     request: Request,
-    db: Session = Depends(get_db)
+    response: Response,
+    db: Session = Depends(get_db),
+    payload: Optional[RefreshRequest] = None,
+    refresh_token_cookie: Optional[str] = Cookie(default=None, alias="refresh_token")
 ) -> TokenResponse:
     """
-    Refresh an access token using a refresh token.
+    Refresh an access token using a refresh token from cookie or request body.
 
     This implements token rotation - the old refresh token is revoked
     and a new one is issued along with a new access token.
     """
+    # Get refresh token from cookie or request body
+    token = refresh_token_cookie if refresh_token_cookie else (payload.refresh_token if payload else None)
+
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing refresh token")
+
     # Verify the refresh token and get user_id
-    user_id = verify_refresh_token(payload.refresh_token, db)
+    user_id = verify_refresh_token(token, db)
 
     # Verify user still exists and is active
     user: User | None = db.query(User).filter(User.id == user_id).first()
@@ -116,7 +156,7 @@ def refresh(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is not active")
 
     # Revoke the old refresh token (token rotation)
-    revoke_refresh_token(payload.refresh_token, db, reason="rotated")
+    revoke_refresh_token(token, db, reason="rotated")
 
     # Create new access token
     access_token = create_access_token(str(user.id))
@@ -131,6 +171,20 @@ def refresh(
         user_agent=user_agent
     )
 
+    # Set httpOnly cookies
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        max_age=15 * 60,  # 15 minutes in seconds
+        **COOKIE_SETTINGS
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=new_refresh_token,
+        max_age=7 * 24 * 60 * 60,  # 7 days in seconds
+        **COOKIE_SETTINGS
+    )
+
     return TokenResponse(
         access_token=access_token,
         refresh_token=new_refresh_token
@@ -139,16 +193,27 @@ def refresh(
 
 @router.post("/logout")
 def logout(
-    payload: RefreshRequest,
-    db: Session = Depends(get_db)
+    response: Response,
+    db: Session = Depends(get_db),
+    payload: Optional[RefreshRequest] = None,
+    refresh_token_cookie: Optional[str] = Cookie(default=None, alias="refresh_token")
 ) -> dict:
     """
-    Logout by revoking the refresh token.
+    Logout by revoking the refresh token and clearing cookies.
 
     The access token will still be valid until it expires (15 minutes),
     but no new tokens can be obtained.
     """
-    revoke_refresh_token(payload.refresh_token, db, reason="logout")
+    # Get refresh token from cookie or request body
+    token = refresh_token_cookie if refresh_token_cookie else (payload.refresh_token if payload else None)
+
+    if token:
+        revoke_refresh_token(token, db, reason="logout")
+
+    # Clear httpOnly cookies
+    response.delete_cookie(key="access_token", path="/")
+    response.delete_cookie(key="refresh_token", path="/")
+
     return {"message": "Logged out successfully"}
 
 
