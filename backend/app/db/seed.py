@@ -10,9 +10,8 @@ from app.db.models.enrollment import Enrollment
 from app.db.models.compliance.attendance import AttendanceLog
 from app.db.models.compliance.skills import SkillCheckoff
 from app.db.models.compliance.extern import Externship
-from app.db.models.compliance.finance import (
-    FinancialLedger, Withdrawal, Refund
-)
+from app.db.models.compliance.finance import FinancialLedger
+from app.db.models.compliance.withdraw_refund import Withdrawal, Refund
 from app.db.models.compliance.complaint import Complaint
 from app.db.models.compliance.credential import Credential
 from app.db.models.compliance.transcript import Transcript
