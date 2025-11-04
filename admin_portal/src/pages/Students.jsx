@@ -65,7 +65,7 @@ const Students = () => {
     <div className="space-y-6">
       <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-brand-700">Student Management</h2>
+          <h2 className="text-2xl font-semibold text-primary-700">Student Management</h2>
           <p className="text-sm text-slate-500">
             Search, onboard, and maintain student enrollments across programs.
           </p>
@@ -74,7 +74,7 @@ const Students = () => {
 
       {canEdit && (
         <section className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-brand-700">Add new student</h3>
+          <h3 className="text-lg font-semibold text-primary-700">Add new student</h3>
           <form onSubmit={handleSubmit} className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide">First name</label>
@@ -83,7 +83,7 @@ const Students = () => {
                 value={form.first_name}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none"
+                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
               />
             </div>
             <div>
@@ -93,7 +93,7 @@ const Students = () => {
                 value={form.last_name}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none"
+                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
               />
             </div>
             <div>
@@ -104,13 +104,13 @@ const Students = () => {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none"
+                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
               />
             </div>
             <div className="sm:col-span-3 flex justify-end">
               <button
                 type="submit"
-                className="px-4 py-2 rounded-md bg-brand-500 text-white text-sm font-medium hover:bg-brand-600 transition"
+                className="px-4 py-2 rounded-md bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition"
               >
                 Create student
               </button>
@@ -124,7 +124,7 @@ const Students = () => {
       <section className="glass-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-brand-100 text-brand-700">
+            <thead className="bg-primary-100 text-primary-700">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Name</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Email</th>
@@ -153,7 +153,7 @@ const Students = () => {
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-600">{student.email}</td>
                     <td className="px-4 py-3 text-sm">
-                      <span className="inline-flex items-center rounded-full bg-brand-100 px-2 py-1 text-xs font-medium text-brand-700">
+                      <span className="inline-flex items-center rounded-full bg-primary-100 px-2 py-1 text-xs font-medium text-primary-700">
                         {student.status || "active"}
                       </span>
                     </td>

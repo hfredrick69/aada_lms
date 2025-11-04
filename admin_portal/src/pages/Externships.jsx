@@ -79,7 +79,7 @@ const Externships = () => {
   return (
     <div className="space-y-6">
       <header>
-        <h2 className="text-2xl font-semibold text-brand-700">Externship Placement</h2>
+        <h2 className="text-2xl font-semibold text-primary-700">Externship Placement</h2>
         <p className="text-sm text-slate-500">
           Track placement sites, verification documents, and approval workflow for clinical hours.
         </p>
@@ -87,7 +87,7 @@ const Externships = () => {
 
       {canEdit && (
         <section className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-brand-700">Assign externship</h3>
+          <h3 className="text-lg font-semibold text-primary-700">Assign externship</h3>
           <form onSubmit={handleAssign} className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-1">
               <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide">Student ID</label>
@@ -97,7 +97,7 @@ const Externships = () => {
                 onChange={handleChange}
                 placeholder="UUID"
                 required
-                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none"
+                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
               />
             </div>
             <div className="md:col-span-2">
@@ -108,7 +108,7 @@ const Externships = () => {
                 onChange={handleChange}
                 placeholder="Partner clinic"
                 required
-                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none"
+                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
               />
             </div>
             <div>
@@ -119,13 +119,13 @@ const Externships = () => {
                 value={form.total_hours}
                 onChange={handleChange}
                 min={0}
-                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none"
+                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
               />
             </div>
             <div className="md:col-span-4 flex justify-end">
               <button
                 type="submit"
-                className="px-4 py-2 rounded-md bg-brand-500 text-white text-sm font-medium hover:bg-brand-600 transition"
+                className="px-4 py-2 rounded-md bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition"
               >
                 Assign externship
               </button>
@@ -139,7 +139,7 @@ const Externships = () => {
       <section className="glass-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-brand-100 text-brand-700">
+            <thead className="bg-primary-100 text-primary-700">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Student</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Site</th>
@@ -185,7 +185,7 @@ const Externships = () => {
                         {!externship.verified && (
                           <button
                             onClick={() => handleApprove(externship)}
-                            className="text-xs font-medium text-brand-600 hover:text-brand-700"
+                            className="text-xs font-medium text-primary-600 hover:text-primary-700"
                           >
                             Approve
                           </button>

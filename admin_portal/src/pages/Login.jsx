@@ -27,10 +27,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-primary-50 px-4">
       <div className="glass-card w-full max-w-md p-8">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-semibold text-brand-700">AADA Admin Portal</h1>
+          <h1 className="text-2xl font-semibold text-primary-700">AADA Admin Portal</h1>
           <p className="text-sm text-slate-500 mt-2">Sign in with your institutional credentials.</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -44,7 +44,7 @@ const Login = () => {
               type="email"
               required
               autoComplete="email"
-              className="mt-1 block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              className="mt-1 block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
               value={form.email}
               onChange={handleChange}
             />
@@ -59,7 +59,7 @@ const Login = () => {
               type="password"
               required
               autoComplete="current-password"
-              className="mt-1 block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              className="mt-1 block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
               value={form.password}
               onChange={handleChange}
             />
@@ -68,7 +68,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-brand-500 text-white py-2.5 rounded-md text-sm font-medium hover:bg-brand-600 transition disabled:opacity-60"
+            className="w-full bg-primary-500 text-white py-2.5 rounded-md text-sm font-medium hover:bg-primary-600 transition disabled:opacity-60"
           >
             {submitting ? "Signing in..." : "Sign in"}
           </button>

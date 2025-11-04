@@ -17,7 +17,7 @@ const Topbar = ({ onToggleSidebar }) => {
           >
             ☰
           </button>
-          <Link to="/dashboard" className="text-lg font-semibold text-brand-700">
+          <Link to="/dashboard" className="text-lg font-semibold text-primary-700">
             {appName}
           </Link>
         </div>
@@ -28,7 +28,7 @@ const Topbar = ({ onToggleSidebar }) => {
           </div>
           <button
             onClick={logout}
-            className="px-3 py-1.5 rounded-md text-sm font-medium bg-brand-100 text-brand-700 hover:bg-brand-200 transition"
+            className="px-3 py-1.5 rounded-md text-sm font-medium bg-primary-100 text-primary-700 hover:bg-primary-200 transition"
           >
             Sign out
           </button>

@@ -49,7 +49,7 @@ const Payments = () => {
   return (
     <div className="space-y-6">
       <header>
-        <h2 className="text-2xl font-semibold text-brand-700">Payments & Invoices</h2>
+        <h2 className="text-2xl font-semibold text-primary-700">Payments & Invoices</h2>
         <p className="text-sm text-slate-500">
           Monitor Square invoices, tuition status, and GNPEC refund compliance.
         </p>
@@ -60,7 +60,7 @@ const Payments = () => {
       <section className="glass-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-brand-100 text-brand-700">
+            <thead className="bg-primary-100 text-primary-700">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Invoice</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Student</th>
@@ -108,7 +108,7 @@ const Payments = () => {
                         {invoice.status !== "paid" && (
                           <button
                             onClick={() => handleMarkPaid(invoice.id)}
-                            className="text-xs font-medium text-brand-600 hover:text-brand-700"
+                            className="text-xs font-medium text-primary-600 hover:text-primary-700"
                           >
                             Mark paid
                           </button>

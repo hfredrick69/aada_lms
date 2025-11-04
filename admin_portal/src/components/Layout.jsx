@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-brand-50">
+    <div className="min-h-screen bg-primary-50">
       <Topbar onToggleSidebar={() => setMobileNavOpen((prev) => !prev)} />
       <div className="flex">
         <Sidebar onNavigate={() => setMobileNavOpen(false)} />

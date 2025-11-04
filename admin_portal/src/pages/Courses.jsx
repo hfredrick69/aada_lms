@@ -46,7 +46,7 @@ const Courses = () => {
   return (
     <div className="space-y-6">
       <header>
-        <h2 className="text-2xl font-semibold text-brand-700">Programs & Modules</h2>
+        <h2 className="text-2xl font-semibold text-primary-700">Programs & Modules</h2>
         <p className="text-sm text-slate-500">
           Inspect curriculum structure, delivery type, and clock hours required for compliance audits.
         </p>
@@ -64,7 +64,7 @@ const Courses = () => {
                   onClick={() => setSelectedProgram(program)}
                   className={`w-full text-left px-3 py-2 rounded-md text-sm ${
                     selectedProgram?.id === program.id
-                      ? "bg-brand-100 text-brand-700"
+                      ? "bg-primary-100 text-primary-700"
                       : "bg-white hover:bg-slate-100 text-slate-600"
                   }`}
                 >
@@ -81,7 +81,7 @@ const Courses = () => {
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-3">Modules</h3>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-brand-100 text-brand-700">
+              <thead className="bg-primary-100 text-primary-700">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Code</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Title</th>

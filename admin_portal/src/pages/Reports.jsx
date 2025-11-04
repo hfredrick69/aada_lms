@@ -45,7 +45,7 @@ const Reports = () => {
   return (
     <div className="space-y-6">
       <header>
-        <h2 className="text-2xl font-semibold text-brand-700">Compliance Reporting</h2>
+        <h2 className="text-2xl font-semibold text-primary-700">Compliance Reporting</h2>
         <p className="text-sm text-slate-500">
           Generate GNPEC-ready exports for attendance, refunds, externships, and credential audits.
         </p>
@@ -57,7 +57,7 @@ const Reports = () => {
           <select
             value={format}
             onChange={(event) => setFormat(event.target.value)}
-            className="rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none"
+            className="rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
           >
             <option value="csv">CSV</option>
             <option value="pdf">PDF</option>
@@ -69,7 +69,7 @@ const Reports = () => {
               key={resource.key}
               onClick={() => handleDownload(resource.key)}
               disabled={downloading}
-              className="glass-card hover:bg-brand-100 hover:text-brand-700 transition px-4 py-3 text-left text-sm font-medium disabled:opacity-60"
+              className="glass-card hover:bg-primary-100 hover:text-primary-700 transition px-4 py-3 text-left text-sm font-medium disabled:opacity-60"
             >
               {resource.label}
             </button>
