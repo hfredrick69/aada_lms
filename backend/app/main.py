@@ -3,12 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 
 from app.db import models  # noqa: F401 ensure model registration
-from app.middleware.security import SecurityHeadersMiddleware, AuditLoggingMiddleware
-
-# Configure logging for audit trail
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+from app.middleware.security import (
+    SecurityHeadersMiddleware,
+    AuditLoggingMiddleware
 )
 from app.routers import (
     users, roles,
@@ -27,6 +24,13 @@ from app.routers import (
     transcripts,
     modules,
     h5p,
+    audit,
+)
+
+# Configure logging for audit trail
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
 # Initialize DB tables (alembic will handle migrations; create_all is safe for first run)
@@ -71,6 +75,7 @@ app.include_router(credentials.router, prefix=api_prefix)
 app.include_router(transcripts.router, prefix=api_prefix)
 app.include_router(modules.router, prefix=api_prefix)
 app.include_router(h5p.router, prefix=api_prefix)
+app.include_router(audit.router)
 app.include_router(users.router)
 app.include_router(roles.router)
 

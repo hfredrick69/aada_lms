@@ -64,7 +64,7 @@ def reset_and_seed():
             user = User(
                 id=uuid4(),
                 email=f"user{i}@aada.edu",
-                password_hash=get_password_hash("password123"),
+                password_hash=get_password_hash("Pass123!Word"),
                 first_name=f"Student{i}",
                 last_name="Tester",
                 status="active"

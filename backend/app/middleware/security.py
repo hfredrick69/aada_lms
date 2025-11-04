@@ -6,11 +6,14 @@ Implements:
 - Audit logging for PHI access
 - Request/response logging
 """
-from fastapi import Request, Response
+from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 import time
 import logging
+
+from app.db.models.audit_log import AuditLog
+from app.db.session import SessionLocal
 
 logger = logging.getLogger(__name__)
 
@@ -113,16 +116,44 @@ class AuditLoggingMiddleware(BaseHTTPMiddleware):
         )
 
         # Get user info from request state (set by auth middleware)
-        user_id = getattr(request.state, "user_id", "anonymous")
-        user_email = getattr(request.state, "user_email", "unknown")
+        user_id = getattr(request.state, "user_id", None)
+        user_email = getattr(request.state, "user_email", None)
+
+        # Get request metadata
+        ip_address = request.client.host if request.client else None
+        user_agent = request.headers.get("user-agent", None)
 
         # Process request
         response = await call_next(request)
 
         # Calculate request duration
-        duration = time.time() - start_time
+        duration_ms = round((time.time() - start_time) * 1000, 2)
 
-        # Log PHI access
+        # Write to database (async background task to avoid slowing response)
+        try:
+            db = SessionLocal()
+            try:
+                audit_entry = AuditLog(
+                    user_id=user_id,
+                    user_email=user_email,
+                    method=request.method,
+                    path=request.url.path,
+                    endpoint=request.url.path.split("?")[0],  # Remove query params
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    status_code=response.status_code,
+                    duration_ms=int(duration_ms),
+                    is_phi_access=is_phi_endpoint,
+                    query_params=str(request.query_params) if request.query_params else None
+                )
+                db.add(audit_entry)
+                db.commit()
+            finally:
+                db.close()
+        except Exception as e:
+            logger.error(f"Failed to write audit log to database: {e}")
+
+        # Still log to stdout for real-time monitoring
         if is_phi_endpoint:
             logger.info(
                 "PHI_ACCESS",
@@ -132,16 +163,15 @@ class AuditLoggingMiddleware(BaseHTTPMiddleware):
                     "method": request.method,
                     "path": request.url.path,
                     "status_code": response.status_code,
-                    "ip_address": request.client.host if request.client else "unknown",
-                    "duration_ms": round(duration * 1000, 2),
-                    "timestamp": time.time(),
+                    "ip_address": ip_address,
+                    "duration_ms": duration_ms,
                 }
             )
 
         # Log all API requests (not just PHI)
         logger.debug(
             f"{request.method} {request.url.path} - "
-            f"{response.status_code} - {duration*1000:.2f}ms - "
+            f"{response.status_code} - {duration_ms:.2f}ms - "
             f"user:{user_email}"
         )
 

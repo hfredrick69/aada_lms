@@ -4,12 +4,22 @@ from pydantic import BaseModel
 
 class Settings(BaseModel):
     # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+psycopg2://aada:changeme@localhost:5432/aada_lms")
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "postgresql+psycopg2://aada:changeme@localhost:5432/aada_lms"
+    )
 
     # JWT/Authentication
-    SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", os.getenv("SECRET_KEY", "change_me"))
+    SECRET_KEY: str = os.getenv(
+        "JWT_SECRET_KEY", os.getenv("SECRET_KEY", "change_me")
+    )
     ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("JWT_EXPIRATION_MINUTES", os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60")))
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
+        os.getenv(
+            "JWT_EXPIRATION_MINUTES",
+            os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60")
+        )
+    )
 
     # Password Policy (HIPAA/NIST compliant)
     PASSWORD_MIN_LENGTH: int = int(os.getenv("PASSWORD_MIN_LENGTH", "12"))

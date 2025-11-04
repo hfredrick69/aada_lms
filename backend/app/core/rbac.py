@@ -7,8 +7,8 @@ from typing import List
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.db.session import get_db
 from app.db.models.user import User
+
 
 # Import get_current_user lazily to avoid circular imports
 def _get_current_user():
