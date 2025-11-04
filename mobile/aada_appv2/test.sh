@@ -1,5 +1,5 @@
 curl https://api.anthropic.com/v1/messages \
---header "x-api-key: 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"
+--header "x-api-key: YOUR_API_KEY_HERE"
 -header "anthropic-version: 2023-06-01" \
 --header "content-type: application/json" \
 -data l
