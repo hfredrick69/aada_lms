@@ -16,7 +16,7 @@ from app.db.models.compliance.complaint import Complaint
 from app.db.models.compliance.credential import Credential
 from app.db.models.compliance.transcript import Transcript
 from app.db.models.xapi import XapiStatement
-from app.core.security import hash_password
+from app.core.security import get_password_hash
 from uuid import uuid4
 
 
@@ -63,7 +63,7 @@ def reset_and_seed():
             user = User(
                 id=uuid4(),
                 email=f"user{i}@aada.edu",
-                password_hash=hash_password("password123"),
+                password_hash=get_password_hash("password123"),
                 first_name=f"Student{i}",
                 last_name="Tester",
                 status="active"
