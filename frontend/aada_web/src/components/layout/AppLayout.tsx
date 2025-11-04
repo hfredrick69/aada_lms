@@ -151,6 +151,17 @@ export default function AppLayout() {
               {themeIcon}
             </IconButton>
           </Tooltip>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              ml: 2,
+              color: '#d4af37',
+              fontWeight: 600,
+              display: { xs: 'none', sm: 'block' }
+            }}
+          >
+            Welcome, {user?.first_name ?? 'Student'}!
+          </Typography>
           <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ ml: 1 }} size="small">
             <Avatar sx={{ width: 32, height: 32 }}>
               {user?.first_name?.[0]?.toUpperCase() ?? 'A'}
