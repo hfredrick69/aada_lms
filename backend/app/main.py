@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import models  # noqa: F401 ensure model registration
 from app.routers import (
+    users, roles,
     auth,
     programs,
     enrollments,
@@ -55,6 +56,8 @@ app.include_router(credentials.router, prefix=api_prefix)
 app.include_router(transcripts.router, prefix=api_prefix)
 app.include_router(modules.router, prefix=api_prefix)
 app.include_router(h5p.router, prefix=api_prefix)
+app.include_router(users.router)
+app.include_router(roles.router)
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 import os  # noqa: E402
