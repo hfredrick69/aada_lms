@@ -26,6 +26,7 @@ from app.routers import (
     modules,
     h5p,
     audit,
+    progress,
 )
 
 # Configure logging for audit trail
@@ -78,6 +79,7 @@ app.include_router(transcripts.router, prefix=api_prefix)
 app.include_router(modules.router, prefix=api_prefix)
 app.include_router(h5p.router, prefix=api_prefix)
 app.include_router(audit.router, prefix=api_prefix)
+app.include_router(progress.router, prefix=api_prefix)
 app.include_router(users.router, prefix=api_prefix)
 app.include_router(students.router, prefix=api_prefix)
 app.include_router(roles.router, prefix=api_prefix)
