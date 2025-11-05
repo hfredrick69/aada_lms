@@ -75,9 +75,9 @@ app.include_router(credentials.router, prefix=api_prefix)
 app.include_router(transcripts.router, prefix=api_prefix)
 app.include_router(modules.router, prefix=api_prefix)
 app.include_router(h5p.router, prefix=api_prefix)
-app.include_router(audit.router)
-app.include_router(users.router)
-app.include_router(roles.router)
+app.include_router(audit.router, prefix=api_prefix)
+app.include_router(users.router, prefix=api_prefix)
+app.include_router(roles.router, prefix=api_prefix)
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 import os  # noqa: E402

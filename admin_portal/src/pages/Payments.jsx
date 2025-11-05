@@ -13,15 +13,16 @@ const Payments = () => {
   const loadInvoices = async () => {
     setLoading(true);
     try {
-      const data = await listInvoices();
-      setInvoices(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-      setError("Square API unreachable. Displaying mock invoices.");
+      // TODO: Add invoices endpoint to backend
+      // const data = await listInvoices();
+      // setInvoices(Array.isArray(data) ? data : []);
       setInvoices([
         { id: "demo-1", student: "Alice Student", amount_cents: 420000, status: "unpaid", due_date: "2025-02-01" },
         { id: "demo-2", student: "Bob Learner", amount_cents: 380000, status: "paid", due_date: "2025-01-15" }
       ]);
+    } catch (err) {
+      console.error(err);
+      setError("Unable to load invoices.");
     } finally {
       setLoading(false);
     }

@@ -38,14 +38,6 @@ export const PaymentsPage = () => {
   const withdrawalsQuery = useWithdrawalsQuery();
   const refundsQuery = useRefundsQuery();
 
-  if (withdrawalsQuery.isLoading || refundsQuery.isLoading) {
-    return <LoadingState label="Loading payment history" />;
-  }
-
-  if (withdrawalsQuery.isError || refundsQuery.isError) {
-    return <ErrorState message="We were unable to load payment data." />;
-  }
-
   const withdrawals = useMemo(
     () => ((withdrawalsQuery.data?.data as WithdrawalRead[]) ?? []).slice().sort((a, b) =>
       new Date(b.requested_at).getTime() - new Date(a.requested_at).getTime(),
@@ -62,6 +54,14 @@ export const PaymentsPage = () => {
 
   const totalRefunds = refunds.reduce((sum, record) => sum + (record.amount_cents ?? 0), 0);
   const pendingWithdrawals = withdrawals.filter((record) => !record.admin_processed_at).length;
+
+  if (withdrawalsQuery.isLoading || refundsQuery.isLoading) {
+    return <LoadingState label="Loading payment history" />;
+  }
+
+  if (withdrawalsQuery.isError || refundsQuery.isError) {
+    return <ErrorState message="We were unable to load payment data." />;
+  }
 
   return (
     <Box>

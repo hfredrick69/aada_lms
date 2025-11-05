@@ -5,8 +5,9 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  token_type?: string;
+export interface UserCreate {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
 }

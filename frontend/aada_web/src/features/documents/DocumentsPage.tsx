@@ -61,9 +61,20 @@ export const DocumentsPage = () => {
     return parsed.success ? parsed.data : [];
   }, [enrollmentsQuery.data]);
 
-  const activeEnrollment = enrollments.find((enrollment) => enrollment.status === 'active');
-  const credentialRows = (credentialsQuery.data?.data as CredentialRead[]) ?? [];
-  const transcripts = (transcriptsQuery.data?.data as TranscriptRead[]) ?? [];
+  const activeEnrollment = useMemo(() =>
+    enrollments.find((enrollment) => enrollment.status === 'active'),
+    [enrollments]
+  );
+
+  const credentialRows = useMemo(() =>
+    (credentialsQuery.data?.data as CredentialRead[]) ?? [],
+    [credentialsQuery.data]
+  );
+
+  const transcripts = useMemo(() =>
+    (transcriptsQuery.data?.data as TranscriptRead[]) ?? [],
+    [transcriptsQuery.data]
+  );
 
   if (credentialsQuery.isLoading || transcriptsQuery.isLoading || enrollmentsQuery.isLoading) {
     return <LoadingState label="Loading documents" />;

@@ -292,6 +292,99 @@ export function useServeH5pPlayerApiH5pActivityIdGet<TData = Awaited<ReturnType<
 
 
 /**
+ * Serve h5p.json for H5P Standalone player
+ * @summary Serve H5P Json
+ */
+export const serveH5pJsonApiH5pActivityIdContentGet = (
+    activityId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<unknown>(
+      {url: `/api/h5p/${activityId}/content`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getServeH5pJsonApiH5pActivityIdContentGetQueryKey = (activityId?: string,) => {
+    return [
+    `/api/h5p/${activityId}/content`
+    ] as const;
+    }
+
+    
+export const getServeH5pJsonApiH5pActivityIdContentGetQueryOptions = <TData = Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError = HTTPValidationError>(activityId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getServeH5pJsonApiH5pActivityIdContentGetQueryKey(activityId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>> = ({ signal }) => serveH5pJsonApiH5pActivityIdContentGet(activityId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(activityId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ServeH5pJsonApiH5pActivityIdContentGetQueryResult = NonNullable<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>>
+export type ServeH5pJsonApiH5pActivityIdContentGetQueryError = HTTPValidationError
+
+
+export function useServeH5pJsonApiH5pActivityIdContentGet<TData = Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError = HTTPValidationError>(
+ activityId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>,
+          TError,
+          Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useServeH5pJsonApiH5pActivityIdContentGet<TData = Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError = HTTPValidationError>(
+ activityId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>,
+          TError,
+          Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useServeH5pJsonApiH5pActivityIdContentGet<TData = Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError = HTTPValidationError>(
+ activityId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Serve H5P Json
+ */
+
+export function useServeH5pJsonApiH5pActivityIdContentGet<TData = Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError = HTTPValidationError>(
+ activityId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serveH5pJsonApiH5pActivityIdContentGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getServeH5pJsonApiH5pActivityIdContentGetQueryOptions(activityId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * Serve H5P content files (h5p.json, content.json, images, libraries, etc.)
  * @summary Serve H5P Content
  */

@@ -5,8 +5,4 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  token_type?: string;
-}
+export type UserUpdateFirstName = string | null;

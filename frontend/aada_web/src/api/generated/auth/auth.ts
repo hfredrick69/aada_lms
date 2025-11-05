@@ -27,6 +27,9 @@ import type {
   AuthUser,
   HTTPValidationError,
   LoginRequest,
+  LogoutApiAuthLogoutPost200,
+  LogoutApiAuthLogoutPostBody,
+  RefreshApiAuthRefreshPostBody,
   TokenResponse
 } from '.././models';
 
@@ -100,6 +103,142 @@ export const useLoginApiAuthLoginPost = <TError = HTTPValidationError,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * Refresh an access token using a refresh token from cookie or request body.
+
+This implements token rotation - the old refresh token is revoked
+and a new one is issued along with a new access token.
+ * @summary Refresh
+ */
+export const refreshApiAuthRefreshPost = (
+    refreshApiAuthRefreshPostBody: RefreshApiAuthRefreshPostBody,
+ signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<TokenResponse>(
+      {url: `/api/auth/refresh`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: refreshApiAuthRefreshPostBody, signal
+    },
+      );
+    }
+  
+
+
+export const getRefreshApiAuthRefreshPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshApiAuthRefreshPost>>, TError,{data: RefreshApiAuthRefreshPostBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof refreshApiAuthRefreshPost>>, TError,{data: RefreshApiAuthRefreshPostBody}, TContext> => {
+
+const mutationKey = ['refreshApiAuthRefreshPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof refreshApiAuthRefreshPost>>, {data: RefreshApiAuthRefreshPostBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  refreshApiAuthRefreshPost(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RefreshApiAuthRefreshPostMutationResult = NonNullable<Awaited<ReturnType<typeof refreshApiAuthRefreshPost>>>
+    export type RefreshApiAuthRefreshPostMutationBody = RefreshApiAuthRefreshPostBody
+    export type RefreshApiAuthRefreshPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Refresh
+ */
+export const useRefreshApiAuthRefreshPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshApiAuthRefreshPost>>, TError,{data: RefreshApiAuthRefreshPostBody}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof refreshApiAuthRefreshPost>>,
+        TError,
+        {data: RefreshApiAuthRefreshPostBody},
+        TContext
+      > => {
+
+      const mutationOptions = getRefreshApiAuthRefreshPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Logout by revoking the refresh token and clearing cookies.
+
+The access token will still be valid until it expires (15 minutes),
+but no new tokens can be obtained.
+ * @summary Logout
+ */
+export const logoutApiAuthLogoutPost = (
+    logoutApiAuthLogoutPostBody: LogoutApiAuthLogoutPostBody,
+ signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<LogoutApiAuthLogoutPost200>(
+      {url: `/api/auth/logout`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: logoutApiAuthLogoutPostBody, signal
+    },
+      );
+    }
+  
+
+
+export const getLogoutApiAuthLogoutPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logoutApiAuthLogoutPost>>, TError,{data: LogoutApiAuthLogoutPostBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof logoutApiAuthLogoutPost>>, TError,{data: LogoutApiAuthLogoutPostBody}, TContext> => {
+
+const mutationKey = ['logoutApiAuthLogoutPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof logoutApiAuthLogoutPost>>, {data: LogoutApiAuthLogoutPostBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  logoutApiAuthLogoutPost(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LogoutApiAuthLogoutPostMutationResult = NonNullable<Awaited<ReturnType<typeof logoutApiAuthLogoutPost>>>
+    export type LogoutApiAuthLogoutPostMutationBody = LogoutApiAuthLogoutPostBody
+    export type LogoutApiAuthLogoutPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Logout
+ */
+export const useLogoutApiAuthLogoutPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logoutApiAuthLogoutPost>>, TError,{data: LogoutApiAuthLogoutPostBody}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof logoutApiAuthLogoutPost>>,
+        TError,
+        {data: LogoutApiAuthLogoutPostBody},
+        TContext
+      > => {
+
+      const mutationOptions = getLogoutApiAuthLogoutPostMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Me
  */
 export const meApiAuthMeGet = (
@@ -124,7 +263,7 @@ export const getMeApiAuthMeGetQueryKey = () => {
     }
 
     
-export const getMeApiAuthMeGetQueryOptions = <TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof meApiAuthMeGet>>, TError, TData>>, }
+export const getMeApiAuthMeGetQueryOptions = <TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = HTTPValidationError>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof meApiAuthMeGet>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -143,10 +282,10 @@ const {query: queryOptions} = options ?? {};
 }
 
 export type MeApiAuthMeGetQueryResult = NonNullable<Awaited<ReturnType<typeof meApiAuthMeGet>>>
-export type MeApiAuthMeGetQueryError = unknown
+export type MeApiAuthMeGetQueryError = HTTPValidationError
 
 
-export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = unknown>(
+export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = HTTPValidationError>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof meApiAuthMeGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof meApiAuthMeGet>>,
@@ -156,7 +295,7 @@ export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeG
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = unknown>(
+export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = HTTPValidationError>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof meApiAuthMeGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof meApiAuthMeGet>>,
@@ -166,7 +305,7 @@ export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeG
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = unknown>(
+export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = HTTPValidationError>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof meApiAuthMeGet>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -174,7 +313,7 @@ export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeG
  * @summary Me
  */
 
-export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = unknown>(
+export function useMeApiAuthMeGet<TData = Awaited<ReturnType<typeof meApiAuthMeGet>>, TError = HTTPValidationError>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof meApiAuthMeGet>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

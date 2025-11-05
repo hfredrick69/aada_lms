@@ -154,9 +154,13 @@ def list_transcripts(db: Session = Depends(get_db)) -> List[TranscriptRead]:
     records = db.query(Transcript).order_by(Transcript.generated_at.desc()).all()
     serialized: List[TranscriptRead] = []
     for record in records:
-        enrollment = _latest_enrollment(db, record.user_id, record.program_id)
-        modules = _module_results(db, enrollment)
-        serialized.append(_serialize_transcript(record, modules))
+        try:
+            enrollment = _latest_enrollment(db, record.user_id, record.program_id)
+            modules = _module_results(db, enrollment)
+            serialized.append(_serialize_transcript(record, modules))
+        except HTTPException:
+            # Skip transcripts with no enrollment or module data
+            continue
     return serialized
 
 

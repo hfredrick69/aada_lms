@@ -33,14 +33,6 @@ const formatDate = (value?: string | null) => {
 export const ExternshipsPage = () => {
   const externshipsQuery = useExternshipsQuery();
 
-  if (externshipsQuery.isLoading) {
-    return <LoadingState label="Loading externship records" />;
-  }
-
-  if (externshipsQuery.isError) {
-    return <ErrorState message="We were unable to load externship data." />;
-  }
-
   const externships = useMemo(
     () => ((externshipsQuery.data?.data as ExternshipRead[]) ?? []).slice().sort((a, b) =>
       (b.verified_at ? new Date(b.verified_at).getTime() : 0) -
@@ -51,6 +43,14 @@ export const ExternshipsPage = () => {
 
   const totalHours = externships.reduce((sum, record) => sum + (record.total_hours ?? 0), 0);
   const verifiedCount = externships.filter((record) => record.verified).length;
+
+  if (externshipsQuery.isLoading) {
+    return <LoadingState label="Loading externship records" />;
+  }
+
+  if (externshipsQuery.isError) {
+    return <ErrorState message="We were unable to load externship data." />;
+  }
 
   return (
     <Box>

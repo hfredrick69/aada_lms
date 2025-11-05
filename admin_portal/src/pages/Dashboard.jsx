@@ -3,7 +3,6 @@ import MetricCard from "../components/MetricCard.jsx";
 import { listStudents } from "../api/students.js";
 import { listPrograms } from "../api/courses.js";
 import { listExternships } from "../api/externships.js";
-import { listInvoices } from "../api/payments.js";
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({
@@ -18,20 +17,16 @@ const Dashboard = () => {
     let mounted = true;
     const load = async () => {
       try {
-        const [studentsResult, programsResult, invoicesResult, externshipsResult] = await Promise.allSettled([
+        const [studentsResult, programsResult, externshipsResult] = await Promise.allSettled([
           listStudents(),
           listPrograms(),
-          listInvoices(),
           listExternships()
         ]);
         if (!mounted) return;
         setMetrics({
           students: studentsResult.status === "fulfilled" ? studentsResult.value.length : 0,
           programs: programsResult.status === "fulfilled" ? programsResult.value.length : 0,
-          openInvoices:
-            invoicesResult.status === "fulfilled"
-              ? invoicesResult.value.filter((invoice) => invoice.status !== "paid").length
-              : 0,
+          openInvoices: 0,  // TODO: Add invoices endpoint to backend
           externships: externshipsResult.status === "fulfilled" ? externshipsResult.value.length : 0
         });
       } catch (error) {
