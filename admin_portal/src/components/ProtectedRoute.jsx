@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import Layout from "./Layout.jsx";
 
 const ProtectedRoute = () => {
-  const { user, token, loading } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -13,7 +13,8 @@ const ProtectedRoute = () => {
     );
   }
 
-  if (!token || !user) {
+  // Phase 4: Check user only (tokens in httpOnly cookies)
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
