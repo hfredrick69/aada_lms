@@ -56,7 +56,7 @@ def list_all_transactions(
     if user_id:
         query = query.filter(FinancialLedger.user_id == user_id)
     # Students can only see their own
-    elif not any(role.name in ["admin", "finance"] for role in current_user.roles):
+    elif not any(role in ["admin", "finance"] for role in current_user.roles):
         query = query.filter(FinancialLedger.user_id == current_user.id)
 
     return query.order_by(FinancialLedger.created_at.desc()).all()
@@ -70,7 +70,7 @@ def get_student_balance(
 ):
     """Get current balance for a student (charges - payments)"""
     # Check permissions (admin/finance can see any, students only their own)
-    if user_id != current_user.id and not any(role.name in ["admin", "finance"] for role in current_user.roles):
+    if user_id != current_user.id and not any(role in ["admin", "finance"] for role in current_user.roles):
         raise HTTPException(status_code=403, detail="Not authorized to view this balance")
 
     # Calculate charges (tuition + fees)
@@ -101,7 +101,7 @@ def record_payment(
 ):
     """Record a payment (admin/finance only)"""
     # Only admin/finance can record payments
-    if not any(role.name in ["admin", "finance"] for role in current_user.roles):
+    if not any(role in ["admin", "finance"] for role in current_user.roles):
         raise HTTPException(status_code=403, detail="Not authorized to record payments")
 
     # Verify user exists
@@ -133,7 +133,7 @@ def get_payment_history(
 ):
     """Get payment history for a specific student"""
     # Check permissions
-    if user_id != current_user.id and not any(role.name in ["admin", "finance"] for role in current_user.roles):
+    if user_id != current_user.id and not any(role in ["admin", "finance"] for role in current_user.roles):
         raise HTTPException(status_code=403, detail="Not authorized to view this history")
 
     return db.query(FinancialLedger).filter(
