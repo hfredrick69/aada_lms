@@ -1,30 +1,26 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { me, login as loginRequest } from "../api/auth.js";
-import { setAuthToken } from "../api/axiosClient.js";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const reset = useCallback(() => {
-    setToken(null);
     setUser(null);
     setError(null);
-    setAuthToken(null);
   }, []);
 
   const login = useCallback(async (credentials) => {
     setLoading(true);
     setError(null);
     try {
-      const { access_token } = await loginRequest(credentials);
-      setToken(access_token);
-      setAuthToken(access_token);
-      const profile = await me(access_token);
+      // Phase 4: Tokens stored in httpOnly cookies by backend
+      await loginRequest(credentials);
+      // Fetch user profile (cookies sent automatically via withCredentials)
+      const profile = await me();
       const normalizedRoles = Array.isArray(profile?.roles)
         ? profile.roles
         : profile?.role
@@ -61,7 +57,6 @@ export const AuthProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      token,
       user,
       loading,
       error,
@@ -70,7 +65,7 @@ export const AuthProvider = ({ children }) => {
       hasRole,
       setError
     }),
-    [token, user, loading, error, login, logout, hasRole, setError]
+    [user, loading, error, login, logout, hasRole, setError]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
