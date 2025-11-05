@@ -27,9 +27,7 @@ export default function LoginPage() {
   const loginMutation = useLoginMutation({
     mutation: {
       onSuccess: async (response) => {
-        console.log("Login success:", response);
         // Tokens are stored in httpOnly cookies (Phase 4), no need to store in state
-
         try {
           const { queryFn, queryKey } = getMeApiAuthMeGetQueryOptions();
           const userResponse = await queryClient.fetchQuery({ queryKey, queryFn });
@@ -38,9 +36,6 @@ export default function LoginPage() {
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
         }
-      },
-      onError: (error) => {
-        console.error("Login mutation error:", error);
       },
     },
   });
