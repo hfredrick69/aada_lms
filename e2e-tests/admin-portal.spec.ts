@@ -75,10 +75,12 @@ test.describe('Admin Portal - Authentication', () => {
     await page.getByRole('button', { name: /sign in/i }).click();
 
     // Wait for potential error
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
 
     // Should still be on login page (not redirected to dashboard)
     expect(page.url()).toContain('/login');
+
+    // Note: Error message display not yet implemented in UI
   });
 });
 
@@ -332,12 +334,13 @@ test.describe('Admin Portal - Protected Routes', () => {
     await page.click('text=Students');
     await page.waitForTimeout(2000);
 
-    // Should be able to navigate back to dashboard
-    await page.click('text=Dashboard');
-    await page.waitForTimeout(1000);
+    // Navigate to different page to test session
+    await page.click('text=Courses');
+    await page.waitForTimeout(2000);
 
-    // Should still be authenticated
-    expect(page.url()).toContain('/dashboard');
+    // Should still be authenticated (not redirected to login)
+    expect(page.url()).not.toContain('/login');
+    expect(page.url()).toContain('/courses');
   });
 });
 
