@@ -20,6 +20,10 @@ class ProgressUpdate(BaseModel):
     scorm_status: Optional[str] = None  # incomplete/completed/passed/failed
     score: Optional[int] = None
     progress_pct: Optional[int] = None
+    # Engagement tracking fields
+    last_scroll_position: Optional[int] = None
+    active_time_seconds: Optional[int] = None
+    sections_viewed: Optional[List[str]] = None
 
 
 class ModuleProgressResponse(BaseModel):
@@ -32,6 +36,11 @@ class ModuleProgressResponse(BaseModel):
     score: Optional[int]
     progress_pct: Optional[int]
     last_activity: Optional[datetime]
+    # Engagement tracking fields
+    last_scroll_position: Optional[int]
+    active_time_seconds: Optional[int]
+    sections_viewed: Optional[List[str]]
+    last_accessed_at: Optional[datetime]
 
     class Config:
         from_attributes = True
@@ -120,7 +129,11 @@ def get_user_progress(
             scorm_status=scorm_status,
             score=score,
             progress_pct=progress_pct,
-            last_activity=last_statement.stored_at if last_statement else None
+            last_activity=last_statement.stored_at if last_statement else None,
+            last_scroll_position=progress.last_scroll_position if progress else 0,
+            active_time_seconds=progress.active_time_seconds if progress else 0,
+            sections_viewed=progress.sections_viewed if progress else [],
+            last_accessed_at=progress.last_accessed_at if progress else None
         ))
 
     total_modules = len(modules)
@@ -185,7 +198,11 @@ def get_module_progress(
             scorm_status="incomplete",
             score=None,
             progress_pct=0,
-            last_activity=last_statement.stored_at if last_statement else None
+            last_activity=last_statement.stored_at if last_statement else None,
+            last_scroll_position=0,
+            active_time_seconds=0,
+            sections_viewed=[],
+            last_accessed_at=None
         )
 
     return ModuleProgressResponse(
@@ -197,7 +214,11 @@ def get_module_progress(
         scorm_status=progress.scorm_status,
         score=progress.score,
         progress_pct=progress.progress_pct,
-        last_activity=last_statement.stored_at if last_statement else None
+        last_activity=last_statement.stored_at if last_statement else None,
+        last_scroll_position=progress.last_scroll_position or 0,
+        active_time_seconds=progress.active_time_seconds or 0,
+        sections_viewed=progress.sections_viewed or [],
+        last_accessed_at=progress.last_accessed_at
     )
 
 
@@ -242,7 +263,11 @@ def update_progress(
             module_id=progress_data.module_id,
             scorm_status=progress_data.scorm_status or "incomplete",
             score=progress_data.score,
-            progress_pct=progress_data.progress_pct or 0
+            progress_pct=progress_data.progress_pct or 0,
+            last_scroll_position=progress_data.last_scroll_position or 0,
+            active_time_seconds=progress_data.active_time_seconds or 0,
+            sections_viewed=progress_data.sections_viewed or [],
+            last_accessed_at=datetime.utcnow()
         )
         db.add(progress)
     else:
@@ -253,6 +278,14 @@ def update_progress(
             progress.score = progress_data.score
         if progress_data.progress_pct is not None:
             progress.progress_pct = progress_data.progress_pct
+        # Update engagement tracking fields
+        if progress_data.last_scroll_position is not None:
+            progress.last_scroll_position = progress_data.last_scroll_position
+        if progress_data.active_time_seconds is not None:
+            progress.active_time_seconds = progress_data.active_time_seconds
+        if progress_data.sections_viewed is not None:
+            progress.sections_viewed = progress_data.sections_viewed
+        progress.last_accessed_at = datetime.utcnow()
 
     db.commit()
     db.refresh(progress)
@@ -271,5 +304,9 @@ def update_progress(
         scorm_status=progress.scorm_status,
         score=progress.score,
         progress_pct=progress.progress_pct,
-        last_activity=last_statement.stored_at if last_statement else None
+        last_activity=last_statement.stored_at if last_statement else None,
+        last_scroll_position=progress.last_scroll_position or 0,
+        active_time_seconds=progress.active_time_seconds or 0,
+        sections_viewed=progress.sections_viewed or [],
+        last_accessed_at=progress.last_accessed_at
     )

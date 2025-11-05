@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Date
+from sqlalchemy import Column, String, Integer, ForeignKey, Date, TIMESTAMP, JSON
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from app.db.base import Base
@@ -22,3 +22,8 @@ class ModuleProgress(Base):
     scorm_status = Column(String)  # incomplete/completed/passed/failed
     score = Column(Integer)
     progress_pct = Column(Integer)
+    # Engagement tracking fields
+    last_scroll_position = Column(Integer, default=0)  # Scroll offset in pixels
+    active_time_seconds = Column(Integer, default=0)  # Time with page focused + activity
+    sections_viewed = Column(JSON, default=list)  # List of section IDs viewed
+    last_accessed_at = Column(TIMESTAMP(timezone=True))  # Last time progress was updated
