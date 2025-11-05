@@ -8,7 +8,7 @@ from app.middleware.security import (
     AuditLoggingMiddleware
 )
 from app.routers import (
-    users, roles,
+    users, roles, students,
     auth,
     programs,
     enrollments,
@@ -77,6 +77,7 @@ app.include_router(modules.router, prefix=api_prefix)
 app.include_router(h5p.router, prefix=api_prefix)
 app.include_router(audit.router, prefix=api_prefix)
 app.include_router(users.router, prefix=api_prefix)
+app.include_router(students.router, prefix=api_prefix)
 app.include_router(roles.router, prefix=api_prefix)
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
