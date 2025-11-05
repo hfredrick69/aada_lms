@@ -55,12 +55,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # Restricts resource loading to prevent XSS attacks
         csp_directives = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",  # Vite dev needs unsafe-inline
-            "style-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",  # H5P CDN
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",  # H5P CDN
             "img-src 'self' data: https:",
-            "font-src 'self' data:",
+            "font-src 'self' data: https://cdn.jsdelivr.net",  # H5P fonts
             "connect-src 'self' https:",
-            "frame-ancestors 'self'",
+            "frame-ancestors 'self' http://localhost:5173 http://localhost:5174",  # Allow frontend iframes
             "base-uri 'self'",
             "form-action 'self'",
         ]

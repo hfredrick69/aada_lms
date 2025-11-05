@@ -66,8 +66,37 @@ def reset_and_seed():
         db.add_all([admin_role, student_role, instructor_role, finance_role])
         db.commit()
 
-        users = []
-        for i in range(1, 11):
+        # Create specific test accounts
+        admin_user = User(
+            id=uuid4(),
+            email="admin@aada.edu",
+            password_hash=hash_password_for_seed("AdminPass!23"),
+            first_name="Ada",
+            last_name="Administrator",
+            status="active"
+        )
+        alice_user = User(
+            id=uuid4(),
+            email="alice.student@aada.edu",
+            password_hash=hash_password_for_seed("AlicePass!23"),
+            first_name="Alice",
+            last_name="Student",
+            status="active"
+        )
+        bob_user = User(
+            id=uuid4(),
+            email="bob.student@aada.edu",
+            password_hash=hash_password_for_seed("BobLearner!23"),
+            first_name="Bob",
+            last_name="Learner",
+            status="active"
+        )
+
+        users = [admin_user, alice_user, bob_user]
+        db.add_all(users)
+
+        # Create additional generic users
+        for i in range(1, 8):
             user = User(
                 id=uuid4(),
                 email=f"user{i}@aada.edu",
@@ -83,14 +112,63 @@ def reset_and_seed():
         print(f"✅ Created {len(users)} users")
 
         # Assign roles
-        db.add(UserRole(user_id=users[0].id, role_id=admin_role.id))
-        for user in users:
+        db.add(UserRole(user_id=admin_user.id, role_id=admin_role.id))
+        db.add(UserRole(user_id=alice_user.id, role_id=student_role.id))
+        db.add(UserRole(user_id=bob_user.id, role_id=student_role.id))
+
+        # Assign student role to generic users
+        for user in users[3:]:
             db.add(UserRole(user_id=user.id, role_id=student_role.id))
         db.commit()
 
-        # Create 10 Programs
-        programs = []
-        for i in range(1, 11):
+        # Create Medical Assistant Diploma Program (with Module 1 H5P content)
+        ma_program = Program(
+            id=uuid4(),
+            code="MA-2025",
+            name="Medical Assistant Diploma",
+            credential_level="certificate",
+            total_clock_hours=480
+        )
+        db.add(ma_program)
+        db.commit()  # Commit MA program before adding modules
+
+        # Create real modules including Module 1 with H5P content
+        modules = [
+            Module(
+                id=uuid4(),
+                program_id=ma_program.id,
+                code="MA-101",
+                title="Orientation & Professional Foundations",
+                delivery_type="hybrid",
+                clock_hours=120,
+                requires_in_person=True,
+                position=1
+            ),
+            Module(
+                id=uuid4(),
+                program_id=ma_program.id,
+                code="MA-201",
+                title="Clinical Procedures",
+                delivery_type="in_person",
+                clock_hours=180,
+                requires_in_person=True,
+                position=2
+            ),
+            Module(
+                id=uuid4(),
+                program_id=ma_program.id,
+                code="MA-301",
+                title="Externship",
+                delivery_type="externship",
+                clock_hours=180,
+                requires_in_person=True,
+                position=3
+            ),
+        ]
+
+        # Add generic test programs
+        programs = [ma_program]
+        for i in range(2, 11):
             program = Program(
                 id=uuid4(),
                 code=f"PROG-{i:03d}",
@@ -101,27 +179,25 @@ def reset_and_seed():
             programs.append(program)
             db.add(program)
 
+        db.commit()  # Commit all programs before adding modules
+
+        # Add modules for test programs
+        for program in programs[1:]:  # Skip ma_program (already has modules)
+            for j in range(1, 4):
+                modules.append(Module(
+                    id=uuid4(),
+                    program_id=program.id,
+                    code=f"{program.code}-M{j}",
+                    title=f"Module {j} - {program.name}",
+                    delivery_type="online",
+                    clock_hours=40 + (j * 10),
+                    requires_in_person=False,
+                    position=j
+                ))
+
+        db.add_all(modules)
         db.commit()
         print(f"✅ Created {len(programs)} programs")
-
-        # Create 30 Modules (3 per program)
-        modules = []
-        for prog in programs:
-            for m in range(1, 4):
-                module = Module(
-                    id=uuid4(),
-                    program_id=prog.id,
-                    code=f"{prog.code}-M{m}",
-                    title=f"Module {m} - {prog.name}",
-                    delivery_type="online",
-                    clock_hours=40,
-                    requires_in_person=False,
-                    position=m
-                )
-                modules.append(module)
-                db.add(module)
-
-        db.commit()
         print(f"✅ Created {len(modules)} modules")
 
         # Create 10 Enrollments

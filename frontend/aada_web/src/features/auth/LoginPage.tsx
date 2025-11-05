@@ -22,13 +22,13 @@ import { useAuthStore } from "@/stores/auth-store";
 export default function LoginPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAuthenticated, setToken, setUser } = useAuthStore();
+  const { isAuthenticated, setUser } = useAuthStore();
 
   const loginMutation = useLoginMutation({
     mutation: {
       onSuccess: async (response) => {
-        const token = response.data.access_token;
-        setToken(token);
+        console.log("Login success:", response);
+        // Tokens are stored in httpOnly cookies (Phase 4), no need to store in state
 
         try {
           const { queryFn, queryKey } = getMeApiAuthMeGetQueryOptions();
@@ -38,6 +38,9 @@ export default function LoginPage() {
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
         }
+      },
+      onError: (error) => {
+        console.error("Login mutation error:", error);
       },
     },
   });
