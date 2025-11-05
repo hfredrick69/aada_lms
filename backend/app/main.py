@@ -19,6 +19,7 @@ from app.routers import (
     skills,
     externships,
     finance,
+    payments,
     complaints,
     credentials,
     transcripts,
@@ -70,6 +71,7 @@ app.include_router(attendance.router, prefix=api_prefix)
 app.include_router(skills.router, prefix=api_prefix)
 app.include_router(externships.router, prefix=api_prefix)
 app.include_router(finance.router, prefix=api_prefix)
+app.include_router(payments.router, prefix=api_prefix)
 app.include_router(complaints.router, prefix=api_prefix)
 app.include_router(credentials.router, prefix=api_prefix)
 app.include_router(transcripts.router, prefix=api_prefix)

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, Alert, CircularProgress, Typography } from '@mui/material';
+import { axiosInstance } from '@/api/http-client';
 
 export interface H5PPlayerProps {
   /** H5P activity ID (e.g., 'M1_H5P_EthicsBranching') */
@@ -45,11 +46,30 @@ export const H5PPlayer = ({
   console.log('[H5PPlayer] Env check:', import.meta.env.VITE_API_BASE_URL);
 
   useEffect(() => {
-    // Listen for xAPI statements from H5P (if needed for progress tracking)
-    const handleMessage = (event: MessageEvent) => {
-      // H5P may post xAPI statements - we can capture them here
+    // Listen for xAPI statements from H5P and post them to backend
+    const handleMessage = async (event: MessageEvent) => {
+      // H5P may post xAPI statements - capture and send to backend
       if (event.data?.statement) {
         console.log('[H5P xAPI Statement]', event.data.statement);
+
+        try {
+          // Post xAPI statement to backend for tracking
+          await axiosInstance({
+            url: '/api/xapi/statements',
+            method: 'POST',
+            data: {
+              actor: event.data.statement.actor,
+              verb: event.data.statement.verb,
+              object: event.data.statement.object,
+              result: event.data.statement.result,
+              context: event.data.statement.context,
+              timestamp: event.data.statement.timestamp || new Date().toISOString()
+            }
+          });
+          console.log('[H5P] xAPI statement posted to backend');
+        } catch (err) {
+          console.error('[H5P] Failed to post xAPI statement:', err);
+        }
 
         // Check if this is a completion statement
         if (event.data.statement?.verb?.id?.includes('completed')) {
