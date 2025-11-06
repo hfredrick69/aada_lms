@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-The American Academy of Dental Assisting (AADA) Learning Management System (LMS) is a comprehensive educational platform designed for dental assistant training programs. This document specifies the technical architecture, data models, API endpoints, security implementation, and integration points for the system.
+The Atlanta Academy of Dental Assisting (AADA) Learning Management System (LMS) is a comprehensive educational platform designed for dental assistant training programs. This document specifies the technical architecture, data models, API endpoints, security implementation, and integration points for the system.
 
 **Recent Updates:**
 - ✅ Complete RBAC implementation with 6 distinct roles
