@@ -167,15 +167,15 @@ class TestRBACEnforcement:
 
         # Create mock user
         user = User(id="test-id", email="test@example.com")
-        admin_role = Role(name="Admin")
+        admin_role = Role(name="admin")
         user.roles = [admin_role]
 
         rbac = RBACChecker(user)
 
         assert rbac.is_admin() is True
         assert rbac.is_staff() is True
-        assert rbac.has_role("Admin") is True
-        assert rbac.has_role("Student") is False
+        assert rbac.has_role("admin") is True
+        assert rbac.has_role("student") is False
 
     def test_staff_roles_identification(self):
         """Test staff roles are correctly identified."""
@@ -183,8 +183,8 @@ class TestRBACEnforcement:
         from app.db.models.user import User
         from app.db.models.role import Role
 
-        # Test each staff role
-        staff_roles = ["Admin", "Registrar", "Instructor", "Finance"]
+        # Test each staff role (all lowercase)
+        staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
 
         for role_name in staff_roles:
             user = User(id=f"user-{role_name}", email=f"{role_name}@example.com")
@@ -201,7 +201,7 @@ class TestRBACEnforcement:
         from app.db.models.role import Role
 
         user = User(id="student-id", email="student@example.com")
-        role = Role(name="Student")
+        role = Role(name="student")
         user.roles = [role]
 
         rbac = RBACChecker(user)
@@ -216,7 +216,7 @@ class TestRBACEnforcement:
         from app.db.models.role import Role
 
         user = User(id="user-123", email="user@example.com")
-        role = Role(name="Student")
+        role = Role(name="student")
         user.roles = [role]
 
         rbac = RBACChecker(user)
@@ -229,7 +229,7 @@ class TestRBACEnforcement:
         from app.db.models.role import Role
 
         user = User(id="student-1", email="student1@example.com")
-        role = Role(name="Student")
+        role = Role(name="student")
         user.roles = [role]
 
         rbac = RBACChecker(user)
@@ -242,7 +242,7 @@ class TestRBACEnforcement:
         from app.db.models.role import Role
 
         user = User(id="admin-1", email="admin@example.com")
-        role = Role(name="Admin")
+        role = Role(name="admin")
         user.roles = [role]
 
         rbac = RBACChecker(user)
