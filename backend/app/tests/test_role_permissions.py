@@ -25,9 +25,10 @@ client = TestClient(app)
 
 @pytest.fixture
 def db_session():
-    """Get database session for tests."""
+    """Get database session for tests with rollback."""
     db = next(get_db())
     yield db
+    db.rollback()
     db.close()
 
 
@@ -40,7 +41,8 @@ def admin_user(db_session):
         email="test_admin@aada.edu",
         password_hash=get_password_hash("TestPassword123!"),
         first_name="Test",
-        last_name="Admin"
+        last_name="Admin",
+        status="active"
     )
     role = db_session.query(Role).filter(Role.name == "admin").first()
     db_session.add(user)
@@ -60,7 +62,8 @@ def staff_user(db_session):
         email="test_staff@aada.edu",
         password_hash=get_password_hash("TestPassword123!"),
         first_name="Test",
-        last_name="Staff"
+        last_name="Staff",
+        status="active"
     )
     role = db_session.query(Role).filter(Role.name == "staff").first()
     db_session.add(user)
@@ -80,7 +83,8 @@ def instructor_user(db_session):
         email="test_instructor@aada.edu",
         password_hash=get_password_hash("TestPassword123!"),
         first_name="Test",
-        last_name="Instructor"
+        last_name="Instructor",
+        status="active"
     )
     role = db_session.query(Role).filter(Role.name == "instructor").first()
     db_session.add(user)
@@ -100,7 +104,8 @@ def finance_user(db_session):
         email="test_finance@aada.edu",
         password_hash=get_password_hash("TestPassword123!"),
         first_name="Test",
-        last_name="Finance"
+        last_name="Finance",
+        status="active"
     )
     role = db_session.query(Role).filter(Role.name == "finance").first()
     db_session.add(user)
@@ -120,7 +125,8 @@ def registrar_user(db_session):
         email="test_registrar@aada.edu",
         password_hash=get_password_hash("TestPassword123!"),
         first_name="Test",
-        last_name="Registrar"
+        last_name="Registrar",
+        status="active"
     )
     role = db_session.query(Role).filter(Role.name == "registrar").first()
     db_session.add(user)
@@ -140,7 +146,8 @@ def student_user(db_session):
         email="test_student@aada.edu",
         password_hash=get_password_hash("TestPassword123!"),
         first_name="Test",
-        last_name="Student"
+        last_name="Student",
+        status="active"
     )
     role = db_session.query(Role).filter(Role.name == "student").first()
     db_session.add(user)
@@ -153,7 +160,7 @@ def student_user(db_session):
 
 def get_auth_headers(user: User) -> dict:
     """Generate auth headers for a user."""
-    token = create_access_token(data={"sub": user.email})
+    token = create_access_token(str(user.id))
     return {"Authorization": f"Bearer {token}"}
 
 
