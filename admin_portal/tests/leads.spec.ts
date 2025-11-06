@@ -9,9 +9,13 @@ test.describe('Lead Management', () => {
     await page.click('button[type="submit"]');
     await page.waitForURL('**/dashboard');
 
-    // Navigate to Leads page
-    await page.goto('http://localhost:5173/leads');
+    // Navigate to Leads page by clicking the sidebar link (preserves auth)
+    await page.click('nav a[href="/leads"]');
+    await page.waitForURL('**/leads');
     await page.waitForLoadState('networkidle');
+
+    // Wait for the page heading to appear (confirms React rendered)
+    await page.waitForSelector('h2:has-text("Lead Management")', { timeout: 10000 });
   });
 
   test('should display leads page with navigation', async ({ page }) => {
@@ -47,13 +51,10 @@ test.describe('Lead Management', () => {
     await page.fill('input[name="notes"]', 'Automated test lead');
 
     // Submit form
-    await page.click('button[type="submit"]', { timeout: 5000 });
+    await page.click('button[type="submit"]');
 
-    // Wait for lead to appear in table
-    await page.waitForTimeout(1000);
-
-    // Check that lead appears in the list
-    await expect(page.locator('table tbody tr')).toContainText('Test Lead');
+    // Wait for lead to appear in table (use proper wait with timeout)
+    await expect(page.locator('table tbody tr:has-text("Test Lead")')).toBeVisible({ timeout: 10000 });
   });
 
   test('should filter leads by status', async ({ page }) => {
