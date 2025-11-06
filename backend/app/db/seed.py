@@ -77,8 +77,21 @@ def reset_and_seed():
         )
         finance_role = Role(id=uuid4(), name="finance", description="Finance staff with payment access")
         registrar_role = Role(id=uuid4(), name="registrar", description="Registrar with student records access")
+        admissions_counselor_role = Role(
+            id=uuid4(),
+            name="admissions_counselor",
+            description="Admissions counselor managing leads"
+        )
+        admissions_manager_role = Role(
+            id=uuid4(),
+            name="admissions_manager",
+            description="Admissions manager overseeing recruitment"
+        )
 
-        db.add_all([admin_role, student_role, instructor_role, staff_role, finance_role, registrar_role])
+        db.add_all([
+            admin_role, student_role, instructor_role, staff_role,
+            finance_role, registrar_role, admissions_counselor_role, admissions_manager_role
+        ])
         db.commit()
 
         # Create specific test accounts for each role
@@ -122,6 +135,22 @@ def reset_and_seed():
             last_name="Registrar",
             status="active"
         )
+        admissions_counselor_user = User(
+            id=uuid4(),
+            email="counselor@aada.edu",
+            password_hash=hash_password_for_seed("CounselorPass!23"),
+            first_name="Carl",
+            last_name="Counselor",
+            status="active"
+        )
+        admissions_manager_user = User(
+            id=uuid4(),
+            email="admissions@aada.edu",
+            password_hash=hash_password_for_seed("AdmissionsPass!23"),
+            first_name="Amy",
+            last_name="Admissions",
+            status="active"
+        )
         alice_user = User(
             id=uuid4(),
             email="alice.student@aada.edu",
@@ -145,6 +174,8 @@ def reset_and_seed():
             instructor_user,
             finance_user,
             registrar_user,
+            admissions_counselor_user,
+            admissions_manager_user,
             alice_user,
             bob_user
         ]
@@ -172,11 +203,13 @@ def reset_and_seed():
         db.add(UserRole(user_id=instructor_user.id, role_id=instructor_role.id))
         db.add(UserRole(user_id=finance_user.id, role_id=finance_role.id))
         db.add(UserRole(user_id=registrar_user.id, role_id=registrar_role.id))
+        db.add(UserRole(user_id=admissions_counselor_user.id, role_id=admissions_counselor_role.id))
+        db.add(UserRole(user_id=admissions_manager_user.id, role_id=admissions_manager_role.id))
         db.add(UserRole(user_id=alice_user.id, role_id=student_role.id))
         db.add(UserRole(user_id=bob_user.id, role_id=student_role.id))
 
         # Assign student role to generic users
-        for user in users[7:]:
+        for user in users[9:]:
             db.add(UserRole(user_id=user.id, role_id=student_role.id))
         db.commit()
 
@@ -443,23 +476,38 @@ def reset_and_seed():
         if not lead_sources:
             print("⚠️  No lead sources found - run migrations first")
         else:
-            # Create 15 sample leads with variety
+            # Create 15 sample leads with variety - assigned to admissions team
             lead_data = [
-                ("Sarah", "Johnson", "sarah.j@gmail.com", "404-555-0101", "new", 0, None),
-                ("Michael", "Chen", "mchen@yahoo.com", "678-555-0102", "contacted", 5, admin_user.id),
-                ("Jennifer", "Martinez", "jmartinez@outlook.com", "770-555-0103", "qualified", 15, staff_user.id),
-                ("David", "Williams", "dwilliams@gmail.com", "470-555-0104", "application_sent", 25, staff_user.id),
-                ("Lisa", "Anderson", "landerson@aol.com", "404-555-0105", "enrolled", 40, admin_user.id),
-                ("Robert", "Taylor", "rtaylor@icloud.com", "678-555-0106", "new", 0, None),
-                ("Maria", "Garcia", "mgarcia@gmail.com", "770-555-0107", "contacted", 8, staff_user.id),
-                ("James", "Brown", "jbrown@yahoo.com", "470-555-0108", "qualified", 12, admin_user.id),
-                ("Patricia", "Moore", "pmoore@gmail.com", "404-555-0109", "lost", 5, None),
-                ("Christopher", "Davis", "cdavis@outlook.com", "678-555-0110", "new", 0, None),
-                ("Linda", "Miller", "lmiller@gmail.com", "770-555-0111", "contacted", 10, staff_user.id),
-                ("Daniel", "Wilson", "dwilson@yahoo.com", "470-555-0112", "qualified", 18, admin_user.id),
-                ("Karen", "Thompson", "kthompson@gmail.com", "404-555-0113", "application_sent", 22, staff_user.id),
-                ("Steven", "Lee", "slee@icloud.com", "678-555-0114", "new", 0, None),
-                ("Nancy", "White", "nwhite@gmail.com", "770-555-0115", "contacted", 7, admin_user.id)
+                ("Sarah", "Johnson", "sarah.j@gmail.com", "404-555-0101",
+                 "new", 0, None),
+                ("Michael", "Chen", "mchen@yahoo.com", "678-555-0102",
+                 "contacted", 5, admissions_counselor_user.id),
+                ("Jennifer", "Martinez", "jmartinez@outlook.com", "770-555-0103",
+                 "qualified", 15, admissions_counselor_user.id),
+                ("David", "Williams", "dwilliams@gmail.com", "470-555-0104",
+                 "application_sent", 25, admissions_manager_user.id),
+                ("Lisa", "Anderson", "landerson@aol.com", "404-555-0105",
+                 "enrolled", 40, admissions_manager_user.id),
+                ("Robert", "Taylor", "rtaylor@icloud.com", "678-555-0106",
+                 "new", 0, None),
+                ("Maria", "Garcia", "mgarcia@gmail.com", "770-555-0107",
+                 "contacted", 8, admissions_counselor_user.id),
+                ("James", "Brown", "jbrown@yahoo.com", "470-555-0108",
+                 "qualified", 12, admissions_counselor_user.id),
+                ("Patricia", "Moore", "pmoore@gmail.com", "404-555-0109",
+                 "lost", 5, None),
+                ("Christopher", "Davis", "cdavis@outlook.com", "678-555-0110",
+                 "new", 0, None),
+                ("Linda", "Miller", "lmiller@gmail.com", "770-555-0111",
+                 "contacted", 10, admissions_counselor_user.id),
+                ("Daniel", "Wilson", "dwilson@yahoo.com", "470-555-0112",
+                 "qualified", 18, admissions_manager_user.id),
+                ("Karen", "Thompson", "kthompson@gmail.com", "404-555-0113",
+                 "application_sent", 22, admissions_manager_user.id),
+                ("Steven", "Lee", "slee@icloud.com", "678-555-0114",
+                 "new", 0, None),
+                ("Nancy", "White", "nwhite@gmail.com", "770-555-0115",
+                 "contacted", 7, admissions_counselor_user.id)
             ]
 
             leads = []
@@ -503,7 +551,7 @@ def reset_and_seed():
                     activity_type=activity_type,
                     subject=subject,
                     description=description,
-                    created_by_id=admin_user.id if lead_idx % 2 == 0 else staff_user.id
+                    created_by_id=admissions_counselor_user.id if lead_idx % 2 == 0 else admissions_manager_user.id
                 )
                 db.add(activity)
 
