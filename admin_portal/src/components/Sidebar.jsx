@@ -5,6 +5,7 @@ import { useMemo } from "react";
 const baseLinks = [
   { to: "/dashboard", label: "Dashboard", icon: "📊" },
   { to: "/students", label: "Students", icon: "🎓", roles: ["admin", "registrar", "staff"] },
+  { to: "/leads", label: "Leads", icon: "📋", roles: ["admin", "staff", "admissions_counselor", "admissions_manager"] },
   { to: "/courses", label: "Courses", icon: "📘", roles: ["admin", "instructor", "staff"] },
   { to: "/payments", label: "Payments", icon: "💳", roles: ["admin", "finance", "staff"] },
   { to: "/externships", label: "Externships", icon: "🏥", roles: ["admin", "instructor", "staff"] },

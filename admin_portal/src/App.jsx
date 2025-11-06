@@ -7,6 +7,7 @@ import Payments from "./pages/Payments.jsx";
 import Externships from "./pages/Externships.jsx";
 import Reports from "./pages/Reports.jsx";
 import Settings from "./pages/Settings.jsx";
+import Leads from "./pages/Leads.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import RoleGate from "./components/RoleGate.jsx";
 
@@ -22,6 +23,14 @@ const App = () => {
           element={
             <RoleGate allowedRoles={["admin", "registrar", "staff"]}>
               <Students />
+            </RoleGate>
+          }
+        />
+        <Route
+          path="/leads"
+          element={
+            <RoleGate allowedRoles={["admin", "staff", "admissions_counselor", "admissions_manager"]}>
+              <Leads />
             </RoleGate>
           }
         />
