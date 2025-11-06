@@ -127,7 +127,15 @@ const Leads = () => {
     event.preventDefault();
     if (!canEdit) return;
     try {
-      const created = await createLead(form);
+      // Clean up form data - convert empty strings to null for optional UUID fields
+      const payload = {
+        ...form,
+        program_interest_id: form.program_interest_id || null,
+        phone: form.phone || null,
+        notes: form.notes || null,
+      };
+
+      const created = await createLead(payload);
       setLeads((prev) => [created, ...prev]);
       setForm({
         first_name: "",
@@ -141,7 +149,17 @@ const Leads = () => {
       setError(null);
     } catch (err) {
       console.error(err);
-      setError(err?.response?.data?.detail || "Unable to create lead");
+      // Handle Pydantic validation errors (422)
+      const detail = err?.response?.data?.detail;
+      if (Array.isArray(detail)) {
+        // Pydantic validation error - format the messages
+        const messages = detail.map(e => `${e.loc?.slice(1).join('.')}: ${e.msg}`).join('; ');
+        setError(messages || "Validation error");
+      } else if (typeof detail === 'string') {
+        setError(detail);
+      } else {
+        setError("Unable to create lead");
+      }
     }
   };
 
