@@ -31,6 +31,78 @@ Name:     Ada Administrator
 
 ---
 
+### Staff Account
+```
+Email:    staff@aada.edu
+Password: StaffPass!23
+Role:     Staff
+Name:     Sam Staffer
+```
+
+**Access:** Admin Portal (http://localhost:5173)
+
+**Permissions:**
+- All instructor permissions
+- Create/update/delete students
+- Manage all student records
+- View and manage compliance reports
+
+---
+
+### Instructor Account
+```
+Email:    instructor@aada.edu
+Password: InstructorPass!23
+Role:     Instructor
+Name:     Ian Instructor
+```
+
+**Access:** Admin Portal (http://localhost:5173)
+
+**Permissions:**
+- View and manage programs/modules
+- View student progress and grades
+- Manage attendance and skill checkoffs
+- Cannot create/delete students (staff only)
+
+---
+
+### Finance Account
+```
+Email:    finance@aada.edu
+Password: FinancePass!23
+Role:     Finance
+Name:     Fiona Finance
+```
+
+**Access:** Admin Portal (http://localhost:5173)
+
+**Permissions:**
+- View and manage financial ledgers
+- Process payments and refunds
+- View student enrollment financial data
+- Access financial reports
+
+---
+
+### Registrar Account
+```
+Email:    registrar@aada.edu
+Password: RegistrarPass!23
+Role:     Registrar
+Name:     Rita Registrar
+```
+
+**Access:** Admin Portal (http://localhost:5173)
+
+**Permissions:**
+- Manage student records
+- Issue credentials and transcripts
+- View compliance reports
+- Manage enrollments and withdrawals
+
+---
+
 ### Student Account 1
 ```
 Email:    alice.student@aada.edu
@@ -177,7 +249,7 @@ curl -X POST http://localhost:8000/api/auth/refresh \
 ### Database Seeding
 - Database includes 10+ records per table
 - Sample data: Programs, enrollments, compliance records (attendance, skills, externships, etc.)
-- Test accounts: 3 specific (admin, alice, bob) + 7 generic (user1-7@aada.edu)
+- Test accounts: 7 role-based (admin, staff, instructor, finance, registrar, alice, bob) + 7 generic (user1-7@aada.edu)
 - All generic accounts use password: `Pass123!Word`
 
 ---
@@ -191,9 +263,10 @@ curl -X POST http://localhost:8000/api/auth/refresh \
 - ✅ Bcrypt password hashing with salt
 
 ### Phase 2: Role-Based Access Control (RBAC)
-- ✅ Flexible role system (Admin, Student, Instructor, Finance)
+- ✅ Flexible role system (admin, staff, instructor, finance, registrar, student)
 - ✅ Permission-based authorization
 - ✅ Multiple roles per user support
+- ✅ Staff role hierarchy with inherited permissions
 - ✅ Audit logging for role changes
 
 ### Phase 3: Token Refresh & Revocation
