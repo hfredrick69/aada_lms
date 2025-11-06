@@ -162,7 +162,14 @@ class RBACChecker:
 
     def __init__(self, user: User):
         self.user = user
-        self.roles = [r.name for r in user.roles]
+        # Handle both AuthUser (roles=List[str]) and User (roles=List[Role])
+        if user.roles:
+            if isinstance(user.roles[0], str):
+                self.roles = user.roles
+            else:
+                self.roles = [r.name for r in user.roles]
+        else:
+            self.roles = []
 
     def is_admin(self) -> bool:
         """Check if user has admin role."""
