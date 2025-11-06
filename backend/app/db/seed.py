@@ -254,16 +254,16 @@ def reset_and_seed():
         print(f"✅ Created {len(programs)} programs")
         print(f"✅ Created {len(modules)} modules")
 
-        # Create 10 Enrollments
+        # Create enrollments for all users (cycle through programs if needed)
         enrollments = []
         for i, user in enumerate(users):
             enrollment = Enrollment(
                 id=uuid4(),
                 user_id=user.id,
-                program_id=programs[i].id,
+                program_id=programs[i % len(programs)].id,
                 start_date=datetime.now().date() - timedelta(days=60 - i*5),
                 expected_end_date=datetime.now().date() + timedelta(days=120),
-                status="active" if i < 8 else "withdrawn"
+                status="active" if i < 12 else "withdrawn"
             )
             enrollments.append(enrollment)
             db.add(enrollment)
@@ -271,13 +271,13 @@ def reset_and_seed():
         db.commit()
         print(f"✅ Created {len(enrollments)} enrollments")
 
-        # Create 20 Attendance Logs (2 per user)
+        # Create attendance logs (2 per user, cycle through modules)
         for i, user in enumerate(users):
             for j in range(2):
                 log_entry = AttendanceLog(
                     id=uuid4(),
                     user_id=user.id,
-                    module_id=modules[i*3].id,
+                    module_id=modules[(i*3) % len(modules)].id,
                     session_type="live" if j == 0 else "lab",
                     session_ref=f"SESSION-{i}-{j}",
                     started_at=datetime.now() - timedelta(days=30 - i*2, hours=j*2),
@@ -286,26 +286,26 @@ def reset_and_seed():
                 db.add(log_entry)
 
         db.commit()
-        print("✅ Created 20 attendance logs")
+        print(f"✅ Created {len(users)*2} attendance logs")
 
-        # Create 10 Skill Checkoffs
+        # Create skill checkoffs for all users
         for i, user in enumerate(users):
             checkoff = SkillCheckoff(
                 id=uuid4(),
                 user_id=user.id,
-                module_id=modules[i*3].id,
+                module_id=modules[(i*3) % len(modules)].id,
                 skill_code=f"SKILL_{i:03d}",
-                status="approved" if i < 7 else "pending",
-                evaluator_name=f"Instructor {i}" if i < 7 else None,
-                evaluator_license=f"LIC-{i:04d}" if i < 7 else None,
-                signed_at=datetime.now() - timedelta(days=15 - i) if i < 7 else None
+                status="approved" if i < 10 else "pending",
+                evaluator_name=f"Instructor {i}" if i < 10 else None,
+                evaluator_license=f"LIC-{i:04d}" if i < 10 else None,
+                signed_at=datetime.now() - timedelta(days=15 - i) if i < 10 else None
             )
             db.add(checkoff)
 
         db.commit()
-        print("✅ Created 10 skill checkoffs")
+        print(f"✅ Created {len(users)} skill checkoffs")
 
-        # Create 10 Externships
+        # Create externships for all users
         for i, user in enumerate(users):
             externship = Externship(
                 id=uuid4(),
@@ -315,32 +315,32 @@ def reset_and_seed():
                 supervisor_name=f"Dr. Supervisor {i+1}",
                 supervisor_email=f"supervisor{i+1}@clinic.com",
                 total_hours=80 + i*10,
-                verified=i < 6,
-                verified_at=datetime.now() - timedelta(days=10) if i < 6 else None
+                verified=i < 10,
+                verified_at=datetime.now() - timedelta(days=10) if i < 10 else None
             )
             db.add(externship)
 
         db.commit()
-        print("✅ Created 10 externships")
+        print(f"✅ Created {len(users)} externships")
 
-        # Create 10 Financial Ledger entries
+        # Create financial ledger entries for all users
         for i, user in enumerate(users):
             ledger = FinancialLedger(
                 id=uuid4(),
                 user_id=user.id,
-                program_id=programs[i].id,
+                program_id=programs[i % len(programs)].id,
                 line_type="tuition",
                 amount_cents=850000 + i*1000,
-                description="Tuition for {}".format(programs[i].name)
+                description="Tuition for {}".format(programs[i % len(programs)].name)
             )
             db.add(ledger)
 
         db.commit()
-        print("✅ Created 10 financial ledger entries")
+        print(f"✅ Created {len(users)} financial ledger entries")
 
-        # Create 10 Withdrawals (for last 2 students who are withdrawn)
+        # Create withdrawals for last 2 students
         withdrawals = []
-        for i in range(8, 10):
+        for i in range(12, 14):
             withdrawal = Withdrawal(
                 id=uuid4(),
                 enrollment_id=enrollments[i].id,
@@ -353,7 +353,7 @@ def reset_and_seed():
             db.add(withdrawal)
 
         db.commit()
-        print("✅ Created 2 withdrawals (expanded to 10 if needed)")
+        print(f"✅ Created {len(withdrawals)} withdrawals")
 
         # Create 10 Refunds
         for withdrawal in withdrawals:
@@ -385,15 +385,15 @@ def reset_and_seed():
             db.add(complaint)
 
         db.commit()
-        print("✅ Created 10 complaints")
+        print(f"✅ Created {len(users)} complaints")
 
-        # Create 10 Credentials
+        # Create credentials for completed students
         for i, user in enumerate(users[:10]):
             if i < 7:  # Only completed students get credentials
                 credential = Credential(
                     id=uuid4(),
                     user_id=user.id,
-                    program_id=programs[i].id,
+                    program_id=programs[i % len(programs)].id,
                     credential_type="certificate",
                     issued_at=datetime.now() - timedelta(days=5),
                     cert_serial=f"CERT-2025-{i+1:04d}"
@@ -403,13 +403,13 @@ def reset_and_seed():
         db.commit()
         print("✅ Created credentials")
 
-        # Create 10 Transcripts
+        # Create transcripts for completed students
         for i, user in enumerate(users[:10]):
             if i < 7:
                 transcript = Transcript(
                     id=uuid4(),
                     user_id=user.id,
-                    program_id=programs[i].id,
+                    program_id=programs[i % len(programs)].id,
                     gpa=3.5 + (i * 0.05),
                     generated_at=datetime.now() - timedelta(days=3),
                     pdf_url=f"/transcripts/{user.id}.pdf"
@@ -419,21 +419,21 @@ def reset_and_seed():
         db.commit()
         print("✅ Created transcripts")
 
-        # Create 10 xAPI Statements
+        # Create xAPI statements for all users
         for i, user in enumerate(users):
             statement = XapiStatement(
                 id=uuid4(),
                 actor={"mbox": f"mailto:{user.email}", "name": f"{user.first_name} {user.last_name}"},
                 verb={"id": "http://adlnet.gov/expapi/verbs/completed"},
-                object={"id": f"http://aada.edu/modules/{modules[i*3].id}"},
+                object={"id": f"http://aada.edu/modules/{modules[(i*3) % len(modules)].id}"},
                 timestamp=datetime.now() - timedelta(days=i)
             )
             db.add(statement)
 
         db.commit()
-        print("✅ Created 10 xAPI statements")
+        print(f"✅ Created {len(users)} xAPI statements")
 
-        print("\n🎉 Database seeded with 10+ records per table!")
+        print("\n🎉 Database seeded successfully with test data for all roles!")
 
     except Exception as e:
         db.rollback()
