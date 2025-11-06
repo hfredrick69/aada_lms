@@ -17,6 +17,7 @@ from app.db.models.compliance.complaint import Complaint
 from app.db.models.compliance.credential import Credential
 from app.db.models.compliance.transcript import Transcript
 from app.db.models.xapi import XapiStatement
+from app.db.models.crm import Lead, LeadSource, Activity
 import bcrypt
 from uuid import uuid4
 
@@ -52,6 +53,10 @@ def reset_and_seed():
         db.execute(text(
             "TRUNCATE TABLE compliance.complaints, "
             "compliance.credentials, compliance.transcripts "
+            "RESTART IDENTITY CASCADE"
+        ))
+        db.execute(text(
+            "TRUNCATE TABLE crm.leads, crm.activities, crm.lead_custom_fields "
             "RESTART IDENTITY CASCADE"
         ))
         db.commit()
@@ -432,6 +437,78 @@ def reset_and_seed():
 
         db.commit()
         print(f"✅ Created {len(users)} xAPI statements")
+
+        # Fetch lead sources from database (created by migration)
+        lead_sources = db.query(LeadSource).all()
+        if not lead_sources:
+            print("⚠️  No lead sources found - run migrations first")
+        else:
+            # Create 15 sample leads with variety
+            lead_data = [
+                ("Sarah", "Johnson", "sarah.j@gmail.com", "404-555-0101", "new", 0, None),
+                ("Michael", "Chen", "mchen@yahoo.com", "678-555-0102", "contacted", 5, admin_user.id),
+                ("Jennifer", "Martinez", "jmartinez@outlook.com", "770-555-0103", "qualified", 15, staff_user.id),
+                ("David", "Williams", "dwilliams@gmail.com", "470-555-0104", "application_sent", 25, staff_user.id),
+                ("Lisa", "Anderson", "landerson@aol.com", "404-555-0105", "enrolled", 40, admin_user.id),
+                ("Robert", "Taylor", "rtaylor@icloud.com", "678-555-0106", "new", 0, None),
+                ("Maria", "Garcia", "mgarcia@gmail.com", "770-555-0107", "contacted", 8, staff_user.id),
+                ("James", "Brown", "jbrown@yahoo.com", "470-555-0108", "qualified", 12, admin_user.id),
+                ("Patricia", "Moore", "pmoore@gmail.com", "404-555-0109", "lost", 5, None),
+                ("Christopher", "Davis", "cdavis@outlook.com", "678-555-0110", "new", 0, None),
+                ("Linda", "Miller", "lmiller@gmail.com", "770-555-0111", "contacted", 10, staff_user.id),
+                ("Daniel", "Wilson", "dwilson@yahoo.com", "470-555-0112", "qualified", 18, admin_user.id),
+                ("Karen", "Thompson", "kthompson@gmail.com", "404-555-0113", "application_sent", 22, staff_user.id),
+                ("Steven", "Lee", "slee@icloud.com", "678-555-0114", "new", 0, None),
+                ("Nancy", "White", "nwhite@gmail.com", "770-555-0115", "contacted", 7, admin_user.id)
+            ]
+
+            leads = []
+            for i, (first, last, email, phone, status, score, assigned_to) in enumerate(lead_data):
+                lead = Lead(
+                    id=uuid4(),
+                    first_name=first,
+                    last_name=last,
+                    email=email,
+                    phone=phone,
+                    lead_source_id=lead_sources[i % len(lead_sources)].id,
+                    program_interest_id=programs[i % len(programs)].id,
+                    lead_status=status,
+                    lead_score=score,
+                    assigned_to_id=assigned_to,
+                    notes=f"Sample lead {i+1} - interested in {programs[i % len(programs)].name}"
+                )
+                leads.append(lead)
+                db.add(lead)
+
+            db.commit()
+            print(f"✅ Created {len(leads)} sample leads")
+
+            # Create activities for some leads
+            activity_data = [
+                (0, "call", "Initial contact call", "Spoke with Sarah, very interested in MA program"),
+                (1, "email", "Follow-up email sent", "Sent program brochure and pricing information"),
+                (2, "meeting", "Campus tour scheduled", "Scheduled for next Tuesday at 10 AM"),
+                (3, "call", "Application support", "Helped with application questions"),
+                (6, "call", "Follow-up call", "Discussed financial aid options"),
+                (7, "email", "Program details sent", "Sent detailed curriculum information"),
+                (10, "meeting", "In-person meeting", "Met to discuss career goals"),
+                (12, "call", "Application status check", "Confirmed all documents received"),
+            ]
+
+            for lead_idx, activity_type, subject, description in activity_data:
+                activity = Activity(
+                    id=uuid4(),
+                    entity_type="lead",
+                    entity_id=leads[lead_idx].id,
+                    activity_type=activity_type,
+                    subject=subject,
+                    description=description,
+                    created_by_id=admin_user.id if lead_idx % 2 == 0 else staff_user.id
+                )
+                db.add(activity)
+
+            db.commit()
+            print(f"✅ Created {len(activity_data)} lead activities")
 
         print("\n🎉 Database seeded successfully with test data for all roles!")
 
