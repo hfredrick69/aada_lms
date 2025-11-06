@@ -76,13 +76,45 @@ def reset_and_seed():
         db.add_all([admin_role, student_role, instructor_role, staff_role, finance_role, registrar_role])
         db.commit()
 
-        # Create specific test accounts
+        # Create specific test accounts for each role
         admin_user = User(
             id=uuid4(),
             email="admin@aada.edu",
             password_hash=hash_password_for_seed("AdminPass!23"),
             first_name="Ada",
             last_name="Administrator",
+            status="active"
+        )
+        staff_user = User(
+            id=uuid4(),
+            email="staff@aada.edu",
+            password_hash=hash_password_for_seed("StaffPass!23"),
+            first_name="Sam",
+            last_name="Staffer",
+            status="active"
+        )
+        instructor_user = User(
+            id=uuid4(),
+            email="instructor@aada.edu",
+            password_hash=hash_password_for_seed("InstructorPass!23"),
+            first_name="Ian",
+            last_name="Instructor",
+            status="active"
+        )
+        finance_user = User(
+            id=uuid4(),
+            email="finance@aada.edu",
+            password_hash=hash_password_for_seed("FinancePass!23"),
+            first_name="Fiona",
+            last_name="Finance",
+            status="active"
+        )
+        registrar_user = User(
+            id=uuid4(),
+            email="registrar@aada.edu",
+            password_hash=hash_password_for_seed("RegistrarPass!23"),
+            first_name="Rita",
+            last_name="Registrar",
             status="active"
         )
         alice_user = User(
@@ -102,7 +134,15 @@ def reset_and_seed():
             status="active"
         )
 
-        users = [admin_user, alice_user, bob_user]
+        users = [
+            admin_user,
+            staff_user,
+            instructor_user,
+            finance_user,
+            registrar_user,
+            alice_user,
+            bob_user
+        ]
         db.add_all(users)
 
         # Create additional generic users
@@ -121,13 +161,17 @@ def reset_and_seed():
         db.commit()
         print(f"✅ Created {len(users)} users")
 
-        # Assign roles
+        # Assign roles to specific test accounts
         db.add(UserRole(user_id=admin_user.id, role_id=admin_role.id))
+        db.add(UserRole(user_id=staff_user.id, role_id=staff_role.id))
+        db.add(UserRole(user_id=instructor_user.id, role_id=instructor_role.id))
+        db.add(UserRole(user_id=finance_user.id, role_id=finance_role.id))
+        db.add(UserRole(user_id=registrar_user.id, role_id=registrar_role.id))
         db.add(UserRole(user_id=alice_user.id, role_id=student_role.id))
         db.add(UserRole(user_id=bob_user.id, role_id=student_role.id))
 
         # Assign student role to generic users
-        for user in users[3:]:
+        for user in users[7:]:
             db.add(UserRole(user_id=user.id, role_id=student_role.id))
         db.commit()
 
