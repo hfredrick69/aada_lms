@@ -9,7 +9,7 @@ const Students = () => {
   const [form, setForm] = useState({ first_name: "", last_name: "", email: "" });
   const [error, setError] = useState(null);
 
-  const canEdit = hasRole(["Admin", "Registrar"]);
+  const canEdit = hasRole(["admin", "staff"]);
 
   const loadStudents = async () => {
     setLoading(true);

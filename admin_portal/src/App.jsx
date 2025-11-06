@@ -20,7 +20,7 @@ const App = () => {
         <Route
           path="/students"
           element={
-            <RoleGate allowedRoles={["Admin", "Registrar"]}>
+            <RoleGate allowedRoles={["admin", "registrar", "staff"]}>
               <Students />
             </RoleGate>
           }
@@ -28,7 +28,7 @@ const App = () => {
         <Route
           path="/courses"
           element={
-            <RoleGate allowedRoles={["Admin", "Instructor"]}>
+            <RoleGate allowedRoles={["admin", "instructor", "staff"]}>
               <Courses />
             </RoleGate>
           }
@@ -36,7 +36,7 @@ const App = () => {
         <Route
           path="/payments"
           element={
-            <RoleGate allowedRoles={["Admin", "Finance"]}>
+            <RoleGate allowedRoles={["admin", "finance", "staff"]}>
               <Payments />
             </RoleGate>
           }
@@ -44,7 +44,7 @@ const App = () => {
         <Route
           path="/externships"
           element={
-            <RoleGate allowedRoles={["Admin", "Instructor"]}>
+            <RoleGate allowedRoles={["admin", "instructor", "staff"]}>
               <Externships />
             </RoleGate>
           }
@@ -52,7 +52,7 @@ const App = () => {
         <Route
           path="/reports"
           element={
-            <RoleGate allowedRoles={["Admin", "Finance", "Registrar"]}>
+            <RoleGate allowedRoles={["admin", "finance", "registrar", "staff"]}>
               <Reports />
             </RoleGate>
           }
@@ -60,7 +60,7 @@ const App = () => {
         <Route
           path="/settings"
           element={
-            <RoleGate allowedRoles={["Admin"]}>
+            <RoleGate allowedRoles={["admin"]}>
               <Settings />
             </RoleGate>
           }

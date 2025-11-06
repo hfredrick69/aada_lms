@@ -44,14 +44,14 @@ def require_roles(allowed_roles: List[str]):
 
 def require_admin(current_user: User = Depends(_get_current_user())):
     """
-    Dependency to require Admin role.
+    Dependency to require admin role.
 
     Usage:
         @router.get("/admin-endpoint", dependencies=[Depends(require_admin)])
     """
     user_roles = [r.name for r in current_user.roles]
 
-    if "Admin" not in user_roles:
+    if "admin" not in user_roles:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required"
@@ -61,13 +61,13 @@ def require_admin(current_user: User = Depends(_get_current_user())):
 
 def require_staff(current_user: User = Depends(_get_current_user())):
     """
-    Dependency to require staff roles (Admin, Registrar, Instructor, Finance).
+    Dependency to require staff roles (admin, staff, registrar, instructor, finance).
 
     Usage:
         @router.get("/staff-endpoint", dependencies=[Depends(require_staff)])
     """
     user_roles = [r.name for r in current_user.roles]
-    staff_roles = ["Admin", "Registrar", "Instructor", "Finance"]
+    staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
 
     if not any(role in staff_roles for role in user_roles):
         raise HTTPException(
@@ -99,7 +99,7 @@ def filter_by_user_access(
         Filtered query
     """
     user_roles = [r.name for r in current_user.roles]
-    staff_roles = ["Admin", "Registrar", "Instructor", "Finance"]
+    staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
 
     # Staff can see all data
     if any(role in staff_roles for role in user_roles):
@@ -129,7 +129,7 @@ def can_access_user_data(resource_user_id: str, current_user: User) -> bool:
         HTTPException if access is denied
     """
     user_roles = [r.name for r in current_user.roles]
-    staff_roles = ["Admin", "Registrar", "Instructor", "Finance"]
+    staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
 
     # User accessing their own data
     if str(resource_user_id) == str(current_user.id):
@@ -165,17 +165,17 @@ class RBACChecker:
         self.roles = [r.name for r in user.roles]
 
     def is_admin(self) -> bool:
-        """Check if user has Admin role."""
-        return "Admin" in self.roles
+        """Check if user has admin role."""
+        return "admin" in self.roles
 
     def is_staff(self) -> bool:
         """Check if user has any staff role."""
-        staff_roles = ["Admin", "Registrar", "Instructor", "Finance"]
+        staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
         return any(role in staff_roles for role in self.roles)
 
     def is_student(self) -> bool:
-        """Check if user has Student role."""
-        return "Student" in self.roles
+        """Check if user has student role."""
+        return "student" in self.roles
 
     def can_access(self, resource_user_id: str) -> bool:
         """

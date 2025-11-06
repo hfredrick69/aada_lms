@@ -42,8 +42,8 @@ const Courses = () => {
     position: 1,
   });
 
-  const canEdit = hasRole(["Admin", "Instructor"]);
-  const canDelete = hasRole(["Admin"]);
+  const canEdit = hasRole(["admin", "instructor", "staff"]);
+  const canDelete = hasRole(["admin"]);
 
   // Load programs on mount
   useEffect(() => {

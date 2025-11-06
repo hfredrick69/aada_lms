@@ -7,7 +7,7 @@ vi.mock("../context/AuthContext.jsx", async (importOriginal) => {
   return {
     ...actual,
     useAuth: () => ({
-      hasRole: (roles) => roles.includes("Admin")
+      hasRole: (roles) => roles.includes("admin")
     })
   };
 });
@@ -15,7 +15,7 @@ vi.mock("../context/AuthContext.jsx", async (importOriginal) => {
 describe("RoleGate", () => {
   it("renders children when role permitted", () => {
     render(
-      <RoleGate allowedRoles={["Admin"]}>
+      <RoleGate allowedRoles={["admin"]}>
         <span>Allowed content</span>
       </RoleGate>
     );
@@ -24,7 +24,7 @@ describe("RoleGate", () => {
 
   it("renders placeholder when role not permitted", () => {
     render(
-      <RoleGate allowedRoles={["Finance"]}>
+      <RoleGate allowedRoles={["finance"]}>
         <span>Secret</span>
       </RoleGate>
     );

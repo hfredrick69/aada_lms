@@ -4,12 +4,12 @@ import { useMemo } from "react";
 
 const baseLinks = [
   { to: "/dashboard", label: "Dashboard", icon: "📊" },
-  { to: "/students", label: "Students", icon: "🎓", roles: ["Admin", "Registrar"] },
-  { to: "/courses", label: "Courses", icon: "📘", roles: ["Admin", "Instructor"] },
-  { to: "/payments", label: "Payments", icon: "💳", roles: ["Admin", "Finance"] },
-  { to: "/externships", label: "Externships", icon: "🏥", roles: ["Admin", "Instructor"] },
-  { to: "/reports", label: "Reports", icon: "🧾", roles: ["Admin", "Finance", "Registrar"] },
-  { to: "/settings", label: "Settings", icon: "⚙️", roles: ["Admin"] }
+  { to: "/students", label: "Students", icon: "🎓", roles: ["admin", "registrar", "staff"] },
+  { to: "/courses", label: "Courses", icon: "📘", roles: ["admin", "instructor", "staff"] },
+  { to: "/payments", label: "Payments", icon: "💳", roles: ["admin", "finance", "staff"] },
+  { to: "/externships", label: "Externships", icon: "🏥", roles: ["admin", "instructor", "staff"] },
+  { to: "/reports", label: "Reports", icon: "🧾", roles: ["admin", "finance", "registrar", "staff"] },
+  { to: "/settings", label: "Settings", icon: "⚙️", roles: ["admin"] }
 ];
 
 const Sidebar = ({ mobile = false, onNavigate }) => {

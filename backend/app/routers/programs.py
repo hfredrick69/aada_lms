@@ -46,10 +46,10 @@ class ModuleUpdate(BaseModel):
     position: Optional[int] = None
 
 
-# Helper function to check admin/instructor role
+# Helper function to check admin/instructor/staff role
 def require_admin_or_instructor(current_user: User):
-    if not any(role in ["admin", "instructor"] for role in current_user.roles):
-        raise HTTPException(status_code=403, detail="Admin or Instructor role required")
+    if not any(role in ["admin", "instructor", "staff"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin, Instructor, or Staff role required")
 
 
 # ============ PROGRAM ENDPOINTS ============

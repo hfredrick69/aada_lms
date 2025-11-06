@@ -8,7 +8,7 @@ const Payments = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const canEdit = hasRole(["Admin", "Finance"]);
+  const canEdit = hasRole(["admin", "finance", "staff"]);
 
   const loadInvoices = async () => {
     setLoading(true);

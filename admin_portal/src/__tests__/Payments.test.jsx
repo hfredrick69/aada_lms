@@ -14,7 +14,7 @@ vi.mock('../api/auth.js', () => ({
     email: 'admin@aada.edu',
     first_name: 'Admin',
     last_name: 'User',
-    roles: ['Admin', 'Finance']
+    roles: ['admin', 'finance']
   }))
 }));
 

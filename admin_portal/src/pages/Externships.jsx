@@ -15,7 +15,7 @@ const Externships = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const canEdit = hasRole(["Admin", "Instructor"]);
+  const canEdit = hasRole(["admin", "instructor", "staff"]);
 
   const loadExternships = async () => {
     setLoading(true);

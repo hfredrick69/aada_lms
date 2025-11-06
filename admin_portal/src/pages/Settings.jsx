@@ -2,24 +2,34 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 const roleMatrix = [
   {
-    role: "Admin",
-    description: "Full system access including role management and program configuration.",
-    permissions: ["Dashboard", "Students CRUD", "Courses", "Payments", "Externships", "Reports", "Settings"]
+    role: "admin",
+    description: "Full system access including role management, program configuration, and delete permissions.",
+    permissions: ["Dashboard", "All CRUD operations", "Settings", "Delete permissions"]
   },
   {
-    role: "Instructor",
-    description: "Manage courses, modules, skills checkoffs, and externship approvals.",
-    permissions: ["Dashboard", "Courses", "Externships"]
+    role: "staff",
+    description: "Instructor permissions plus ability to create/update student records.",
+    permissions: ["Dashboard", "Students CRUD", "Courses (view)", "Payments", "Externships", "Reports"]
   },
   {
-    role: "Finance",
+    role: "instructor",
+    description: "View courses/modules, manage grades/attendance for assigned students, and manage externships.",
+    permissions: ["Dashboard", "Courses (view)", "Students (assigned, read-only)", "Externships", "Grades/Attendance"]
+  },
+  {
+    role: "finance",
     description: "View and reconcile invoices, refunds, and compliance reports.",
     permissions: ["Dashboard", "Payments", "Reports"]
   },
   {
-    role: "Registrar",
+    role: "registrar",
     description: "Oversee student records, enrollments, and transcript requests.",
     permissions: ["Dashboard", "Students", "Reports"]
+  },
+  {
+    role: "student",
+    description: "Access own enrollment, coursework, grades, and progress.",
+    permissions: ["Student Portal", "Own Records", "Course Materials"]
   }
 ];
 

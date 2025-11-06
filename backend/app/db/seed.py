@@ -57,13 +57,23 @@ def reset_and_seed():
         db.commit()
         print("✅ Database reset complete")
 
-        # Create 10 Users
-        admin_role = Role(id=uuid4(), name="Admin", description="System Administrator")
-        student_role = Role(id=uuid4(), name="Student", description="Student")
-        instructor_role = Role(id=uuid4(), name="Instructor", description="Instructor")
-        finance_role = Role(id=uuid4(), name="Finance", description="Finance Staff")
+        # Create roles (all lowercase)
+        admin_role = Role(id=uuid4(), name="admin", description="System Administrator with full access")
+        student_role = Role(id=uuid4(), name="student", description="Student with access to own records")
+        instructor_role = Role(
+            id=uuid4(),
+            name="instructor",
+            description="Instructor with course and student management"
+        )
+        staff_role = Role(
+            id=uuid4(),
+            name="staff",
+            description="Staff with instructor permissions plus student CRUD"
+        )
+        finance_role = Role(id=uuid4(), name="finance", description="Finance staff with payment access")
+        registrar_role = Role(id=uuid4(), name="registrar", description="Registrar with student records access")
 
-        db.add_all([admin_role, student_role, instructor_role, finance_role])
+        db.add_all([admin_role, student_role, instructor_role, staff_role, finance_role, registrar_role])
         db.commit()
 
         # Create specific test accounts
