@@ -13,6 +13,9 @@ import {
 } from '@mui/material';
 import { ArrowBack, Home } from '@mui/icons-material';
 import { H5PPlayer } from '@/components/H5PPlayer';
+import { ModuleProgressTracker } from '@/components/ModuleProgressTracker';
+import { useAuthStore } from '@/stores/auth-store';
+import { axiosInstance } from '@/api/http-client';
 
 /**
  * Module Player Page
@@ -23,10 +26,12 @@ import { H5PPlayer } from '@/components/H5PPlayer';
 export const ModulePlayerPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [htmlContent, setHtmlContent] = useState<string>('');
+  const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -57,6 +62,32 @@ export const ModulePlayerPage = () => {
 
     return activities;
   }, [htmlContent, id]);
+
+  // Fetch user's active enrollment
+  useEffect(() => {
+    const fetchEnrollment = async () => {
+      if (!user?.id) return;
+
+      try {
+        const response = await axiosInstance<{ id: string; user_id: string; program_id: string; status: string }[]>({
+          method: 'GET',
+          url: '/api/enrollments/',
+          params: {
+            user_id: user.id,
+            status: 'active',
+          },
+        });
+
+        if (response.data && response.data.length > 0) {
+          setEnrollmentId(response.data[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to fetch enrollment:', err);
+      }
+    };
+
+    fetchEnrollment();
+  }, [user?.id]);
 
   useEffect(() => {
     const fetchModuleContent = async () => {
@@ -139,6 +170,20 @@ export const ModulePlayerPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Progress Tracker - tracks scroll position, active time, and sections viewed */}
+      {enrollmentId && id && (
+        <ModuleProgressTracker
+          moduleId={id}
+          enrollmentId={enrollmentId}
+          sectionSelector="h2, h3"
+          saveInterval={30000}
+          enableResumeScroll={true}
+          onProgressSaved={(progress) => {
+            console.log('[ModulePlayerPage] Progress saved:', progress);
+          }}
+        />
+      )}
+
       {/* Breadcrumbs */}
       <Breadcrumbs sx={{ mb: 3 }}>
         <Link
