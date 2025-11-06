@@ -108,8 +108,8 @@ def get_user_progress(
 
         # Get last activity from xAPI statements
         last_statement = db.query(XapiStatement).filter(
-            XapiStatement.actor['mbox'].astext == f"mailto:{current_user.email}"
-        ).order_by(XapiStatement.stored_at.desc()).first()
+            XapiStatement.actor['mbox'].as_string() == f"mailto:{current_user.email}"
+        ).order_by(XapiStatement.stored_at.desc()).first() if False else None  # Disabled for now
 
         # Default values if no progress record exists
         scorm_status = progress.scorm_status if progress else "incomplete"
@@ -184,8 +184,8 @@ def get_module_progress(
 
     # Get last activity from xAPI
     last_statement = db.query(XapiStatement).filter(
-        XapiStatement.actor['mbox'].astext == f"mailto:{current_user.email}"
-    ).order_by(XapiStatement.stored_at.desc()).first()
+        XapiStatement.actor['mbox'].as_string() == f"mailto:{current_user.email}"
+    ).order_by(XapiStatement.stored_at.desc()).first() if False else None  # Disabled for now
 
     if not progress:
         # Create default progress if none exists
@@ -292,8 +292,8 @@ def update_progress(
 
     # Get last activity
     last_statement = db.query(XapiStatement).filter(
-        XapiStatement.actor['mbox'].astext == f"mailto:{current_user.email}"
-    ).order_by(XapiStatement.stored_at.desc()).first()
+        XapiStatement.actor['mbox'].as_string() == f"mailto:{current_user.email}"
+    ).order_by(XapiStatement.stored_at.desc()).first() if False else None  # Disabled for now
 
     return ModuleProgressResponse(
         id=progress.id,
