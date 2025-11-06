@@ -21,6 +21,7 @@ if config.config_file_name is not None:
 from app.db.base import Base  # noqa
 from app.db.models import user, program, enrollment, xapi, scorm  # noqa
 from app.db.models.compliance import attendance, skills, extern, finance, withdraw_refund, complaint, credential, transcript, audit  # noqa
+from app.db.models.crm import lead, activity  # noqa
 
 target_metadata = Base.metadata
 

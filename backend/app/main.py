@@ -27,6 +27,7 @@ from app.routers import (
     h5p,
     audit,
     progress,
+    leads,
 )
 
 # Configure logging for audit trail
@@ -83,6 +84,7 @@ app.include_router(progress.router, prefix=api_prefix)
 app.include_router(users.router, prefix=api_prefix)
 app.include_router(students.router, prefix=api_prefix)
 app.include_router(roles.router, prefix=api_prefix)
+app.include_router(leads.router, prefix=api_prefix)
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 import os  # noqa: E402
