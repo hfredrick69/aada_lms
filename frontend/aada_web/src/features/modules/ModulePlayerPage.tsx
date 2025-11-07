@@ -53,10 +53,13 @@ export const ModulePlayerPage = () => {
     }
 
     // Also look for common Module 1 activities if none found
-    if (activities.length === 0 && id === '1') {
+    // Note: id could be '1' or a UUID like 'fc08a432-853a-4c79-863a-c21e26aaf475'
+    if (activities.length === 0 && (id === '1' || htmlContent.includes('Module 1'))) {
       activities.push(
         { id: 'M1_H5P_EthicsBranching', title: 'Ethics Branching Scenario' },
-        { id: 'M1_H5P_HIPAAHotspot', title: 'HIPAA Hotspot' }
+        { id: 'M1_H5P_HIPAAHotspot', title: 'HIPAA Hotspot' },
+        { id: 'M1_H5P_DialogCards', title: 'Dialog Cards' },
+        { id: 'M1_H5P_PolicyMatch', title: 'Policy Match' }
       );
     }
 
