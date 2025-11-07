@@ -43,8 +43,8 @@ def get_current_user(
     Get current user from either httpOnly cookie or Authorization header.
     Supports both authentication methods for backwards compatibility.
     """
-    # Try to get token from cookie first, then fall back to Authorization header
-    token = access_token if access_token else (credentials.credentials if credentials else None)
+    # Try to get token from Authorization header first, then fall back to cookie
+    token = (credentials.credentials if credentials else None) or access_token
 
     if token is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing authentication credentials")
