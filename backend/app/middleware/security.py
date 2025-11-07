@@ -57,7 +57,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",  # H5P CDN
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",  # H5P CDN
-            "img-src 'self' data: https:",
+            "img-src 'self' data: blob: https:",
+            "media-src 'self' blob: data:",  # H5P audio/video
             "font-src 'self' data: https://cdn.jsdelivr.net",  # H5P fonts
             "connect-src 'self' https:",
             "frame-ancestors 'self' http://localhost:5173 http://localhost:5174",  # Allow frontend iframes
