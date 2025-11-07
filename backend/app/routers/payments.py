@@ -27,7 +27,7 @@ class InvoiceLineItem(BaseModel):
     line_type: str
     amount_cents: int
     description: Optional[str]
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
