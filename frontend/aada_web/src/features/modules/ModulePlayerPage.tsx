@@ -1,5 +1,6 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
 import {
   Box,
   Container,
@@ -32,6 +33,7 @@ export const ModulePlayerPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [htmlContent, setHtmlContent] = useState<string>('');
   const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -52,9 +54,14 @@ export const ModulePlayerPage = () => {
       });
     }
 
+    console.log('[ModulePlayerPage] Extracted H5P activities from HTML:', activities);
+    console.log('[ModulePlayerPage] Module ID:', id);
+    console.log('[ModulePlayerPage] HTML contains "Module 1":', htmlContent.includes('Module 1'));
+
     // Also look for common Module 1 activities if none found
     // Note: id could be '1' or a UUID like 'fc08a432-853a-4c79-863a-c21e26aaf475'
     if (activities.length === 0 && (id === '1' || htmlContent.includes('Module 1'))) {
+      console.log('[ModulePlayerPage] Using fallback activities for Module 1');
       activities.push(
         { id: 'M1_H5P_EthicsBranching', title: 'Ethics Branching Scenario' },
         { id: 'M1_H5P_HIPAAHotspot', title: 'HIPAA Hotspot' },
@@ -63,6 +70,7 @@ export const ModulePlayerPage = () => {
       );
     }
 
+    console.log('[ModulePlayerPage] Final H5P activities:', activities);
     return activities;
   }, [htmlContent, id]);
 
@@ -126,6 +134,36 @@ export const ModulePlayerPage = () => {
 
     fetchModuleContent();
   }, [id, apiBaseUrl]);
+
+  // Inject H5P players into data-h5p-activity divs after HTML renders
+  useEffect(() => {
+    if (!contentRef.current || !htmlContent) return;
+
+    const h5pDivs = contentRef.current.querySelectorAll('[data-h5p-activity]');
+
+    console.log('[ModulePlayerPage] Found H5P divs to inject:', h5pDivs.length);
+
+    h5pDivs.forEach((div) => {
+      const activityId = div.getAttribute('data-h5p-activity');
+      if (!activityId) return;
+
+      const title = activityId.replace(/^M\d+_H5P_/, '').replace(/_/g, ' ');
+
+      console.log('[ModulePlayerPage] Injecting H5P player for:', activityId);
+
+      // Clear the div and inject React component
+      div.innerHTML = '';
+      const root = createRoot(div);
+      root.render(
+        <H5PPlayer
+          activityId={activityId}
+          title={title}
+          height={600}
+          onComplete={(result) => handleH5PComplete(activityId, result)}
+        />
+      );
+    });
+  }, [htmlContent, id]);
 
   const handleH5PComplete = (activityId: string, result: unknown) => {
     console.log(`[Module ${id}] H5P Activity ${activityId} completed:`, result);
@@ -234,6 +272,7 @@ export const ModulePlayerPage = () => {
       >
         {/* Render HTML content */}
         <Box
+          ref={contentRef}
           dangerouslySetInnerHTML={{ __html: htmlContent }}
           sx={{
             '& h1': {
@@ -320,8 +359,8 @@ export const ModulePlayerPage = () => {
         />
       </Paper>
 
-      {/* H5P Activities Section */}
-      {h5pActivities.length > 0 && (
+      {/* H5P Activities Section - DISABLED: Activities now render inline in the document */}
+      {/* {h5pActivities.length > 0 && (
         <Box sx={{ mt: 4 }}>
           <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
             Interactive Activities
@@ -348,7 +387,7 @@ export const ModulePlayerPage = () => {
             </Paper>
           ))}
         </Box>
-      )}
+      )} */}
 
       {/* Bottom Navigation */}
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
