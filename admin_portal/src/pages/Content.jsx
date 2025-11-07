@@ -258,23 +258,26 @@ const Content = () => {
     );
   }
 
-  if (!canEdit) {
-    return (
-      <div className="p-6">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-yellow-800">
-            You don't have permission to manage content. Only admins can access this page.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const isInstructor = hasRole(["instructor"]) && !hasRole(["admin"]);
 
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">Content Management</h1>
-        <p className="text-slate-600 mt-1">Manage module content, H5P activities, and supplemental files</p>
+        <h1 className="text-2xl font-bold text-slate-800">
+          {isInstructor ? "Content Library" : "Content Management"}
+        </h1>
+        <p className="text-slate-600 mt-1">
+          {isInstructor
+            ? "View module content, H5P activities, and supplemental files"
+            : "Manage module content, H5P activities, and supplemental files"}
+        </p>
+        {isInstructor && (
+          <div className="mt-2 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-800">
+              ℹ️ You have read-only access. Contact an administrator to upload or modify content.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Error/Success Messages */}
@@ -375,43 +378,55 @@ const Content = () => {
                 Upload or replace the module's markdown content file (.md). Maximum size: 10 MB.
               </p>
 
-              <form onSubmit={handleMarkdownUpload} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Select Markdown File (.md)
-                  </label>
-                  <input
-                    ref={markdownInputRef}
-                    type="file"
-                    accept=".md,.markdown"
-                    className="block w-full text-sm text-slate-600
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-md file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-primary-50 file:text-primary-700
-                      hover:file:bg-primary-100"
-                  />
-                </div>
+              {canEdit && (
+                <form onSubmit={handleMarkdownUpload} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Select Markdown File (.md)
+                    </label>
+                    <input
+                      ref={markdownInputRef}
+                      type="file"
+                      accept=".md,.markdown"
+                      className="block w-full text-sm text-slate-600
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-md file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-primary-50 file:text-primary-700
+                        hover:file:bg-primary-100"
+                    />
+                  </div>
 
-                <div className="flex space-x-3">
-                  <button
-                    type="submit"
-                    disabled={!canEdit || uploadProgress}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
-                  >
-                    Upload Markdown
-                  </button>
-                  {selectedModule.has_markdown && (
+                  <div className="flex space-x-3">
                     <button
-                      type="button"
-                      onClick={handleMarkdownDownload}
-                      className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700"
+                      type="submit"
+                      disabled={!canEdit || uploadProgress}
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
                     >
-                      Download Current
+                      Upload Markdown
                     </button>
-                  )}
-                </div>
-              </form>
+                    {selectedModule.has_markdown && (
+                      <button
+                        type="button"
+                        onClick={handleMarkdownDownload}
+                        className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700"
+                      >
+                        Download Current
+                      </button>
+                    )}
+                  </div>
+                </form>
+              )}
+
+              {!canEdit && selectedModule.has_markdown && (
+                <button
+                  type="button"
+                  onClick={handleMarkdownDownload}
+                  className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700"
+                >
+                  Download Markdown
+                </button>
+              )}
 
               {selectedModule.has_markdown && (
                 <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
@@ -425,14 +440,15 @@ const Content = () => {
 
           {activeTab === "h5p" && (
             <div className="space-y-6">
-              {/* Upload Form */}
-              <div className="bg-white rounded-lg border border-slate-200 p-6">
-                <h2 className="text-lg font-semibold text-slate-800 mb-4">Upload H5P Activity</h2>
-                <p className="text-sm text-slate-600 mb-4">
-                  Upload H5P activity packages (.h5p files). Maximum size: 100 MB.
-                </p>
+              {/* Upload Form - Admin Only */}
+              {canEdit && (
+                <div className="bg-white rounded-lg border border-slate-200 p-6">
+                  <h2 className="text-lg font-semibold text-slate-800 mb-4">Upload H5P Activity</h2>
+                  <p className="text-sm text-slate-600 mb-4">
+                    Upload H5P activity packages (.h5p files). Maximum size: 100 MB.
+                  </p>
 
-                <form onSubmit={handleH5PUpload} className="space-y-4">
+                  <form onSubmit={handleH5PUpload} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       Activity ID
@@ -463,15 +479,16 @@ const Content = () => {
                     />
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={!canEdit || uploadProgress}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
-                  >
-                    Upload H5P Activity
-                  </button>
-                </form>
-              </div>
+                    <button
+                      type="submit"
+                      disabled={!canEdit || uploadProgress}
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                    >
+                      Upload H5P Activity
+                    </button>
+                  </form>
+                </div>
+              )}
 
               {/* H5P Activities List */}
               <div className="bg-white rounded-lg border border-slate-200 p-6">
@@ -512,14 +529,15 @@ const Content = () => {
 
           {activeTab === "files" && (
             <div className="space-y-6">
-              {/* Upload Form */}
-              <div className="bg-white rounded-lg border border-slate-200 p-6">
-                <h2 className="text-lg font-semibold text-slate-800 mb-4">Upload Supplemental File</h2>
-                <p className="text-sm text-slate-600 mb-4">
-                  Upload supplemental files (PDFs, images, videos, etc.). Maximum size: 50 MB.
-                </p>
+              {/* Upload Form - Admin Only */}
+              {canEdit && (
+                <div className="bg-white rounded-lg border border-slate-200 p-6">
+                  <h2 className="text-lg font-semibold text-slate-800 mb-4">Upload Supplemental File</h2>
+                  <p className="text-sm text-slate-600 mb-4">
+                    Upload supplemental files (PDFs, images, videos, etc.). Maximum size: 50 MB.
+                  </p>
 
-                <form onSubmit={handleFileUpload} className="space-y-4">
+                  <form onSubmit={handleFileUpload} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       Subfolder (optional)
@@ -553,15 +571,16 @@ const Content = () => {
                     />
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={!canEdit || uploadProgress}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
-                  >
-                    Upload File
-                  </button>
-                </form>
-              </div>
+                    <button
+                      type="submit"
+                      disabled={!canEdit || uploadProgress}
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                    >
+                      Upload File
+                    </button>
+                  </form>
+                </div>
+              )}
 
               {/* Files List */}
               <div className="bg-white rounded-lg border border-slate-200 p-6">

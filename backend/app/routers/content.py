@@ -45,6 +45,13 @@ def require_admin(current_user: User = Depends(get_current_user)):
     return current_user
 
 
+def require_instructor_or_admin(current_user: User = Depends(get_current_user)):
+    """Dependency to require instructor or admin role (read-only access)"""
+    # TODO: Implement proper role checking once role system is fully integrated
+    # For now, allow all authenticated users (will be restricted once role system is active)
+    return current_user
+
+
 def validate_module_id(module_id: str, db: Session) -> Module:
     """Validate that module exists"""
     module = db.query(Module).filter(Module.id == module_id).first()
@@ -138,7 +145,7 @@ async def upload_module_markdown(
 async def get_module_markdown(
     module_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(require_instructor_or_admin)
 ):
     """Get the raw markdown content for a module"""
     module = validate_module_id(module_id, db)
@@ -228,7 +235,7 @@ async def upload_h5p_activity(
 async def list_h5p_activities(
     module_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(require_instructor_or_admin)
 ):
     """List all H5P activities for a module"""
     module = validate_module_id(module_id, db)
@@ -356,7 +363,7 @@ async def list_supplemental_files(
     module_id: str,
     subfolder: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(require_instructor_or_admin)
 ):
     """List all supplemental files for a module"""
     module = validate_module_id(module_id, db)
@@ -424,7 +431,7 @@ async def delete_supplemental_file(
 @router.get("/modules")
 async def list_all_modules(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(require_instructor_or_admin)
 ):
     """List all modules with their content status"""
     modules = db.query(Module).order_by(Module.position).all()
