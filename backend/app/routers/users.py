@@ -42,6 +42,8 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get("/", response_model=List[UserResponse])
 def list_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """List all users (admin only)"""
+    if not any(role in ["admin"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin role required")
     users = db.query(User).all()
     return users
 
@@ -49,6 +51,9 @@ def list_users(db: Session = Depends(get_db), current_user: User = Depends(get_c
 @router.post("/", response_model=UserResponse, status_code=201)
 def create_user(data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Create new user (admin only)"""
+    if not any(role in ["admin"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin role required")
+
     # Check if email exists
     existing = db.query(User).filter(User.email == data.email).first()
     if existing:
@@ -68,7 +73,11 @@ def create_user(data: UserCreate, db: Session = Depends(get_db), current_user: U
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(user_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """Get user by ID"""
+    """Get user by ID (admin only or self)"""
+    # Users can view their own profile or admins can view anyone
+    if user_id != current_user.id and not any(role in ["admin"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Not authorized to view this user")
+
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -82,6 +91,9 @@ def update_user(
     current_user: User = Depends(get_current_user)
 ):
     """Update user (admin only)"""
+    if not any(role in ["admin"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin role required")
+
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -107,6 +119,9 @@ def update_user(
 @router.delete("/{user_id}", status_code=204)
 def delete_user(user_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Delete user (admin only)"""
+    if not any(role in ["admin"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin role required")
+
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
