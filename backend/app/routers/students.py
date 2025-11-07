@@ -42,7 +42,10 @@ router = APIRouter(prefix="/students", tags=["students"])
 
 @router.get("/", response_model=List[StudentResponse])
 def list_students(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """List all students (admin only)"""
+    """List all students (admin/staff only)"""
+    if not any(role in ["admin", "staff"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin or staff role required")
+
     # Get student role
     student_role = db.query(Role).filter(Role.name == "student").first()
     if not student_role:
@@ -55,7 +58,10 @@ def list_students(db: Session = Depends(get_db), current_user: User = Depends(ge
 
 @router.post("/", response_model=StudentResponse, status_code=201)
 def create_student(data: StudentCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """Create new student (admin only)"""
+    """Create new student (admin/staff only)"""
+    if not any(role in ["admin", "staff"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin or staff role required")
+
     # Check if email exists
     existing = db.query(User).filter(User.email == data.email).first()
     if existing:
@@ -82,7 +88,11 @@ def create_student(data: StudentCreate, db: Session = Depends(get_db), current_u
 
 @router.get("/{student_id}", response_model=StudentResponse)
 def get_student(student_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """Get student by ID"""
+    """Get student by ID (admin/staff or self)"""
+    # Students can view their own profile or admin/staff can view anyone
+    if student_id != current_user.id and not any(role in ["admin", "staff"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Not authorized to view this student")
+
     user = db.query(User).filter(User.id == student_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Student not found")
@@ -101,7 +111,10 @@ def update_student(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Update student (admin only)"""
+    """Update student (admin/staff only)"""
+    if not any(role in ["admin", "staff"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin or staff role required")
+
     user = db.query(User).filter(User.id == student_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Student not found")
@@ -132,6 +145,9 @@ def update_student(
 @router.delete("/{student_id}", status_code=204)
 def delete_student(student_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Delete student (admin only)"""
+    if not any(role in ["admin"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin role required")
+
     user = db.query(User).filter(User.id == student_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Student not found")
