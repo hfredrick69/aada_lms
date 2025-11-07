@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from pathlib import Path
 from sqlalchemy.orm import Session
 import markdown
+import re
 
 from app.db.session import get_db
 from app.db.models.program import Module
@@ -38,6 +39,15 @@ async def get_module(module_id: str, db: Session = Depends(get_db)):
     html_content = markdown.markdown(
         md_content,
         extensions=['extra', 'fenced_code', 'tables', 'nl2br', 'attr_list', 'toc']
+    )
+
+    # Convert H5P references to data attributes for frontend embedding
+    # Pattern matches: (H5P: `M1_H5P_ActivityName`)
+    h5p_pattern = r'\(H5P:\s*<code>([^<]+)</code>\)'
+    html_content = re.sub(
+        h5p_pattern,
+        r'<div data-h5p-activity="\1" class="h5p-embed"></div>',
+        html_content
     )
 
     return f"""
@@ -102,6 +112,10 @@ async def get_module(module_id: str, db: Session = Depends(get_db)):
                 padding-left: 20px;
                 margin-left: 0;
                 color: #555;
+            }}
+            .h5p-embed {{
+                margin: 20px 0;
+                min-height: 400px;
             }}
         </style>
     </head>
