@@ -198,7 +198,6 @@ async def serve_h5p_player(activity_id: str):
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; media-src 'self' blob: data:; img-src 'self' data: blob:;">
     <title>{title}</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/h5p-standalone@3.6.0/dist/styles/h5p.css">
