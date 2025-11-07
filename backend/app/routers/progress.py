@@ -95,16 +95,23 @@ def get_user_progress(
             modules=[]
         )
 
+    # BATCH QUERY: Get all progress records at once (fixes N+1)
+    module_ids = [m.id for m in modules]
+    progress_records = db.query(ModuleProgress).filter(
+        ModuleProgress.enrollment_id == enrollment.id,
+        ModuleProgress.module_id.in_(module_ids)
+    ).all()
+
+    # Create lookup dict for O(1) access
+    progress_by_module = {p.module_id: p for p in progress_records}
+
     # Get progress for each module
     module_progress_list = []
     completed_count = 0
 
     for module in modules:
-        # Get module progress record
-        progress = db.query(ModuleProgress).filter(
-            ModuleProgress.enrollment_id == enrollment.id,
-            ModuleProgress.module_id == module.id
-        ).first()
+        # Get module progress record from dict (O(1) lookup)
+        progress = progress_by_module.get(module.id)
 
         # Get last activity from xAPI statements
         last_statement = db.query(XapiStatement).filter(

@@ -13,16 +13,15 @@ const Payments = () => {
   const loadInvoices = async () => {
     setLoading(true);
     try {
-      // TODO: Add invoices endpoint to backend
-      // const data = await listInvoices();
-      // setInvoices(Array.isArray(data) ? data : []);
-      setInvoices([
-        { id: "demo-1", student: "Alice Student", amount_cents: 420000, status: "unpaid", due_date: "2025-02-01" },
-        { id: "demo-2", student: "Bob Learner", amount_cents: 380000, status: "paid", due_date: "2025-01-15" }
-      ]);
+      const data = await listInvoices();
+      setInvoices(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
-      setError("Unable to load invoices.");
+      setError("Unable to load payment transactions. Showing placeholder data.");
+      setInvoices([
+        { id: "demo-1", student: "Alice Student", amount_cents: 420000, line_type: "tuition", description: "Program tuition" },
+        { id: "demo-2", student: "Bob Learner", amount_cents: -380000, line_type: "payment", description: "Payment received" }
+      ]);
     } finally {
       setLoading(false);
     }
