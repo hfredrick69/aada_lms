@@ -54,23 +54,6 @@ export const ModulePlayerPage = () => {
       });
     }
 
-    console.log('[ModulePlayerPage] Extracted H5P activities from HTML:', activities);
-    console.log('[ModulePlayerPage] Module ID:', id);
-    console.log('[ModulePlayerPage] HTML contains "Module 1":', htmlContent.includes('Module 1'));
-
-    // Also look for common Module 1 activities if none found
-    // Note: id could be '1' or a UUID like 'fc08a432-853a-4c79-863a-c21e26aaf475'
-    if (activities.length === 0 && (id === '1' || htmlContent.includes('Module 1'))) {
-      console.log('[ModulePlayerPage] Using fallback activities for Module 1');
-      activities.push(
-        { id: 'M1_H5P_EthicsBranching', title: 'Ethics Branching Scenario' },
-        { id: 'M1_H5P_HIPAAHotspot', title: 'HIPAA Hotspot' },
-        { id: 'M1_H5P_DialogCards', title: 'Dialog Cards' },
-        { id: 'M1_H5P_PolicyMatch', title: 'Policy Match' }
-      );
-    }
-
-    console.log('[ModulePlayerPage] Final H5P activities:', activities);
     return activities;
   }, [htmlContent, id]);
 
@@ -141,15 +124,11 @@ export const ModulePlayerPage = () => {
 
     const h5pDivs = contentRef.current.querySelectorAll('[data-h5p-activity]');
 
-    console.log('[ModulePlayerPage] Found H5P divs to inject:', h5pDivs.length);
-
     h5pDivs.forEach((div) => {
       const activityId = div.getAttribute('data-h5p-activity');
       if (!activityId) return;
 
       const title = activityId.replace(/^M\d+_H5P_/, '').replace(/_/g, ' ');
-
-      console.log('[ModulePlayerPage] Injecting H5P player for:', activityId);
 
       // Clear the div and inject React component
       div.innerHTML = '';
