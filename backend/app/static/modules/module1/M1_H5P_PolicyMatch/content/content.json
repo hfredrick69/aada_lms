@@ -1,0 +1,70 @@
+{
+  "choiceType": "text",
+  "title": "Module 1 - GNPEC Policy Match",
+  "pairs": [
+    {
+      "source": "Standard 12 – Refunds",
+      "target": "Prorated refunds issued within 45 days before 50% completion"
+    },
+    {
+      "source": "Standard 13 – Cancellations",
+      "target": "72-hour cancellation window for full refund minus allowable fees"
+    },
+    {
+      "source": "Standard 14 – Complaints",
+      "target": "Documented complaint process and GNPEC appeal pathway"
+    },
+    {
+      "source": "Enforcement",
+      "target": "HHS Office for Civil Rights investigates complaints and potential breaches"
+    },
+    {
+      "source": "Academic Plan",
+      "target": "A written remediation strategy developed when SAP benchmarks are not met"
+    },
+    {
+      "source": "Acknowledgment Form",
+      "target": "A GNPEC-required document confirming students received and understand critical policies"
+    },
+    {
+      "source": "Complaint Policy",
+      "target": "Procedure that allows students to resolve concerns internally and escalate to GNPEC if unresolved"
+    },
+    {
+      "source": "GNPEC",
+      "target": "Georgia Nonpublic Postsecondary Education Commission, the state agency authorizing non-public schools"
+    },
+    {
+      "source": "Minimum Necessary",
+      "target": "HIPAA principle limiting PHI access to the information needed for a specific task"
+    },
+    {
+      "source": "Policy Match",
+      "target": "The H5P activity used in Module 1 to reinforce understanding of GNPEC-mandated policies"
+    },
+    {
+      "source": "Professional Conduct Agreement",
+      "target": "AADA document outlining behavioral expectations and consequences for misconduct"
+    },
+    {
+      "source": "Satisfactory Academic Progress (SAP)",
+      "target": "GNPEC Standard 11 requiring minimum 70% grade and 67% pace to continue enrollment"
+    }
+  ],
+  "l10n": {
+    "checkAnswer": "Check",
+    "showSolutionButton": "Show solution",
+    "tryAgain": "Retry",
+    "correct": "Correct!",
+    "incorrect": "Incorrect!",
+    "correctSolution": "Correct solution",
+    "choiceUnMatched": "@title. Unmatched",
+    "choiceMatched": "@title matched with @oppositeTitle",
+    "choiceShouldBeMatched": "@title should have been matched with @oppositeTitle"
+  },
+  "behaviour": {
+    "enableRetry": true,
+    "enableSolutionsButton": true,
+    "passPercentage": 100
+  }
+}

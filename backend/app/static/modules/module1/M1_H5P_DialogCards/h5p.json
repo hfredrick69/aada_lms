@@ -1,0 +1,19 @@
+{
+  "title": "Module 1 - Professional Dialogue Practice",
+  "language": "en",
+  "mainLibrary": "H5P.Dialogcards",
+  "embedTypes": ["iframe"],
+  "license": "U",
+  "preloadedDependencies": [
+    {
+      "machineName": "H5P.Dialogcards",
+      "majorVersion": 1,
+      "minorVersion": 9
+    },
+    {
+      "machineName": "H5P.Text",
+      "majorVersion": 1,
+      "minorVersion": 1
+    }
+  ]
+}

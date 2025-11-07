@@ -1,0 +1,54 @@
+{
+  "title": "Professional Communication Practice",
+  "mode": "normal",
+  "description": "<p>Practice delivering empathetic, policy-aligned responses to common scenarios. Review each scenario, then flip the card to see the suggested professional dialogue.</p>",
+  "dialogs": [
+    {
+      "question": {
+        "text": "<p><strong>Scenario 1: PHI Visible at Check-in</strong></p><p>You're at the front desk when a patient approaches while the schedule displays PHI on the monitor. A delivery vendor also walks in. What do you say?</p>",
+        "answer": "<p><strong>Suggested Response:</strong></p><p>\"Thank you for your patience. I'm going to secure the schedule so we can discuss your visit privately.\"</p><p><em>Then: Lock workstation, reposition privacy screen, and document the incident.</em></p>"
+      }
+    },
+    {
+      "question": {
+        "text": "<p><strong>Scenario 2: Unauthorized Social Media Post</strong></p><p>A coworker posts a patient photo showing their face and the practice name on social media. How do you address this?</p>",
+        "answer": "<p><strong>Suggested Response:</strong></p><p>\"I'm concerned that the post may reveal PHI. Let's take it down and review our consent policy together.\"</p><p><em>Then: Notify supervisor, document incident, request immediate removal.</em></p>"
+      }
+    },
+    {
+      "question": {
+        "text": "<p><strong>Scenario 3: Pressure to Rush Sterilization</strong></p><p>Near closing time, a supervisor urges the team to skip part of the sterilization cycle to fit in one more patient. How do you respond?</p>",
+        "answer": "<p><strong>Suggested Response:</strong></p><p>\"To keep everyone safe and compliant, we need to run the complete cycle. Let me reschedule the patient so we uphold CDC standards.\"</p><p><em>Then: Document conversation in safety log and offer to check for sterilized backup set.</em></p>"
+      }
+    },
+    {
+      "question": {
+        "text": "<p><strong>Scenario 4: Patient Requests Records</strong></p><p>A patient calls asking you to email their treatment records to their personal email address immediately. What's your response?</p>",
+        "answer": "<p><strong>Suggested Response:</strong></p><p>\"I'd be happy to help with your records. For security, we'll need you to complete an authorization form first, and we'll send them through our secure portal or by mail.\"</p><p><em>Key: Never email PHI to unsecured addresses - use HIPAA-compliant methods only.</em></p>"
+      }
+    },
+    {
+      "question": {
+        "text": "<p><strong>Scenario 5: Concerned Family Member</strong></p><p>A patient's adult child calls asking for details about their parent's recent treatment and diagnosis. How do you handle this?</p>",
+        "answer": "<p><strong>Suggested Response:</strong></p><p>\"I understand your concern. Due to privacy laws, I can only discuss treatment details with the patient directly or someone they've authorized in writing. Would you like information about our authorization process?\"</p><p><em>Remember: Even family members need written authorization unless they're healthcare proxies.</em></p>"
+      }
+    },
+    {
+      "question": {
+        "text": "<p><strong>Scenario 6: Expired Supplies Found</strong></p><p>While restocking, you discover expired sterile supplies in the tray setup area. The next patient is scheduled in 10 minutes. What do you do?</p>",
+        "answer": "<p><strong>Suggested Response (to supervisor):</strong></p><p>\"I found expired supplies in the setup area dated [date]. I'm removing them now and will restock with current inventory. The patient's appointment may need to be delayed 5 minutes to ensure proper preparation.\"</p><p><em>Then: Document in supply log, check all inventory, and review expiration protocols.</em></p>"
+      }
+    }
+  ],
+  "behaviour": {
+    "enableRetry": true,
+    "disableBackwardsNavigation": false,
+    "scaleTextNotCard": false,
+    "randomCards": false
+  },
+  "answer": "Turn",
+  "next": "Next",
+  "prev": "Previous",
+  "retry": "Retry",
+  "progressText": "Card @card of @total"
+}
