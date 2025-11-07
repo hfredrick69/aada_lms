@@ -13,12 +13,12 @@ import { test, expect } from '@playwright/test';
 const STUDENT_EMAIL = 'alice.student@aada.edu';
 const STUDENT_PASSWORD = 'AlicePass!23';
 const API_BASE_URL = 'http://localhost:8000';
-const STUDENT_PORTAL_URL = 'http://localhost:5174';
+const STUDENT_PORTAL_URL = 'http://localhost:5173';
 
-// Test data
-const TEST_USER_ID = '4c89b4db-9989-4886-acef-39540ecec854';
-const TEST_ENROLLMENT_ID = '6a284f0b-f5a1-4068-9f6a-76b7f7551507';
-const TEST_MODULE_ID = '2e7e1cf1-764d-4afb-a821-dfee913a8d40';
+// Test data (alice.student@aada.edu from seed data)
+const TEST_USER_ID = '73d0b1c8-756d-4bb8-a90c-c599963f7e60';
+const TEST_ENROLLMENT_ID = '5c368e87-afe6-48bb-bb9f-b580de9f1eb5';
+const TEST_MODULE_ID = 'e8c7950f-9419-4a4b-ab1e-96d6b92275ba';
 
 // Helper to login via API
 async function loginUser(request: any, email: string, password: string) {
@@ -176,7 +176,7 @@ test.describe('ModuleProgressTracker Component', () => {
     await page.waitForURL('**/modules');
 
     // Click on first module
-    await page.click('text=Module 1');
+    await page.click('text=/Module 1/');
 
     // Wait for module content to load
     await page.waitForLoadState('networkidle');
@@ -241,7 +241,7 @@ test.describe('ModuleProgressTracker Component', () => {
 
     // Navigate to module
     await page.click('text=Modules');
-    await page.click('text=Module 1');
+    await page.click('text=/Module 1/');
 
     // Wait for scroll restoration
     await page.waitForTimeout(2000);
@@ -262,7 +262,7 @@ test.describe('ModuleProgressTracker Component', () => {
 
     // Navigate to module
     await page.click('text=Modules');
-    await page.click('text=Module 1');
+    await page.click('text=/Module 1/');
     await page.waitForLoadState('networkidle');
 
     // Simulate user activity
@@ -297,7 +297,7 @@ test.describe('Progress Integration Tests', () => {
 
     // Navigate to module
     await page.click('text=Modules');
-    await page.click('text=Module 1');
+    await page.click('text=/Module 1/');
     await page.waitForLoadState('networkidle');
 
     // Scroll and wait for save

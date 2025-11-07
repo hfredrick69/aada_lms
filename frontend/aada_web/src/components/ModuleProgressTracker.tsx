@@ -66,6 +66,9 @@ export const ModuleProgressTracker: React.FC<ModuleProgressTrackerProps> = ({
   const user = useAuthStore((state) => state.user);
   const userId = user?.id;
 
+  if (import.meta.env.DEV) {
+    console.debug('[ModuleProgressTracker] init', { moduleId, enrollmentId, userId });
+  }
   // Tracking state
   const [scrollPosition, setScrollPosition] = useState(0);
   const [activeTimeSeconds, setActiveTimeSeconds] = useState(0);
@@ -133,13 +136,24 @@ export const ModuleProgressTracker: React.FC<ModuleProgressTrackerProps> = ({
       return;
     }
 
+    const viewedSections = Array.from(sectionsViewed).filter(
+      (id): id is string => Boolean(id)
+    );
+
+    const roundedScroll = Number.isFinite(scrollPosition) ? Math.round(scrollPosition) : 0;
+    const safeActiveTime = Number.isFinite(activeTimeSeconds) ? Math.round(activeTimeSeconds) : 0;
+
     const progressData: ModuleProgress = {
       enrollment_id: enrollmentId,
       module_id: moduleId,
-      last_scroll_position: scrollPosition,
-      active_time_seconds: activeTimeSeconds,
-      sections_viewed: Array.from(sectionsViewed),
+      last_scroll_position: roundedScroll,
+      active_time_seconds: safeActiveTime,
+      sections_viewed: viewedSections,
     };
+
+    if (import.meta.env.DEV) {
+      console.debug('[ModuleProgressTracker] Saving progress payload:', progressData);
+    }
 
     try {
       const response = await axiosInstance<ModuleProgressResponse>({
@@ -155,6 +169,10 @@ export const ModuleProgressTracker: React.FC<ModuleProgressTrackerProps> = ({
       console.log('[ModuleProgressTracker] Progress saved:', response.data);
     } catch (error) {
       console.error('[ModuleProgressTracker] Failed to save progress:', error);
+      if (import.meta.env.DEV && typeof error === 'object' && error !== null && 'response' in error) {
+        const err = error as { response?: { status?: number; data?: unknown } };
+        console.debug('[ModuleProgressTracker] Progress save error response:', err.response);
+      }
     }
   }, [enrollmentId, moduleId, scrollPosition, activeTimeSeconds, sectionsViewed, onProgressSaved]);
 

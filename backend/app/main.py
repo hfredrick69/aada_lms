@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import logging
 
 from app.db import models  # noqa: F401 ensure model registration
@@ -40,6 +42,18 @@ logging.basicConfig(
 # Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="AADA LMS API", version="1.0")
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    body = await request.body()
+    logging.error(
+        "Validation error on %s: %s | body=%s",
+        request.url.path,
+        exc.errors(),
+        body.decode("utf-8", errors="ignore")
+    )
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 # Security middleware (order matters - first added = outermost layer)
 app.add_middleware(SecurityHeadersMiddleware)

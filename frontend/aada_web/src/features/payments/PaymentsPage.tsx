@@ -14,10 +14,10 @@ import {
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { CreditCard, MonetizationOn } from '@mui/icons-material';
+import { AccountBalanceWallet, Receipt } from '@mui/icons-material';
 import { format } from 'date-fns';
-import { useRefundsQuery, useWithdrawalsQuery } from '@/api/hooks';
-import type { RefundRead, WithdrawalRead } from '@/api/generated/models';
+import { useMeQuery } from '@/api/hooks';
+import { useStudentBalance, usePaymentHistory } from '@/api/payments';
 import { PageHeader } from '@/components/PageHeader';
 import { LoadingState } from '@/components/states/LoadingState';
 import { ErrorState } from '@/components/states/ErrorState';
@@ -35,31 +35,25 @@ const formatDate = (value?: string | null) => {
 };
 
 export const PaymentsPage = () => {
-  const withdrawalsQuery = useWithdrawalsQuery();
-  const refundsQuery = useRefundsQuery();
+  const { data: currentUser } = useMeQuery();
+  const balanceQuery = useStudentBalance(currentUser?.id);
+  const historyQuery = usePaymentHistory(currentUser?.id);
 
-  const withdrawals = useMemo(
-    () => ((withdrawalsQuery.data?.data as WithdrawalRead[]) ?? []).slice().sort((a, b) =>
-      new Date(b.requested_at).getTime() - new Date(a.requested_at).getTime(),
+  const paymentHistory = useMemo(
+    () => (historyQuery.data ?? []).slice().sort((a, b) =>
+      new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime(),
     ),
-    [withdrawalsQuery.data],
+    [historyQuery.data],
   );
 
-  const refunds = useMemo(
-    () => ((refundsQuery.data?.data as RefundRead[]) ?? []).slice().sort((a, b) =>
-      new Date(b.approved_at ?? 0).getTime() - new Date(a.approved_at ?? 0).getTime(),
-    ),
-    [refundsQuery.data],
-  );
+  const charges = paymentHistory.filter((item) => ['tuition', 'fee'].includes(item.line_type));
+  const payments = paymentHistory.filter((item) => ['payment', 'refund'].includes(item.line_type));
 
-  const totalRefunds = refunds.reduce((sum, record) => sum + (record.amount_cents ?? 0), 0);
-  const pendingWithdrawals = withdrawals.filter((record) => !record.admin_processed_at).length;
-
-  if (withdrawalsQuery.isLoading || refundsQuery.isLoading) {
+  if (balanceQuery.isLoading || historyQuery.isLoading) {
     return <LoadingState label="Loading payment history" />;
   }
 
-  if (withdrawalsQuery.isError || refundsQuery.isError) {
+  if (balanceQuery.isError || historyQuery.isError) {
     return <ErrorState message="We were unable to load payment data." />;
   }
 
@@ -74,16 +68,20 @@ export const PaymentsPage = () => {
         <Grid item xs={12} md={6}>
           <Card>
             <CardHeader
-              avatar={<CreditCard color="primary" />}
-              title="Withdrawals in progress"
-              subheader="Awaiting administrative review"
+              avatar={<AccountBalanceWallet color={balanceQuery.data && balanceQuery.data.balance_cents > 0 ? 'warning' : 'success'} />}
+              title="Current Balance"
+              subheader="Charges minus payments"
             />
             <CardContent>
               <Typography variant="h4" fontWeight={700} gutterBottom>
-                {pendingWithdrawals}
+                {formatCurrency(balanceQuery.data?.balance_cents ?? 0)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Once processed, you&apos;ll receive status updates and any related documentation here.
+                {balanceQuery.data && balanceQuery.data.balance_cents > 0
+                  ? 'Amount due to AADA'
+                  : balanceQuery.data && balanceQuery.data.balance_cents < 0
+                  ? 'Credit balance in your favor'
+                  : 'Your account is paid in full'}
               </Typography>
             </CardContent>
           </Card>
@@ -91,16 +89,16 @@ export const PaymentsPage = () => {
         <Grid item xs={12} md={6}>
           <Card>
             <CardHeader
-              avatar={<MonetizationOn color="success" />}
-              title="Refunds issued"
-              subheader="Policy-compliant remittances"
+              avatar={<Receipt color="primary" />}
+              title="Total Payments"
+              subheader="Payments and refunds received"
             />
             <CardContent>
               <Typography variant="h4" fontWeight={700} gutterBottom>
-                {formatCurrency(totalRefunds)}
+                {formatCurrency(balanceQuery.data?.total_payments_cents ?? 0)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Track remittance dates and approval notes to confirm funds were delivered.
+                Total amount paid toward tuition and fees.
               </Typography>
             </CardContent>
           </Card>
@@ -110,35 +108,35 @@ export const PaymentsPage = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} lg={6}>
           <Card>
-            <CardHeader title="Withdrawal requests" subheader="Student-initiated tuition adjustments" />
+            <CardHeader title="Charges" subheader="Tuition and fees assessed" />
             <CardContent>
-              {withdrawals.length === 0 ? (
+              {charges.length === 0 ? (
                 <Typography variant="body2" color="text.secondary">
-                  No withdrawal requests recorded.
+                  No charges recorded.
                 </Typography>
               ) : (
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Date requested</TableCell>
-                      <TableCell>Progress %</TableCell>
-                      <TableCell>Reason</TableCell>
-                      <TableCell>Status</TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Type</TableCell>
+                      <TableCell>Description</TableCell>
+                      <TableCell align="right">Amount</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {withdrawals.map((withdrawal) => (
-                      <TableRow key={withdrawal.id} hover>
-                        <TableCell>{formatDate(withdrawal.requested_at)}</TableCell>
-                        <TableCell>{withdrawal.progress_pct_at_withdrawal ?? '—'}</TableCell>
-                        <TableCell>{withdrawal.reason ?? 'Not provided'}</TableCell>
+                    {charges.map((charge) => (
+                      <TableRow key={charge.id} hover>
+                        <TableCell>{formatDate(charge.created_at)}</TableCell>
                         <TableCell>
                           <Chip
                             size="small"
-                            color={withdrawal.admin_processed_at ? 'success' : 'warning'}
-                            label={withdrawal.admin_processed_at ? 'Processed' : 'Pending'}
+                            color={charge.line_type === 'tuition' ? 'primary' : 'default'}
+                            label={charge.line_type}
                           />
                         </TableCell>
+                        <TableCell>{charge.description ?? '—'}</TableCell>
+                        <TableCell align="right">{formatCurrency(charge.amount_cents)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -150,35 +148,35 @@ export const PaymentsPage = () => {
 
         <Grid item xs={12} lg={6}>
           <Card>
-            <CardHeader title="Refund remittances" subheader="Amounts returned per GNPEC policy" />
+            <CardHeader title="Payments & Refunds" subheader="Amounts received and returned" />
             <CardContent>
-              {refunds.length === 0 ? (
+              {payments.length === 0 ? (
                 <Typography variant="body2" color="text.secondary">
-                  No refunds have been issued yet.
+                  No payments or refunds recorded.
                 </Typography>
               ) : (
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Approved</TableCell>
-                      <TableCell>Amount</TableCell>
-                      <TableCell>Policy basis</TableCell>
-                      <TableCell>Remitted</TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Type</TableCell>
+                      <TableCell>Description</TableCell>
+                      <TableCell align="right">Amount</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {refunds.map((refund) => (
-                      <TableRow key={refund.id} hover>
-                        <TableCell>{formatDate(refund.approved_at)}</TableCell>
-                        <TableCell>{formatCurrency(refund.amount_cents)}</TableCell>
-                        <TableCell>{refund.policy_basis ?? '—'}</TableCell>
+                    {payments.map((payment) => (
+                      <TableRow key={payment.id} hover>
+                        <TableCell>{formatDate(payment.created_at)}</TableCell>
                         <TableCell>
-                          {refund.remitted_at ? (
-                            <Chip size="small" color="success" label={formatDate(refund.remitted_at)} />
-                          ) : (
-                            <Chip size="small" color="warning" label="Pending" />
-                          )}
+                          <Chip
+                            size="small"
+                            color={payment.line_type === 'payment' ? 'success' : 'info'}
+                            label={payment.line_type}
+                          />
                         </TableCell>
+                        <TableCell>{payment.description ?? '—'}</TableCell>
+                        <TableCell align="right">{formatCurrency(payment.amount_cents)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

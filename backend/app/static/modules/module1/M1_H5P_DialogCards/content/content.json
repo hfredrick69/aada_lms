@@ -1,54 +1,50 @@
 {
-  "title": "Professional Communication Practice",
+  "title": "Professional Dialog Cards – Module 1",
   "mode": "normal",
-  "description": "<p>Practice delivering empathetic, policy-aligned responses to common scenarios. Review each scenario, then flip the card to see the suggested professional dialogue.</p>",
+  "description": "<p>Flip each card to rehearse short, policy-aligned responses that medical assistants can use in patient communication, professionalism, terminology, and HIPAA scenarios.</p>",
   "dialogs": [
     {
-      "question": {
-        "text": "<p><strong>Scenario 1: PHI Visible at Check-in</strong></p><p>You're at the front desk when a patient approaches while the schedule displays PHI on the monitor. A delivery vendor also walks in. What do you say?</p>",
-        "answer": "<p><strong>Suggested Response:</strong></p><p>\"Thank you for your patience. I'm going to secure the schedule so we can discuss your visit privately.\"</p><p><em>Then: Lock workstation, reposition privacy screen, and document the incident.</em></p>"
-      }
+      "text": "<p><strong>Patient Communication – Active Listening</strong></p><p>A new patient arrives 20 minutes late, is anxious about missing work, and demands to be seen immediately. How do you respond?</p>",
+      "answer": "<p><strong>Suggested Dialogue</strong></p><p>\"I can see you're trying to get back to work quickly. Let me partner with the provider so we minimize your wait while keeping everyone on schedule. Will you update this symptom checklist for the nurse while I confirm next steps?\"</p><ul><li>Validate the emotion before redirecting.</li><li>Explain the plan and what you need from the patient.</li><li>Document the late arrival and notify the clinical lead.</li></ul>"
     },
     {
-      "question": {
-        "text": "<p><strong>Scenario 2: Unauthorized Social Media Post</strong></p><p>A coworker posts a patient photo showing their face and the practice name on social media. How do you address this?</p>",
-        "answer": "<p><strong>Suggested Response:</strong></p><p>\"I'm concerned that the post may reveal PHI. Let's take it down and review our consent policy together.\"</p><p><em>Then: Notify supervisor, document incident, request immediate removal.</em></p>"
-      }
+      "text": "<p><strong>Professionalism – Conflicting Verbal Order</strong></p><p>A provider asks you to chart a vaccine as given even though the patient refused so the quality report \"stays clean.\" What should you say?</p>",
+      "answer": "<p><strong>Suggested Dialogue</strong></p><p>\"For accuracy and compliance we have to chart exactly what happened. I can document the refusal and provide the education points we covered so quality still sees the patient interaction.\"</p><ul><li>Reaffirm policy and scope of practice.</li><li>Offer to document refusal coding or follow-up tasks.</li><li>Escalate through the compliance chain if pressure continues.</li></ul>"
     },
     {
-      "question": {
-        "text": "<p><strong>Scenario 3: Pressure to Rush Sterilization</strong></p><p>Near closing time, a supervisor urges the team to skip part of the sterilization cycle to fit in one more patient. How do you respond?</p>",
-        "answer": "<p><strong>Suggested Response:</strong></p><p>\"To keep everyone safe and compliant, we need to run the complete cycle. Let me reschedule the patient so we uphold CDC standards.\"</p><p><em>Then: Document conversation in safety log and offer to check for sterilized backup set.</em></p>"
-      }
+      "text": "<p><strong>HIPAA – Phone Verification</strong></p><p>Someone calls claiming to be a patient's spouse and requests lab results. You do not see an authorization on file. How do you proceed?</p>",
+      "answer": "<p><strong>Suggested Dialogue</strong></p><p>\"To protect every patient's privacy I can only release results to the patient or a person listed on their authorization. I can send you our release form or arrange for the patient to call us directly.\"</p><ul><li>Verify identity with two identifiers before discussing anything.</li><li>Offer secure alternatives: patient portal, signed ROI, or in-person pickup with ID.</li><li>Document the request and your response.</li></ul>"
     },
     {
-      "question": {
-        "text": "<p><strong>Scenario 4: Patient Requests Records</strong></p><p>A patient calls asking you to email their treatment records to their personal email address immediately. What's your response?</p>",
-        "answer": "<p><strong>Suggested Response:</strong></p><p>\"I'd be happy to help with your records. For security, we'll need you to complete an authorization form first, and we'll send them through our secure portal or by mail.\"</p><p><em>Key: Never email PHI to unsecured addresses - use HIPAA-compliant methods only.</em></p>"
-      }
+      "text": "<p><strong>HIPAA – PHI Left at Printer</strong></p><p>You notice discharge summaries with PHI left on the shared printer near the waiting area. What do you do and say?</p>",
+      "answer": "<p><strong>Suggested Dialogue</strong></p><p>\"I'm securing these printouts so we keep patient information private. Let's double-check who sent them and remind the team to print directly to the clinical station.\"</p><ul><li>Move the documents to a secure location immediately.</li><li>Track down the owner and review secure-print settings.</li><li>Log the near miss according to policy.</li></ul>"
     },
     {
-      "question": {
-        "text": "<p><strong>Scenario 5: Concerned Family Member</strong></p><p>A patient's adult child calls asking for details about their parent's recent treatment and diagnosis. How do you handle this?</p>",
-        "answer": "<p><strong>Suggested Response:</strong></p><p>\"I understand your concern. Due to privacy laws, I can only discuss treatment details with the patient directly or someone they've authorized in writing. Would you like information about our authorization process?\"</p><p><em>Remember: Even family members need written authorization unless they're healthcare proxies.</em></p>"
-      }
+      "text": "<p><strong>Medical Terminology – STAT CBC</strong></p><p>A STAT CBC is ordered for a patient with escalating dizziness. What does STAT mean for your workflow?</p>",
+      "answer": "<p><strong>Key Points</strong></p><ul><li>STAT = immediate processing with top priority over routine draws.</li><li>Prep the phlebotomy tray, label tubes, and notify the lab the sample is en route before collection.</li><li>Document the exact collection time so the provider can act on the result quickly.</li></ul>"
     },
     {
-      "question": {
-        "text": "<p><strong>Scenario 6: Expired Supplies Found</strong></p><p>While restocking, you discover expired sterile supplies in the tray setup area. The next patient is scheduled in 10 minutes. What do you do?</p>",
-        "answer": "<p><strong>Suggested Response (to supervisor):</strong></p><p>\"I found expired supplies in the setup area dated [date]. I'm removing them now and will restock with current inventory. The patient's appointment may need to be delayed 5 minutes to ensure proper preparation.\"</p><p><em>Then: Document in supply log, check all inventory, and review expiration protocols.</em></p>"
-      }
+      "text": "<p><strong>Medical Terminology – PRN Inhaler q4h</strong></p><p>The discharge note reads \"albuterol inhaler 2 puffs PRN SOB, q4h max.\" How do you explain that to a patient?</p>",
+      "answer": "<p><strong>Suggested Explanation</strong></p><p>\"Use two puffs only when you feel short of breath, and you can repeat it every four hours if needed. If you're still short of breath after that or need it more often, call us or go to urgent care.\"</p><ul><li>Translate PRN = as needed.</li><li>Clarify q4h = every 4 hours, with a maximum frequency.</li><li>Teach when to escalate care.</li></ul>"
+    },
+    {
+      "text": "<p><strong>Professional Boundaries – Gifts</strong></p><p>A grateful patient offers you an expensive gift card. How do you maintain rapport while declining?</p>",
+      "answer": "<p><strong>Suggested Dialogue</strong></p><p>\"Your gratitude means a lot, but our policy doesn't let us accept gifts of value. A note to the team or completing the survey would be more than enough.\"</p><ul><li>Thank the patient before referencing policy.</li><li>Offer an alternative outlet for appreciation.</li><li>Inform your supervisor if the patient insists.</li></ul>"
+    },
+    {
+      "text": "<p><strong>Documentation – Vaccine Refusal</strong></p><p>A parent declines the HPV vaccine after education but wants it noted that they \"will think about it.\" What should your documentation and follow up include?</p>",
+      "answer": "<p><strong>Key Steps</strong></p><ul><li>Document the offered vaccine, education provided, and exact wording of the refusal or deferral.</li><li>Have the parent sign the refusal/deferral form per policy.</li><li>Schedule a reminder call or flag the chart for follow up at the next visit.</li></ul>"
     }
   ],
   "behaviour": {
     "enableRetry": true,
     "disableBackwardsNavigation": false,
     "scaleTextNotCard": false,
-    "randomCards": false
+    "randomCards": true
   },
-  "answer": "Turn",
+  "answer": "Flip Card",
   "next": "Next",
   "prev": "Previous",
-  "retry": "Retry",
+  "retry": "Retry Deck",
   "progressText": "Card @card of @total"
 }
