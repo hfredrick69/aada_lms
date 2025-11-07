@@ -35,7 +35,7 @@ const Content = () => {
   const [h5pActivityId, setH5pActivityId] = useState("");
   const [fileSubfolder, setFileSubfolder] = useState("");
 
-  const canEdit = hasRole(["admin", "instructor"]);
+  const canEdit = hasRole(["admin"]);
 
   useEffect(() => {
     fetchModules();
@@ -263,7 +263,7 @@ const Content = () => {
       <div className="p-6">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <p className="text-yellow-800">
-            You don't have permission to manage content. Only admins and instructors can access this page.
+            You don't have permission to manage content. Only admins can access this page.
           </p>
         </div>
       </div>

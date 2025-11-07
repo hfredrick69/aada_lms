@@ -38,10 +38,10 @@ MAX_H5P_SIZE = 100 * 1024 * 1024  # 100 MB
 MAX_SUPPLEMENTAL_SIZE = 50 * 1024 * 1024  # 50 MB
 
 
-def require_instructor_or_admin(current_user: User = Depends(get_current_user)):
-    """Dependency to require instructor or admin role"""
+def require_admin(current_user: User = Depends(get_current_user)):
+    """Dependency to require admin role"""
     # TODO: Implement proper role checking once role system is fully integrated
-    # For now, allow all authenticated users
+    # For now, allow all authenticated users (will be restricted once role system is active)
     return current_user
 
 
@@ -79,7 +79,7 @@ async def upload_module_markdown(
     module_id: str,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """
     Upload or update module markdown file
@@ -138,7 +138,7 @@ async def upload_module_markdown(
 async def get_module_markdown(
     module_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """Get the raw markdown content for a module"""
     module = validate_module_id(module_id, db)
@@ -164,7 +164,7 @@ async def upload_h5p_activity(
     file: UploadFile = File(...),
     activity_id: str = Form(...),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """
     Upload H5P activity package
@@ -228,7 +228,7 @@ async def upload_h5p_activity(
 async def list_h5p_activities(
     module_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """List all H5P activities for a module"""
     module = validate_module_id(module_id, db)
@@ -255,7 +255,7 @@ async def delete_h5p_activity(
     module_id: str,
     activity_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """Delete an H5P activity"""
     module = validate_module_id(module_id, db)
@@ -290,7 +290,7 @@ async def upload_supplemental_file(
     file: UploadFile = File(...),
     subfolder: Optional[str] = Form(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """
     Upload supplemental file (PDF, image, video, etc.)
@@ -356,7 +356,7 @@ async def list_supplemental_files(
     module_id: str,
     subfolder: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """List all supplemental files for a module"""
     module = validate_module_id(module_id, db)
@@ -392,7 +392,7 @@ async def delete_supplemental_file(
     module_id: str,
     file_path: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """Delete a supplemental file"""
     module = validate_module_id(module_id, db)
@@ -424,7 +424,7 @@ async def delete_supplemental_file(
 @router.get("/modules")
 async def list_all_modules(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_instructor_or_admin)
+    current_user: User = Depends(require_admin)
 ):
     """List all modules with their content status"""
     modules = db.query(Module).order_by(Module.position).all()

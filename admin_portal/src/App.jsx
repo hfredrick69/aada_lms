@@ -46,7 +46,7 @@ const App = () => {
         <Route
           path="/content"
           element={
-            <RoleGate allowedRoles={["admin", "instructor"]}>
+            <RoleGate allowedRoles={["admin"]}>
               <Content />
             </RoleGate>
           }
