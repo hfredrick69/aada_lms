@@ -285,6 +285,25 @@ Declare the same versions inside `h5p.json → preloadedDependencies` and copy t
 5. **Deploy** the `.h5p` file to `backend/app/static/modules/module1/` and keep the unzipped copy (`M1_H5P_DialogCards/`) under version control for easy edits.
 6. **Refresh cache** by deleting the activity’s folder under `backend/app/static/.h5p_cache/` (or restarting the backend) so the next request extracts the updated archive.
 
+### Automation via `scripts/h5p_builder.py`
+
+Manually copying dozens of dependencies is error-prone. Use the builder script to package any activity from the unzipped author folder:
+
+```bash
+python scripts/h5p_builder.py package \
+  --activity-id M1_H5P_DialogCards \
+  --source backend/app/static/modules/module1/M1_H5P_DialogCards \
+  --output backend/app/static/modules/module1/M1_H5P_DialogCards.h5p
+```
+
+What the script does:
+
+- Reads `h5p.json` to gather `preloadedDependencies` and recursively loads their `library.json` files so every nested library ships with the package.
+- Uses the master copies under `backend/app/static/h5p_libraries/` as the source of truth. If a library has a `package.json` + `npm run build` script (e.g., Dialog Cards), it compiles the assets inside `tmp/h5p_build/library_workspaces/` and stores the ready-to-ship version under `tmp/h5p_build/library_cache/`. The repo stays clean—no `node_modules` or `dist` files are committed.
+- Creates a disposable build folder `tmp/h5p_build/<activity>_package/` that contains `content/`, `h5p.json`, and the dependency tree. It then zips the folder into the requested `.h5p`.
+
+Re-run the script any time the content JSON or dependencies change. Remove `backend/app/static/.h5p_cache/<activity>` (or restart the backend container) so the LMS serves the new archive.
+
 ## Recommended H5P Content Types for Medical Assistant Training
 
 ### Dialog Cards (H5P.Dialogcards)
@@ -338,7 +357,74 @@ Declare the same versions inside `h5p.json → preloadedDependencies` and copy t
 - [ ] Activity is interactive and functional
 - [ ] Completion callback fires when activity finished
 
-## Example: Adding a New Activity
+## Content Management API
+
+The system includes a content management API for instructors/admins to upload and manage module content programmatically.
+
+### Available Endpoints
+
+**Module Markdown**
+- `POST /api/content/modules/{module_id}/markdown` - Upload/update module markdown file
+- `GET /api/content/modules/{module_id}/markdown` - Download raw markdown
+
+**H5P Activities**
+- `POST /api/content/modules/{module_id}/h5p` - Upload H5P activity package
+- `GET /api/content/modules/{module_id}/h5p` - List all H5P activities for a module
+- `DELETE /api/content/modules/{module_id}/h5p/{activity_id}` - Delete H5P activity
+
+**Supplemental Files**
+- `POST /api/content/modules/{module_id}/files` - Upload supplemental file (PDF, image, video, etc.)
+- `GET /api/content/modules/{module_id}/files` - List supplemental files
+- `DELETE /api/content/modules/{module_id}/files/{file_path}` - Delete supplemental file
+
+**Module List**
+- `GET /api/content/modules` - List all modules with content status
+
+### File Size Limits
+- Markdown: 10 MB
+- H5P: 100 MB
+- Supplemental: 50 MB
+
+### Allowed File Types
+- Markdown: `.md`, `.markdown`
+- H5P: `.h5p`
+- Supplemental: `.pdf`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.mp4`, `.mp3`, `.zip`
+
+### Security
+- All endpoints require authentication (instructor or admin role)
+- Filenames are sanitized to prevent directory traversal
+- File uploads are validated for type and size
+- Automatic backup of existing markdown files before overwrite
+
+### Example: Upload H5P Activity via API
+
+```bash
+# Upload H5P activity to module
+curl -X POST "http://localhost:8000/api/content/modules/{module_id}/h5p" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@M1_H5P_NewActivity.h5p" \
+  -F "activity_id=M1_H5P_NewActivity"
+
+# List activities
+curl "http://localhost:8000/api/content/modules/{module_id}/h5p" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example: Upload Module Markdown via API
+
+```bash
+# Upload markdown file
+curl -X POST "http://localhost:8000/api/content/modules/{module_id}/markdown" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@Module_1_Lessons_Branded.md"
+
+# Download markdown
+curl "http://localhost:8000/api/content/modules/{module_id}/markdown" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -o Module_1_Lessons_Branded.md
+```
+
+## Example: Adding a New Activity (Manual Deployment)
 
 ```bash
 # 1. Prepare package
@@ -347,7 +433,7 @@ mkdir M1_H5P_NewActivity
 # ... add content, libraries, h5p.json ...
 zip -r M1_H5P_NewActivity.h5p M1_H5P_NewActivity
 
-# 2. Deploy
+# 2. Deploy manually (or use API)
 cp M1_H5P_NewActivity.h5p \
    backend/app/static/modules/module1/
 
