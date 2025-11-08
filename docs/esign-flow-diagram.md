@@ -276,17 +276,17 @@ graph TB
 stateDiagram-v2
     [*] --> pending: Document Created & Token Generated
 
-    pending --> pending: Token Sent to Lead (Audit: document_sent)
+    pending --> pending: Token Sent to Lead
 
-    pending --> pending: Lead Views Document (Audit: document_viewed)
+    pending --> pending: Lead Views Document
 
-    pending --> student_signed: Lead Signs (Audit: document_signed)
+    pending --> student_signed: Lead Signs
 
-    pending --> voided: Admin Cancels (Audit: document_voided)
+    pending --> voided: Admin Cancels
 
-    student_signed --> admin_signed: Admin Counter-Signs (Audit: admin_signed)
+    student_signed --> admin_signed: Admin Counter-Signs
 
-    admin_signed --> completed: All Signatures Complete (Audit: document_completed)
+    admin_signed --> completed: All Signatures Complete
 
     pending --> [*]: Token Expires (30 days)
 
