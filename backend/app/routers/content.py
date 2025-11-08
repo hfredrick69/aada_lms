@@ -9,7 +9,6 @@ Provides endpoints for instructors/admins to:
 """
 
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, Form
-from fastapi.responses import FileResponse
 from pathlib import Path
 from typing import Optional
 import shutil
@@ -147,19 +146,14 @@ async def get_module_markdown(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_instructor_or_admin)
 ):
-    """Get the raw markdown content for a module"""
-    module = validate_module_id(module_id, db)
-    numeric_id = get_module_numeric_id(module.code)
-
-    file_path = MODULES_BASE / f"module{numeric_id}" / f"Module_{numeric_id}_Lessons_Branded.md"
-
-    if not file_path.exists():
-        raise HTTPException(status_code=404, detail="Module markdown file not found")
-
-    return FileResponse(
-        file_path,
-        media_type="text/markdown",
-        filename=f"Module_{numeric_id}_Lessons_Branded.md"
+    """Download of module markdown is not allowed"""
+    raise HTTPException(
+        status_code=403,
+        detail=(
+            "Downloading any course content is not allowed. "
+            "If you require offline access to this content, "
+            "please email admin@aada.com"
+        )
     )
 
 

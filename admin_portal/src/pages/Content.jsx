@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext.jsx";
 import {
   listModulesWithContent,
   uploadModuleMarkdown,
-  downloadModuleMarkdown,
   listH5PActivities,
   uploadH5PActivity,
   deleteH5PActivity,
@@ -114,30 +113,6 @@ const Content = () => {
       setError(err.response?.data?.detail || "Failed to upload markdown");
     } finally {
       setUploadProgress(null);
-    }
-  };
-
-  const handleMarkdownDownload = async () => {
-    if (!selectedModule) return;
-
-    try {
-      const blob = await downloadModuleMarkdown(selectedModule.id);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${selectedModule.code}_module.md`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      setSuccess("Markdown downloaded successfully");
-    } catch (err) {
-      console.error(err);
-      if (err.response?.status === 404) {
-        setError("No markdown file found for this module");
-      } else {
-        setError("Failed to download markdown");
-      }
     }
   };
 
@@ -397,35 +372,14 @@ const Content = () => {
                     />
                   </div>
 
-                  <div className="flex space-x-3">
-                    <button
-                      type="submit"
-                      disabled={!canEdit || uploadProgress}
-                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
-                    >
-                      Upload Markdown
-                    </button>
-                    {selectedModule.has_markdown && (
-                      <button
-                        type="button"
-                        onClick={handleMarkdownDownload}
-                        className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700"
-                      >
-                        Download Current
-                      </button>
-                    )}
-                  </div>
+                  <button
+                    type="submit"
+                    disabled={!canEdit || uploadProgress}
+                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                  >
+                    Upload Markdown
+                  </button>
                 </form>
-              )}
-
-              {!canEdit && selectedModule.has_markdown && (
-                <button
-                  type="button"
-                  onClick={handleMarkdownDownload}
-                  className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700"
-                >
-                  Download Markdown
-                </button>
               )}
 
               {selectedModule.has_markdown && (

@@ -23,13 +23,6 @@ export const uploadModuleMarkdown = async (moduleId, file) => {
   return data;
 };
 
-export const downloadModuleMarkdown = async (moduleId) => {
-  const response = await axiosClient.get(`/content/modules/${moduleId}/markdown`, {
-    responseType: "blob"
-  });
-  return response.data;
-};
-
 // ============ H5P ACTIVITIES ============
 
 export const listH5PActivities = async (moduleId) => {
