@@ -218,6 +218,25 @@ async def serve_h5p_player(activity_id: str):
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border-radius: 4px;
         }}
+        .h5p-question-container {{
+            position: relative;
+        }}
+        .h5p-question-container .h5p-prevent-interaction {{
+            display: none !important;
+        }}
+        .h5p-question-container .h5p-question-full-screen,
+        .h5p-question-container .h5p-question-full-screen.h5p-question-button {{
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            z-index: 4;
+        }}
+        .h5p-question-container .h5p-question-full-screen button {{
+            width: 32px;
+            height: 32px;
+        }}
     </style>
 </head>
 <body>

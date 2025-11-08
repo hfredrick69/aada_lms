@@ -55,6 +55,7 @@ class Lead(Base):
     assigned_to = relationship("User", foreign_keys=[assigned_to_id])
     program_interest = relationship("Program", foreign_keys=[program_interest_id])
     custom_fields = relationship("LeadCustomField", back_populates="lead", cascade="all, delete-orphan")
+    documents = relationship("SignedDocument", back_populates="lead")
 
 
 class LeadCustomField(Base):

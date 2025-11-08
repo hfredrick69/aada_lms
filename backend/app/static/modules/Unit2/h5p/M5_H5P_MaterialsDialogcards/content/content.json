@@ -1,0 +1,42 @@
+{
+  "title": "Dental Materials Troubleshooting",
+  "mode": "normal",
+  "description": "<p>Flip each card to review common dental materials issues, recommended responses, and QA follow ups for Module 5.</p>",
+  "dialogs": [
+    {
+      "text": "<p><strong>Alginate Tear-Out</strong></p><p>Your impression shows torn vestibular tissue tags and distorted anterior surfaces.</p>",
+      "answer": "<p><strong>Response</strong></p><ul><li>Likely removed tray before set or trapped tissue due to rocking.</li><li>Mix with cooler water to extend working time, seat posterior first, and support tray during removal.</li><li>Document defect and repeat before disinfecting for the lab.</li></ul>"
+    },
+    {
+      "text": "<p><strong>Gypsum Cast Voids</strong></p><p>Facial surfaces on the pour show pinhole voids and chalky texture.</p>",
+      "answer": "<p><strong>Response</strong></p><ul><li>Air was introduced while pouring or impression was contaminated.</li><li>Use vibration to flow stone slowly, rinse and disinfect impression thoroughly, and separate only after final set.</li><li>Record batch number and note corrective action on QA log.</li></ul>"
+    },
+    {
+      "text": "<p><strong>Amalgam Marginal Fracture</strong></p><p>Day-after check reveals ditching at the proximal box of a new restoration.</p>",
+      "answer": "<p><strong>Response</strong></p><ul><li>Insufficient condensation or premature carving is likely.</li><li>Increase condensation pressure, use small condensers near margins, and burnish properly before carving.</li><li>Review spill kits and mercury hygiene when remixing.</li></ul>"
+    },
+    {
+      "text": "<p><strong>Composite Pull-Back</strong></p><p>Class II composite exhibits gaps on the axial wall after finishing.</p>",
+      "answer": "<p><strong>Response</strong></p><ul><li>Dentin overdried or adhesive undercured.</li><li>Maintain moist dentin, scrub adhesive for full dwell time, air-thin gently, and check curing light irradiance &gt;1000 mW/cm².</li><li>Log light output in maintenance chart.</li></ul>"
+    },
+    {
+      "text": "<p><strong>Provisional Open Contact</strong></p><p>Temporary crown returns from bite check with food impaction and open mesial contact.</p>",
+      "answer": "<p><strong>Response</strong></p><ul><li>Matrix not contoured or bis-acryl trimmed excessively.</li><li>Burnish matrix before relining, add flowable resin to contact, finish/polish, and re-check floss resistance.</li><li>Update provisional record with material lot and adjustments.</li></ul>"
+    },
+    {
+      "text": "<p><strong>SDS Follow-Up</strong></p><p>A new glass ionomer batch arrives without a digital Safety Data Sheet link.</p>",
+      "answer": "<p><strong>Response</strong></p><ul><li>Quarantine material until SDS obtained.</li><li>Contact manufacturer for PDF, upload to shared SDS folder, and label storage bin with QR code.</li><li>Note action on hazard communication checklist.</li></ul>"
+    }
+  ],
+  "behaviour": {
+    "enableRetry": true,
+    "disableBackwardsNavigation": false,
+    "scaleTextNotCard": false,
+    "randomCards": true
+  },
+  "answer": "Flip Card",
+  "next": "Next",
+  "prev": "Previous",
+  "retry": "Review Deck",
+  "progressText": "Card @card of @total"
+}

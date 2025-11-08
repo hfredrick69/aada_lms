@@ -41,14 +41,28 @@ class DocumentTemplateResponse(DocumentTemplateBase):
 # ==================== Signed Document Schemas ====================
 
 class SignedDocumentCreate(BaseModel):
+    """Create a signed document for either a user or a lead"""
     template_id: UUID
-    user_id: UUID
+    user_id: Optional[UUID] = None
+    lead_id: Optional[UUID] = None
+    signer_name: Optional[str] = Field(None, max_length=255)
+    signer_email: Optional[str] = Field(None, max_length=255)
+
+    class Config:
+        # Must have either user_id or lead_id, not both
+        # This will be validated at the business logic layer
+        pass
 
 
 class SignedDocumentResponse(BaseModel):
     id: UUID
     template_id: UUID
-    user_id: UUID
+    user_id: Optional[UUID] = None
+    lead_id: Optional[UUID] = None
+    signer_name: Optional[str] = None
+    signer_email: Optional[str] = None
+    signing_token: Optional[str] = None
+    token_expires_at: Optional[datetime] = None
     status: str
     unsigned_file_path: Optional[str] = None
     signed_file_path: Optional[str] = None
@@ -78,9 +92,9 @@ class SignedDocumentListResponse(BaseModel):
 # ==================== Document Signature Schemas ====================
 
 class DocumentSignatureCreate(BaseModel):
-    signature_type: str = Field(..., pattern="^(student|school_official)$")
+    signature_type: str = Field(..., pattern="^(applicant|student|school_official)$")
     signature_data: str = Field(..., min_length=1)  # Base64 encoded signature image
-    typed_name: Optional[str] = Field(None, max_length=255)
+    typed_name: str = Field(..., max_length=255)  # Required for all signatures
 
 
 class DocumentSignatureResponse(BaseModel):
@@ -131,3 +145,21 @@ class DocumentDownloadResponse(BaseModel):
     filename: str
     content_type: str = "application/pdf"
     download_url: str  # Pre-signed URL or direct path
+
+
+# ==================== Public Signing Schemas ====================
+
+class DocumentSignRequest(BaseModel):
+    """Request to sign a document via public endpoint"""
+    signature_data: str = Field(..., min_length=1)  # Base64 encoded signature image
+    typed_name: str = Field(..., min_length=1, max_length=255)
+
+
+class DocumentSignResponse(BaseModel):
+    """Response after signing a document via public endpoint"""
+    success: bool
+    message: str
+    document_id: str
+    status: str
+    signed_at: str
+    requires_counter_signature: bool

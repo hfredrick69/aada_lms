@@ -6,6 +6,7 @@ import ModulesPage from "@/features/modules/ModulesPage";
 import ModulePlayerPage from "@/features/modules/ModulePlayerPage";
 import PaymentsPage from "@/features/payments/PaymentsPage";
 import ExternshipsPage from "@/features/externships/ExternshipsPage";
+import PublicSign from "@/pages/PublicSign";
 import AppLayout from "@/components/layout/AppLayout";
 import Protected from "@/routes/Protected";
 
@@ -17,6 +18,7 @@ export default function App() {
 
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/sign/:token" element={<PublicSign />} />
 
       {/* Protected routes */}
       <Route element={<Protected />}>

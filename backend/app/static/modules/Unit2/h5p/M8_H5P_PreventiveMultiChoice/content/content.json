@@ -1,0 +1,49 @@
+{
+  "question": "<p>Which preventive strategies align with a high-caries-risk adult who reports xerostomia and frequent snacking?</p>",
+  "answers": [
+    {
+      "text": "Recommend neutral sodium fluoride rinse or varnish at each recall.",
+      "correct": true
+    },
+    {
+      "text": "Suggest sipping acidic sports drinks throughout the day to stimulate saliva.",
+      "correct": false
+    },
+    {
+      "text": "Incorporate xylitol gum or lozenges between meals to promote buffering.",
+      "correct": true
+    },
+    {
+      "text": "Delay sealant placement until CAMBRA risk scores decrease to low.",
+      "correct": false
+    },
+    {
+      "text": "Schedule motivational interviewing follow-ups focused on fermentable carbohydrate frequency.",
+      "correct": true
+    }
+  ],
+  "behaviour": {
+    "type": "multi",
+    "enableRetry": true,
+    "enableSolutionsButton": true,
+    "randomAnswers": true,
+    "singlePoint": false
+  },
+  "overallFeedback": [
+    {
+      "from": 0,
+      "to": 33,
+      "feedback": "Revisit fluoride, diet, and xerostomia strategies."
+    },
+    {
+      "from": 34,
+      "to": 66,
+      "feedback": "Close! Double-check which recommendations increase caries risk."
+    },
+    {
+      "from": 67,
+      "to": 100,
+      "feedback": "Excellent personalized preventive plan!"
+    }
+  ]
+}

@@ -11,6 +11,7 @@ import {
 } from "../api/leads.js";
 import { listPrograms } from "../api/programs.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import SendDocumentModal from "../components/SendDocumentModal.jsx";
 
 const LEAD_STATUSES = ["new", "contacted", "qualified", "unqualified", "converted"];
 const ACTIVITY_TYPES = ["call", "email", "sms", "meeting", "note", "task"];
@@ -26,6 +27,7 @@ const Leads = () => {
   const [activities, setActivities] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showActivityModal, setShowActivityModal] = useState(false);
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
 
   // Form states
   const [form, setForm] = useState({
@@ -570,6 +572,12 @@ const Leads = () => {
               {canEdit && (
                 <div className="flex gap-2 justify-end pt-4 border-t border-slate-200">
                   <button
+                    onClick={() => setShowDocumentModal(true)}
+                    className="px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition"
+                  >
+                    Send Document
+                  </button>
+                  <button
                     onClick={() => handleDelete(selectedLead.id)}
                     className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition"
                   >
@@ -656,6 +664,14 @@ const Leads = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Send Document Modal */}
+      {showDocumentModal && selectedLead && (
+        <SendDocumentModal
+          lead={selectedLead}
+          onClose={() => setShowDocumentModal(false)}
+        />
       )}
     </div>
   );

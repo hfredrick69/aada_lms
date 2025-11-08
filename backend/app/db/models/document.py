@@ -34,12 +34,23 @@ class DocumentTemplate(Base):
 
 
 class SignedDocument(Base):
-    """Instance of a document sent to/signed by a student"""
+    """Instance of a document sent to/signed by a student or lead"""
     __tablename__ = "signed_documents"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     template_id = Column(UUID(as_uuid=True), ForeignKey("document_templates.id"), nullable=False)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    # Link to either a user (student) OR a lead (applicant)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    lead_id = Column(UUID(as_uuid=True), ForeignKey("crm.leads.id"), nullable=True)
+
+    # For leads without accounts, store signer info
+    signer_name = Column(String(255), nullable=True)
+    signer_email = Column(String(255), nullable=True)
+
+    # Unique token for public signing (no login required)
+    signing_token = Column(String(255), unique=True, nullable=True, index=True)
+    token_expires_at = Column(DateTime, nullable=True)
 
     # Document status workflow
     status = Column(String(50), nullable=False, default="pending")
@@ -60,6 +71,7 @@ class SignedDocument(Base):
     # Relationships
     template = relationship("DocumentTemplate", back_populates="document_instances")
     user = relationship("User", back_populates="signed_documents")
+    lead = relationship("Lead", back_populates="documents")
     signatures = relationship("DocumentSignature", back_populates="document", cascade="all, delete-orphan")
     audit_logs = relationship("DocumentAuditLog", back_populates="document", cascade="all, delete-orphan")
 
@@ -70,9 +82,9 @@ class DocumentSignature(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     document_id = Column(UUID(as_uuid=True), ForeignKey("signed_documents.id"), nullable=False)
-    signer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    signer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)  # Null for lead signatures
 
-    signature_type = Column(String(50), nullable=False)  # "student" or "school_official"
+    signature_type = Column(String(50), nullable=False)  # "applicant", "student", or "school_official"
     signature_data = Column(Text, nullable=False)  # Base64 encoded signature image
 
     # Legal audit trail
@@ -80,8 +92,9 @@ class DocumentSignature(Base):
     ip_address = Column(String(45), nullable=False)  # IPv6 support
     user_agent = Column(Text, nullable=False)
 
-    # Optional typed name (in addition to signature image)
-    typed_name = Column(String(255), nullable=True)
+    # Typed name and email (required for all signatures)
+    typed_name = Column(String(255), nullable=False)
+    signer_email = Column(String(255), nullable=True)  # For lead/applicant signatures
 
     # Relationships
     document = relationship("SignedDocument", back_populates="signatures")

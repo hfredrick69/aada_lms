@@ -16,12 +16,14 @@ import json
 
 from app.db.session import get_db
 from app.db.models.user import User
+from app.db.models.crm.lead import Lead
 from app.db.models.document import (
     DocumentTemplate,
     SignedDocument,
     DocumentSignature,
     DocumentAuditLog
 )
+from app.services.token_service import TokenService
 from app.routers.auth import get_current_user
 from app.schemas.document import (
     DocumentTemplateResponse,
@@ -31,6 +33,7 @@ from app.schemas.document import (
     DocumentSignatureResponse,
     DocumentAuditLogListResponse,
 )
+from app.services.pdf_service import PDFSignatureService
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -152,30 +155,78 @@ def get_document_template(
 # ==================== Document Instance Management ====================
 
 @router.post("/send", response_model=SignedDocumentResponse)
-def send_document_to_student(
+def send_document(
     template_id: uuid.UUID,
-    user_id: uuid.UUID,
-    request: Request,
+    user_id: uuid.UUID = None,
+    lead_id: uuid.UUID = None,
+    request: Request = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    """Send a document to a student for signing"""
+    """
+    Send a document to a user or lead for signing
+
+    Security:
+        - For leads: generates secure token for public signing
+        - For users: uses authenticated signing flow
+        - XOR validation: must provide either user_id OR lead_id (not both)
+    """
+
+    # Validate XOR: either user_id or lead_id, not both
+    if not user_id and not lead_id:
+        raise HTTPException(status_code=400, detail="Either user_id or lead_id must be provided")
+
+    if user_id and lead_id:
+        raise HTTPException(status_code=400, detail="Cannot provide both user_id and lead_id")
 
     # Validate template exists
     template = db.query(DocumentTemplate).filter(DocumentTemplate.id == template_id).first()
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 
-    # Validate user exists
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    # Initialize document fields
+    signer_name = None
+    signer_email = None
+    signing_token = None
+    token_expires_at = None
+    event_details = {"template_id": str(template_id)}
+
+    # Handle user-based document
+    if user_id:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        event_details["recipient_user_id"] = str(user_id)
+
+    # Handle lead-based document (token-based signing)
+    else:
+        lead = db.query(Lead).filter(Lead.id == lead_id).first()
+        if not lead:
+            raise HTTPException(status_code=404, detail="Lead not found")
+
+        # Generate secure signing token
+        signing_token = TokenService.generate_signing_token()
+        token_expires_at = TokenService.calculate_token_expiration(days=30)
+
+        # Store signer info from lead
+        signer_name = f"{lead.first_name} {lead.last_name}"
+        signer_email = lead.email
+
+        event_details["recipient_lead_id"] = str(lead_id)
+        event_details["signing_token_expires_at"] = token_expires_at.isoformat()
 
     # Create signed document instance
     document = SignedDocument(
         template_id=template_id,
         user_id=user_id,
-        status="pending"
+        lead_id=lead_id,
+        signer_name=signer_name,
+        signer_email=signer_email,
+        signing_token=signing_token,
+        token_expires_at=token_expires_at,
+        status="pending",
+        sent_at=datetime.utcnow()
     )
 
     db.add(document)
@@ -188,13 +239,11 @@ def send_document_to_student(
         document_id=document.id,
         event_type="document_sent",
         user_id=current_user.id,
-        event_details=json.dumps({"template_id": str(template_id), "recipient_user_id": str(user_id)}),
+        event_details=json.dumps(event_details),
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent")
     )
 
-    # Update sent timestamp
-    document.sent_at = datetime.utcnow()
     db.commit()
     db.refresh(document)
 
@@ -342,6 +391,75 @@ async def sign_document(
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent")
     )
+
+    # Generate signed PDF if document is completed
+    template = db.query(DocumentTemplate).filter(
+        DocumentTemplate.id == document.template_id
+    ).first()
+
+    is_completed = False
+    if template and not template.requires_counter_signature and document.status == "student_signed":
+        is_completed = True
+    elif template and template.requires_counter_signature and document.status == "completed":
+        is_completed = True
+
+    if is_completed and template:
+        # Gather all signatures
+        all_signatures = db.query(DocumentSignature).filter(
+            DocumentSignature.document_id == document_id
+        ).all()
+
+        # Prepare signature data for PDF overlay
+        # Position signatures at bottom of page (adjust x,y coordinates as needed)
+        signature_list = []
+        x_position = 100
+        y_position = 100
+
+        for sig in all_signatures:
+            signature_list.append((
+                sig.signature_data,
+                sig.signature_type,
+                x_position,
+                y_position
+            ))
+            x_position += 250  # Space signatures horizontally
+
+        # Generate signed PDF
+        template_path = Path(template.file_path)
+        signed_filename = f"{document.id}_signed.pdf"
+        signed_path = SIGNED_DIR / signed_filename
+
+        metadata = {
+            'title': template.name,
+            'author': 'AADA LMS',
+            'subject': template.name,
+            'document_id': str(document.id),
+            'signed_date': datetime.utcnow().isoformat()
+        }
+
+        success = PDFSignatureService.overlay_signatures(
+            template_pdf_path=template_path,
+            output_pdf_path=signed_path,
+            signatures=signature_list,
+            metadata=metadata
+        )
+
+        if success:
+            document.signed_file_path = str(signed_path.relative_to(Path("app")))
+            document.status = "completed"
+            document.completed_at = datetime.utcnow()
+            db.commit()
+
+            # Log PDF generation
+            log_document_event(
+                db=db,
+                document_id=document_id,
+                event_type="pdf_generated",
+                user_id=current_user.id,
+                event_details=json.dumps({"signed_file_path": document.signed_file_path}),
+                ip_address=request.client.host if request.client else None,
+                user_agent=request.headers.get("user-agent")
+            )
 
     return signature
 

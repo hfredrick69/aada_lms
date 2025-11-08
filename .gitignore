@@ -15,6 +15,7 @@ dist/
 
 # H5P cache
 app/static/.h5p_cache/
+tmp/h5p_build/
 
 # Docker
 *.log

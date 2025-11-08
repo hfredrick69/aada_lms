@@ -32,6 +32,7 @@ from app.routers import (
     leads,
     content,
     documents,
+    public_signing,
 )
 
 # Configure logging for audit trail
@@ -103,6 +104,7 @@ app.include_router(roles.router, prefix=api_prefix)
 app.include_router(leads.router, prefix=api_prefix)
 app.include_router(content.router, prefix=api_prefix)
 app.include_router(documents.router, prefix=api_prefix)
+app.include_router(public_signing.router, prefix=api_prefix)  # Public endpoints (no auth)
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 import os  # noqa: E402
