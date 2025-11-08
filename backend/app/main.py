@@ -31,6 +31,7 @@ from app.routers import (
     progress,
     leads,
     content,
+    documents,
 )
 
 # Configure logging for audit trail
@@ -101,6 +102,7 @@ app.include_router(students.router, prefix=api_prefix)
 app.include_router(roles.router, prefix=api_prefix)
 app.include_router(leads.router, prefix=api_prefix)
 app.include_router(content.router, prefix=api_prefix)
+app.include_router(documents.router, prefix=api_prefix)
 
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 import os  # noqa: E402
