@@ -34,6 +34,7 @@ from app.schemas.document import (
     DocumentAuditLogListResponse,
 )
 from app.services.pdf_service import PDFSignatureService
+from app.core.file_validation import validate_pdf, validate_file
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -102,24 +103,11 @@ async def create_document_template(
             detail=f"Template '{name}' version {version} already exists"
         )
 
-    # Validate file type
-    if not file.filename or not file.filename.lower().endswith('.pdf'):
-        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
-
     # Read file content
     content = await file.read()
 
-    # Validate file size (max 10MB)
-    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
-    if len(content) > MAX_FILE_SIZE:
-        raise HTTPException(
-            status_code=400,
-            detail=f"File too large. Maximum size is {MAX_FILE_SIZE // (1024*1024)}MB"
-        )
-
-    # Validate PDF magic bytes (security: prevent non-PDF files)
-    if not content.startswith(b'%PDF-'):
-        raise HTTPException(status_code=400, detail="Invalid PDF file")
+    # Comprehensive PDF validation (extension, size, magic bytes, structure)
+    validate_pdf(content, file.filename, max_size_mb=10)
 
     # Generate unique filename
     template_id = uuid.uuid4()
@@ -235,6 +223,63 @@ def delete_template(
     db.commit()
 
     return {"message": "Template deleted successfully"}
+
+
+# ==================== Student Document Uploads ====================
+
+@router.post("/upload")
+async def upload_student_document(
+    document_type: str = Form(...),  # e.g., "identification", "transcript", "certification"
+    file: UploadFile = File(...),
+    description: str = Form(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Upload student documents (ID, transcripts, certifications, etc.)
+
+    Supports: PDF, PNG, JPG/JPEG
+    Max size: 10MB
+    Security: Full validation (extension, magic bytes, structure)
+    """
+    # Read file content
+    content = await file.read()
+
+    # Validate file type and structure
+    file_type = validate_file(
+        content,
+        file.filename,
+        allowed_types={'.pdf', '.png', '.jpg', '.jpeg'},
+        max_size_mb=10
+    )
+
+    # Create student documents directory if needed
+    STUDENT_DOCS_DIR = DOCUMENTS_BASE / "student_uploads" / str(current_user.id)
+    STUDENT_DOCS_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Generate unique filename
+    doc_id = uuid.uuid4()
+    ext = Path(file.filename).suffix.lower()
+    filename = f"{doc_id}_{document_type}{ext}"
+    file_path = STUDENT_DOCS_DIR / filename
+
+    # Save file
+    with open(file_path, 'wb') as f:
+        f.write(content)
+
+    # TODO: Store metadata in database (create StudentDocument model)
+    # For now, return success with file info
+
+    return {
+        "id": str(doc_id),
+        "document_type": document_type,
+        "filename": file.filename,
+        "file_type": file_type,
+        "file_path": str(file_path.relative_to(Path("app/static"))),
+        "size_bytes": len(content),
+        "uploaded_at": datetime.utcnow().isoformat(),
+        "uploaded_by": current_user.id
+    }
 
 
 # ==================== Document Instance Management ====================
