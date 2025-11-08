@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import {
   listDocumentTemplates,
   createDocumentTemplate,
+  toggleTemplateActive,
+  deleteDocumentTemplate,
   sendDocumentToUser,
   sendDocumentToLead,
   getUserDocuments,
@@ -161,7 +163,7 @@ const Documents = () => {
     formData.append("version", templateForm.version);
     formData.append("description", templateForm.description);
     formData.append("requires_counter_signature", templateForm.requires_counter_signature);
-    formData.append("pdf_file", selectedFile);
+    formData.append("file", selectedFile);
 
     try {
       await createDocumentTemplate(formData);
@@ -220,6 +222,33 @@ const Documents = () => {
   const handleViewAuditTrail = (doc) => {
     setSelectedDocument(doc);
     setAuditTrailOpen(true);
+  };
+
+  const handleToggleTemplateActive = async (templateId) => {
+    if (!canEdit) return;
+    try {
+      await toggleTemplateActive(templateId);
+      loadTemplates();
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError(err?.response?.data?.detail || "Unable to toggle template status");
+    }
+  };
+
+  const handleDeleteTemplate = async (templateId, templateName) => {
+    if (!canEdit) return;
+    if (!confirm(`Permanently delete template "${templateName}"? This action cannot be undone.`)) {
+      return;
+    }
+    try {
+      await deleteDocumentTemplate(templateId);
+      loadTemplates();
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError(err?.response?.data?.detail || "Unable to delete template");
+    }
   };
 
   const formatDate = (dateString) => {
@@ -386,6 +415,7 @@ const Documents = () => {
                       <th className="px-4 py-3">Counter-Sig</th>
                       <th className="px-4 py-3">Active</th>
                       <th className="px-4 py-3">Created</th>
+                      {canEdit && <th className="px-4 py-3">Actions</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -409,6 +439,30 @@ const Documents = () => {
                           )}
                         </td>
                         <td className="px-4 py-3">{new Date(template.created_at).toLocaleDateString()}</td>
+                        {canEdit && (
+                          <td className="px-4 py-3">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleToggleTemplateActive(template.id)}
+                                className={`px-3 py-1 text-xs font-medium rounded ${
+                                  template.is_active
+                                    ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                                    : "bg-green-100 text-green-700 hover:bg-green-200"
+                                }`}
+                                title={template.is_active ? "Mark as inactive" : "Mark as active"}
+                              >
+                                {template.is_active ? "Deactivate" : "Activate"}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteTemplate(template.id, template.name)}
+                                className="px-3 py-1 text-xs font-medium rounded bg-red-100 text-red-700 hover:bg-red-200"
+                                title="Permanently delete template"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>

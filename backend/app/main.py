@@ -49,12 +49,17 @@ app = FastAPI(title="AADA LMS API", version="1.0")
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    body = await request.body()
+    try:
+        body = await request.body()
+        body_str = body.decode("utf-8", errors="ignore")
+    except RuntimeError:
+        body_str = "[body already consumed - likely multipart/form-data]"
+
     logging.error(
         "Validation error on %s: %s | body=%s",
         request.url.path,
         exc.errors(),
-        body.decode("utf-8", errors="ignore")
+        body_str
     )
     return JSONResponse(status_code=422, content={"detail": exc.errors()})
 

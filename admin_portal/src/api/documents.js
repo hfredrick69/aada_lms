@@ -20,6 +20,16 @@ export const createDocumentTemplate = async (formData) => {
   return data;
 };
 
+export const toggleTemplateActive = async (templateId) => {
+  const { data } = await axiosClient.patch(`/documents/templates/${templateId}/toggle-active`);
+  return data;
+};
+
+export const deleteDocumentTemplate = async (templateId) => {
+  const { data } = await axiosClient.delete(`/documents/templates/${templateId}`);
+  return data;
+};
+
 // Send Document
 export const sendDocumentToUser = async (templateId, userId) => {
   const { data } = await axiosClient.post("/documents/send", {

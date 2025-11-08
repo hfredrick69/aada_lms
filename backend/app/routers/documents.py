@@ -5,7 +5,7 @@ Provides endpoints for managing enrollment agreements and other signed documents
 Implements legally compliant e-signature workflow with full audit trail.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Request
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from pathlib import Path
@@ -80,19 +80,46 @@ def log_document_event(
 
 @router.post("/templates", response_model=DocumentTemplateResponse)
 async def create_document_template(
-    name: str,
-    version: str,
-    description: str = None,
-    requires_counter_signature: bool = False,
+    name: str = Form(...),
+    version: str = Form(...),
+    description: str = Form(None),
+    requires_counter_signature: bool = Form(False),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
     """Upload a new document template (enrollment agreement, etc.)"""
 
+    # Check for duplicate template (same name and version)
+    existing = db.query(DocumentTemplate).filter(
+        DocumentTemplate.name == name,
+        DocumentTemplate.version == version
+    ).first()
+
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Template '{name}' version {version} already exists"
+        )
+
     # Validate file type
     if not file.filename or not file.filename.lower().endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+
+    # Read file content
+    content = await file.read()
+
+    # Validate file size (max 10MB)
+    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail=f"File too large. Maximum size is {MAX_FILE_SIZE // (1024*1024)}MB"
+        )
+
+    # Validate PDF magic bytes (security: prevent non-PDF files)
+    if not content.startswith(b'%PDF-'):
+        raise HTTPException(status_code=400, detail="Invalid PDF file")
 
     # Generate unique filename
     template_id = uuid.uuid4()
@@ -101,7 +128,6 @@ async def create_document_template(
 
     # Save file
     with open(file_path, 'wb') as f:
-        content = await file.read()
         f.write(content)
 
     # Create database record
@@ -150,6 +176,65 @@ def get_document_template(
         raise HTTPException(status_code=404, detail="Template not found")
 
     return template
+
+
+@router.patch("/templates/{template_id}/toggle-active")
+def toggle_template_active(
+    template_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    """Toggle template active status (soft delete/restore)"""
+    template = db.query(DocumentTemplate).filter(DocumentTemplate.id == template_id).first()
+
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    template.is_active = not template.is_active
+    db.commit()
+    db.refresh(template)
+
+    return {
+        "id": template.id,
+        "name": template.name,
+        "version": template.version,
+        "is_active": template.is_active
+    }
+
+
+@router.delete("/templates/{template_id}")
+def delete_template(
+    template_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    """Permanently delete a template (hard delete)"""
+    template = db.query(DocumentTemplate).filter(DocumentTemplate.id == template_id).first()
+
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    # Check if template has been used in any documents
+    document_count = db.query(SignedDocument).filter(
+        SignedDocument.template_id == template_id
+    ).count()
+
+    if document_count > 0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot delete template: {document_count} document(s) use this template. Mark as inactive instead."
+        )
+
+    # Delete file
+    if template.file_path:
+        file_path = Path(template.file_path)
+        if file_path.exists():
+            file_path.unlink()
+
+    db.delete(template)
+    db.commit()
+
+    return {"message": "Template deleted successfully"}
 
 
 # ==================== Document Instance Management ====================
