@@ -1,29 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-  Box,
-  Chip,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
-import {
-  Visibility as ViewIcon,
-  Send as SendIcon,
-  Edit as SignIcon,
-  Cancel as VoidIcon,
-} from '@mui/icons-material';
+import { useState, useEffect } from 'react';
 import { getDocumentAuditTrail } from '../api/documents';
 
 const AuditTrailDialog = ({ open, onClose, documentId, documentName }) => {
@@ -51,26 +26,15 @@ const AuditTrailDialog = ({ open, onClose, documentId, documentName }) => {
     }
   };
 
-  const getEventIcon = (eventType) => {
-    const icons = {
-      viewed: <ViewIcon fontSize="small" />,
-      sent: <SendIcon fontSize="small" />,
-      signed: <SignIcon fontSize="small" />,
-      document_signed: <SignIcon fontSize="small" />,
-      voided: <VoidIcon fontSize="small" />,
-    };
-    return icons[eventType] || null;
-  };
-
   const getEventColor = (eventType) => {
     const colors = {
-      viewed: 'info',
-      sent: 'primary',
-      signed: 'success',
-      document_signed: 'success',
-      voided: 'error',
+      viewed: 'bg-blue-100 text-blue-700',
+      sent: 'bg-purple-100 text-purple-700',
+      signed: 'bg-green-100 text-green-700',
+      document_signed: 'bg-green-100 text-green-700',
+      voided: 'bg-red-100 text-red-700',
     };
-    return colors[eventType] || 'default';
+    return colors[eventType] || 'bg-gray-100 text-gray-700';
   };
 
   const formatEventType = (eventType) => {
@@ -101,112 +65,121 @@ const AuditTrailDialog = ({ open, onClose, documentId, documentName }) => {
     }
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        Audit Trail
-        {documentName && (
-          <Typography variant="subtitle2" color="text.secondary">
-            Document: {documentName}
-          </Typography>
-        )}
-      </DialogTitle>
-      <DialogContent>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-slate-200 flex justify-between items-start">
+          <div>
+            <h3 className="text-xl font-semibold text-primary-700">Audit Trail</h3>
+            {documentName && (
+              <p className="text-sm text-slate-500 mt-1">Document: {documentName}</p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <TableContainer component={Paper} variant="outlined">
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Event</TableCell>
-                  <TableCell>Timestamp</TableCell>
-                  <TableCell>IP Address</TableCell>
-                  <TableCell>User Agent</TableCell>
-                  <TableCell>Details</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {auditLogs.map((log, index) => {
-                  const details = parseEventDetails(log.event_details);
-                  return (
-                    <TableRow key={log.id || index}>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {getEventIcon(log.event_type)}
-                          <Chip
-                            label={formatEventType(log.event_type)}
-                            color={getEventColor(log.event_type)}
-                            size="small"
-                          />
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
-                          {formatDate(log.occurred_at)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" fontFamily="monospace">
-                          {log.ip_address || 'N/A'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {log.user_agent || 'N/A'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {details ? (
-                          <Box>
-                            {Object.entries(details).map(([key, value]) => (
-                              <Typography key={key} variant="caption" display="block">
-                                <strong>{key}:</strong> {String(value)}
-                              </Typography>
-                            ))}
-                          </Box>
-                        ) : (
-                          <Typography variant="body2" color="text.secondary">
-                            -
-                          </Typography>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                {auditLogs.length === 0 && !loading && (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
-                        No audit log entries found
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
+        <div className="p-6">
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
 
-        <Box sx={{ mt: 2, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
-          <Typography variant="caption" color="text.secondary">
-            This audit trail provides a complete record of all actions taken on this document
-            in compliance with the ESIGN Act. All timestamps are recorded in UTC and converted to local time for display.
-          </Typography>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
-      </DialogActions>
-    </Dialog>
+          {loading ? (
+            <div className="text-center py-8 text-slate-500">Loading audit trail...</div>
+          ) : (
+            <>
+              <div className="overflow-x-auto border border-slate-200 rounded">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 border-b border-slate-200">
+                    <tr className="text-xs text-slate-500 uppercase tracking-wide">
+                      <th className="px-4 py-3">Event</th>
+                      <th className="px-4 py-3">Timestamp</th>
+                      <th className="px-4 py-3">IP Address</th>
+                      <th className="px-4 py-3">User Agent</th>
+                      <th className="px-4 py-3">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {auditLogs.map((log, index) => {
+                      const details = parseEventDetails(log.event_details);
+                      return (
+                        <tr key={log.id || index} className="border-b border-slate-100 hover:bg-slate-50">
+                          <td className="px-4 py-3">
+                            <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getEventColor(log.event_type)}`}>
+                              {formatEventType(log.event_type)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            {formatDate(log.occurred_at)}
+                          </td>
+                          <td className="px-4 py-3">
+                            <code className="text-xs bg-slate-100 px-2 py-1 rounded">
+                              {log.ip_address || 'N/A'}
+                            </code>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="max-w-xs overflow-hidden text-ellipsis text-xs text-slate-600">
+                              {log.user_agent || 'N/A'}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            {details ? (
+                              <div className="space-y-1">
+                                {Object.entries(details).map(([key, value]) => (
+                                  <div key={key} className="text-xs">
+                                    <span className="font-medium text-slate-700">{key}:</span>{' '}
+                                    <span className="text-slate-600">{String(value)}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-slate-400 text-xs">-</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {auditLogs.length === 0 && !loading && (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-slate-500">
+                          No audit log entries found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
+                <p className="text-xs text-blue-700">
+                  This audit trail provides a complete record of all actions taken on this document
+                  in compliance with the ESIGN Act. All timestamps are recorded in UTC and converted to local time for display.
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="p-6 border-t border-slate-200 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-300 transition"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
