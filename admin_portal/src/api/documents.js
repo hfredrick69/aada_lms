@@ -43,6 +43,16 @@ export const getUserDocuments = async (userId) => {
   return data;
 };
 
+export const getLeadDocuments = async (leadId) => {
+  const { data } = await axiosClient.get(`/documents/lead/${leadId}`);
+  return data;
+};
+
+export const getAllDocuments = async () => {
+  const { data } = await axiosClient.get('/documents');
+  return data;
+};
+
 export const getDocument = async (documentId) => {
   const { data } = await axiosClient.get(`/documents/${documentId}`);
   return data;
@@ -69,4 +79,19 @@ export const downloadDocument = async (documentId, filename) => {
   link.click();
   link.remove();
   window.URL.revokeObjectURL(url);
+};
+
+// Default export
+export default {
+  listTemplates: listDocumentTemplates,
+  getTemplate: getDocumentTemplate,
+  createTemplate: createDocumentTemplate,
+  sendDocument: sendDocumentToUser,
+  sendDocumentToLead,
+  getUserDocuments,
+  getLeadDocuments,
+  getAllDocuments,
+  getDocument,
+  getDocumentAuditTrail,
+  downloadDocument,
 };

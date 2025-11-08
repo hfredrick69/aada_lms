@@ -287,6 +287,72 @@ def get_user_documents(
     }
 
 
+@router.get("/lead/{lead_id}", response_model=SignedDocumentListResponse)
+def get_lead_documents(
+    lead_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    """Get all documents for a specific lead"""
+
+    # Verify lead exists
+    lead = db.query(Lead).filter(Lead.id == lead_id).first()
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+
+    documents = db.query(SignedDocument).filter(
+        SignedDocument.lead_id == lead_id
+    ).all()
+
+    # Enrich with template information
+    enriched_docs = []
+    for doc in documents:
+        template = db.query(DocumentTemplate).filter(
+            DocumentTemplate.id == doc.template_id
+        ).first()
+
+        enriched_docs.append({
+            **doc.__dict__,
+            "template_name": template.name if template else "Unknown",
+            "template_version": template.version if template else "Unknown",
+            "requires_counter_signature": template.requires_counter_signature if template else False
+        })
+
+    return {
+        "documents": enriched_docs,
+        "total": len(enriched_docs)
+    }
+
+
+@router.get("/", response_model=SignedDocumentListResponse)
+def get_all_documents(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    """Get all documents (admin only)"""
+
+    documents = db.query(SignedDocument).all()
+
+    # Enrich with template information
+    enriched_docs = []
+    for doc in documents:
+        template = db.query(DocumentTemplate).filter(
+            DocumentTemplate.id == doc.template_id
+        ).first()
+
+        enriched_docs.append({
+            **doc.__dict__,
+            "template_name": template.name if template else "Unknown",
+            "template_version": template.version if template else "Unknown",
+            "requires_counter_signature": template.requires_counter_signature if template else False
+        })
+
+    return {
+        "documents": enriched_docs,
+        "total": len(enriched_docs)
+    }
+
+
 @router.get("/{document_id}", response_model=SignedDocumentResponse)
 def get_document(
     document_id: uuid.UUID,

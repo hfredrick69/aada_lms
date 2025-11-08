@@ -37,6 +37,7 @@ import {
 } from '@mui/icons-material';
 import documentsApi from '../api/documents';
 import usersApi from '../api/users';
+import leadsApi from '../api/leads';
 import DocumentSignatureDialog from '../components/DocumentSignatureDialog';
 import AuditTrailDialog from '../components/AuditTrailDialog';
 
@@ -44,7 +45,11 @@ const Documents = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [templates, setTemplates] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [allDocuments, setAllDocuments] = useState([]);
   const [users, setUsers] = useState([]);
+  const [leads, setLeads] = useState([]);
+  const [recipientType, setRecipientType] = useState('user'); // 'user' or 'lead'
+  const [selectedRecipientId, setSelectedRecipientId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -77,6 +82,7 @@ const Documents = () => {
   useEffect(() => {
     loadTemplates();
     loadUsers();
+    loadLeads();
   }, []);
 
   const loadTemplates = async () => {
@@ -97,12 +103,39 @@ const Documents = () => {
     }
   };
 
+  const loadLeads = async () => {
+    try {
+      const data = await leadsApi.listLeads();
+      setLeads(data.leads || []);
+    } catch (err) {
+      setError('Failed to load leads');
+    }
+  };
+
   const loadDocumentsByUser = async (userId) => {
     try {
       const data = await documentsApi.getUserDocuments(userId);
       setDocuments(data.documents);
     } catch (err) {
       setError('Failed to load documents');
+    }
+  };
+
+  const loadDocumentsByLead = async (leadId) => {
+    try {
+      const data = await documentsApi.getLeadDocuments(leadId);
+      setDocuments(data.documents);
+    } catch (err) {
+      setError('Failed to load documents');
+    }
+  };
+
+  const loadAllDocuments = async () => {
+    try {
+      const data = await documentsApi.getAllDocuments();
+      setAllDocuments(data.documents);
+    } catch (err) {
+      setError('Failed to load all documents');
     }
   };
 
@@ -177,8 +210,14 @@ const Documents = () => {
 
   const handleSignatureComplete = async () => {
     setSuccess('Document signed successfully');
-    if (sendForm.user_id) {
-      await loadDocumentsByUser(sendForm.user_id);
+    if (activeTab === 1 && selectedRecipientId) {
+      if (recipientType === 'user') {
+        await loadDocumentsByUser(selectedRecipientId);
+      } else {
+        await loadDocumentsByLead(selectedRecipientId);
+      }
+    } else if (activeTab === 2) {
+      await loadAllDocuments();
     }
   };
 
@@ -230,9 +269,15 @@ const Documents = () => {
       </Box>
 
       <Paper sx={{ mb: 3 }}>
-        <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)}>
+        <Tabs value={activeTab} onChange={(e, v) => {
+          setActiveTab(v);
+          if (v === 2) {
+            loadAllDocuments();
+          }
+        }}>
           <Tab label="Templates" />
           <Tab label="Documents" />
+          <Tab label="All Documents" />
         </Tabs>
 
         {activeTab === 0 && (
@@ -281,23 +326,53 @@ const Documents = () => {
 
         {activeTab === 1 && (
           <Box sx={{ p: 3 }}>
-            <FormControl fullWidth sx={{ mb: 3 }}>
-              <InputLabel>Select User</InputLabel>
-              <Select
-                value={sendForm.user_id}
-                onChange={(e) => {
-                  setSendForm({ ...sendForm, user_id: e.target.value });
-                  loadDocumentsByUser(e.target.value);
-                }}
-                label="Select User"
-              >
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.first_name} {user.last_name} ({user.email})
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+              <FormControl sx={{ minWidth: 150 }}>
+                <InputLabel>View By</InputLabel>
+                <Select
+                  value={recipientType}
+                  onChange={(e) => {
+                    setRecipientType(e.target.value);
+                    setSelectedRecipientId('');
+                    setDocuments([]);
+                  }}
+                  label="View By"
+                >
+                  <MenuItem value="user">User</MenuItem>
+                  <MenuItem value="lead">Lead</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <InputLabel>{recipientType === 'user' ? 'Select User' : 'Select Lead'}</InputLabel>
+                <Select
+                  value={selectedRecipientId}
+                  onChange={(e) => {
+                    setSelectedRecipientId(e.target.value);
+                    if (recipientType === 'user') {
+                      loadDocumentsByUser(e.target.value);
+                    } else {
+                      loadDocumentsByLead(e.target.value);
+                    }
+                  }}
+                  label={recipientType === 'user' ? 'Select User' : 'Select Lead'}
+                >
+                  {recipientType === 'user' ? (
+                    users.map((user) => (
+                      <MenuItem key={user.id} value={user.id}>
+                        {user.first_name} {user.last_name} ({user.email})
+                      </MenuItem>
+                    ))
+                  ) : (
+                    leads.map((lead) => (
+                      <MenuItem key={lead.id} value={lead.id}>
+                        {lead.first_name} {lead.last_name} ({lead.email})
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
+              </FormControl>
+            </Box>
 
             {documents.length > 0 ? (
               <TableContainer>
@@ -370,9 +445,97 @@ const Documents = () => {
               </TableContainer>
             ) : (
               <Typography variant="body2" color="text.secondary">
-                {sendForm.user_id
-                  ? 'No documents found for this user.'
-                  : 'Select a user to view their documents.'}
+                {selectedRecipientId
+                  ? `No documents found for this ${recipientType}.`
+                  : `Select a ${recipientType} to view their documents.`}
+              </Typography>
+            )}
+          </Box>
+        )}
+
+        {activeTab === 2 && (
+          <Box sx={{ p: 3 }}>
+            {allDocuments.length > 0 ? (
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Template</TableCell>
+                      <TableCell>Recipient</TableCell>
+                      <TableCell>Type</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Sent</TableCell>
+                      <TableCell>Student Signed</TableCell>
+                      <TableCell>Counter-Signed</TableCell>
+                      <TableCell>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {allDocuments.map((doc) => (
+                      <TableRow key={doc.id}>
+                        <TableCell>{doc.template_name}</TableCell>
+                        <TableCell>
+                          {doc.signer_name || 'N/A'}
+                          {doc.signer_email && <Typography variant="caption" display="block">{doc.signer_email}</Typography>}
+                        </TableCell>
+                        <TableCell>
+                          <Chip label={doc.user_id ? 'User' : 'Lead'} size="small" variant="outlined" />
+                        </TableCell>
+                        <TableCell>{getStatusChip(doc.status)}</TableCell>
+                        <TableCell>
+                          {doc.sent_at ? new Date(doc.sent_at).toLocaleDateString() : '-'}
+                        </TableCell>
+                        <TableCell>
+                          {doc.student_signed_at
+                            ? new Date(doc.student_signed_at).toLocaleDateString()
+                            : '-'}
+                        </TableCell>
+                        <TableCell>
+                          {doc.counter_signed_at
+                            ? new Date(doc.counter_signed_at).toLocaleDateString()
+                            : '-'}
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={() => handleDownloadDocument(doc.id, `${doc.template_name}.pdf`)}
+                              title="Download"
+                            >
+                              <DownloadIcon />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              color="info"
+                              onClick={() => {
+                                setAuditDocument({ id: doc.id, name: doc.template_name });
+                                setAuditTrailDialogOpen(true);
+                              }}
+                              title="View Audit Trail"
+                            >
+                              <HistoryIcon />
+                            </IconButton>
+                            {doc.status === 'student_signed' && doc.requires_counter_signature && (
+                              <IconButton
+                                size="small"
+                                color="secondary"
+                                onClick={() => handleOpenSignatureDialog(doc)}
+                                title="Counter-Sign"
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            )}
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No documents found. Use the "Send Document" button to create documents.
               </Typography>
             )}
           </Box>

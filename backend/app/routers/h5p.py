@@ -257,13 +257,32 @@ async def serve_h5p_player(activity_id: str):
             console.log('Initializing H5P with path:', options.h5pJsonPath);
             console.log('Document location:', window.location.href);
 
+            const removeBlockers = () => {{
+                const blockers = el.querySelectorAll('.h5p-prevent-interaction');
+                blockers.forEach((node) => node.remove());
+            }};
+            const observer = new MutationObserver(removeBlockers);
+            observer.observe(el, {{ childList: true, subtree: true }});
+
             try {{
                 if (window.H5PStandalone && window.H5PStandalone.H5P) {{
                     new window.H5PStandalone.H5P(el, options);
                     console.log('H5P initialized with H5PStandalone.H5P');
+                    setTimeout(removeBlockers, 1000);
+                    setTimeout(() => {{
+                        const inputs = el.querySelectorAll('input');
+                        console.log(
+                            '[H5P debug] inputs',
+                            Array.from(inputs).map((node) => ({{
+                                disabled: node.disabled,
+                                pointer: window.getComputedStyle(node).pointerEvents
+                            }}))
+                        );
+                    }}, 1200);
                 }} else if (window.H5PStandalone) {{
                     new window.H5PStandalone(el, options);
                     console.log('H5P initialized with H5PStandalone');
+                    setTimeout(removeBlockers, 1000);
                 }} else {{
                     console.error('H5PStandalone not loaded');
                 }}
