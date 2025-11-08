@@ -53,3 +53,20 @@ export const getDocumentAuditTrail = async (documentId) => {
   const { data } = await axiosClient.get(`/documents/${documentId}/audit-trail`);
   return data;
 };
+
+// Download Document
+export const downloadDocument = async (documentId, filename) => {
+  const response = await axiosClient.get(`/documents/${documentId}/download`, {
+    responseType: 'blob'
+  });
+
+  // Create a blob URL and trigger download
+  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename || 'document.pdf');
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+};

@@ -33,10 +33,12 @@ import {
   Download as DownloadIcon,
   Edit as EditIcon,
   Visibility as VisibilityIcon,
+  History as HistoryIcon,
 } from '@mui/icons-material';
 import documentsApi from '../api/documents';
 import usersApi from '../api/users';
 import DocumentSignatureDialog from '../components/DocumentSignatureDialog';
+import AuditTrailDialog from '../components/AuditTrailDialog';
 
 const Documents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -67,6 +69,10 @@ const Documents = () => {
   // Signature dialog state
   const [signatureDialogOpen, setSignatureDialogOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
+
+  // Audit trail dialog state
+  const [auditTrailDialogOpen, setAuditTrailDialogOpen] = useState(false);
+  const [auditDocument, setAuditDocument] = useState(null);
 
   useEffect(() => {
     loadTemplates();
@@ -158,7 +164,7 @@ const Documents = () => {
 
   const handleDownloadDocument = async (documentId, filename) => {
     try {
-      await documentsApi.downloadDocumentFile(documentId, filename);
+      await documentsApi.downloadDocument(documentId, filename);
     } catch (err) {
       setError('Failed to download document');
     }
@@ -334,6 +340,17 @@ const Documents = () => {
                             >
                               <DownloadIcon />
                             </IconButton>
+                            <IconButton
+                              size="small"
+                              color="info"
+                              onClick={() => {
+                                setAuditDocument({ id: doc.id, name: doc.template_name });
+                                setAuditTrailDialogOpen(true);
+                              }}
+                              title="View Audit Trail"
+                            >
+                              <HistoryIcon />
+                            </IconButton>
                             {doc.status === 'student_signed' && doc.requires_counter_signature && (
                               <IconButton
                                 size="small"
@@ -478,6 +495,16 @@ const Documents = () => {
           documentId={selectedDocument.id}
           signatureType="school_official"
           onSignatureComplete={handleSignatureComplete}
+        />
+      )}
+
+      {/* Audit Trail Dialog */}
+      {auditDocument && (
+        <AuditTrailDialog
+          open={auditTrailDialogOpen}
+          onClose={() => setAuditTrailDialogOpen(false)}
+          documentId={auditDocument.id}
+          documentName={auditDocument.name}
         />
       )}
     </Box>
