@@ -19,9 +19,19 @@ Usage:
 from io import BytesIO
 from pathlib import Path
 from typing import Optional
+import logging
 from fastapi import HTTPException
 import PyPDF2
 from PIL import Image
+
+# Optional ClamAV virus scanning
+try:
+    import clamd
+    CLAMAV_AVAILABLE = True
+except ImportError:
+    CLAMAV_AVAILABLE = False
+
+logger = logging.getLogger(__name__)
 
 
 # File type magic bytes (first few bytes that identify file type)
@@ -112,6 +122,42 @@ def validate_magic_bytes(content: bytes, filename: str):
         )
 
 
+def scan_for_viruses(content: bytes, filename: str):
+    """
+    Optional virus scanning using ClamAV (if available)
+
+    Args:
+        content: File content bytes
+        filename: Original filename
+
+    Raises:
+        HTTPException: If virus detected
+    """
+    if not CLAMAV_AVAILABLE:
+        logger.warning("ClamAV not available - skipping virus scan. Install 'clamd' for virus scanning.")
+        return
+
+    try:
+        cd = clamd.ClamdUnixSocket()
+        result = cd.scan_stream(content)
+
+        # Check result
+        for key, (status, virus_name) in result.items():
+            if status == 'FOUND':
+                logger.error(f"Virus detected in {filename}: {virus_name}")
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Malicious file detected: {virus_name}"
+                )
+    except clamd.ConnectionError:
+        logger.warning("ClamAV daemon not running - skipping virus scan. Start clamd for virus protection.")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Virus scan error for {filename}: {str(e)}")
+        # Don't fail upload if scanner errors - log and continue
+
+
 def validate_pdf(
     content: bytes,
     filename: str,
@@ -141,6 +187,9 @@ def validate_pdf(
 
     # 3. Magic bytes check
     validate_magic_bytes(content, filename)
+
+    # 3.5. Optional virus scan (if ClamAV available)
+    scan_for_viruses(content, filename)
 
     # 4. PDF structure validation using PyPDF2
     if check_structure:
@@ -207,6 +256,9 @@ def validate_image(
 
     # 3. Magic bytes check
     validate_magic_bytes(content, filename)
+
+    # 3.5. Optional virus scan (if ClamAV available)
+    scan_for_viruses(content, filename)
 
     # 4. Image structure validation using Pillow
     try:

@@ -1,4 +1,4 @@
-fastapi==0.115.0
+fastapi==0.121.0
 uvicorn[standard]==0.30.0
 sqlalchemy==2.0.35
 alembic==1.14.0
@@ -7,8 +7,8 @@ python-dotenv==1.0.1
 passlib[bcrypt]==1.7.4
 pyjwt==2.9.0
 pydantic[email]==2.9.2
-jinja2==3.1.4
-requests==2.32.3
+jinja2==3.1.6
+requests==2.32.4
 pandas==2.2.2
 reportlab==4.2.5
 PyPDF2==3.0.1
@@ -16,4 +16,5 @@ Pillow==10.4.0
 pytest==8.3.3
 httpx==0.27.2
 markdown==3.7
-python-multipart==0.0.9
+python-multipart==0.0.18
+starlette==0.49.1

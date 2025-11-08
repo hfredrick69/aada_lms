@@ -46,7 +46,8 @@ class H5PHandler:
         """Generate cache key based on file path and modification time"""
         stat = h5p_file.stat()
         key_string = f"{h5p_file}_{stat.st_mtime}_{stat.st_size}"
-        return hashlib.md5(key_string.encode()).hexdigest()
+        # MD5 is fine for cache keys (not cryptography)
+        return hashlib.md5(key_string.encode(), usedforsecurity=False).hexdigest()
 
     def extract_h5p(self, activity_id: str, force_refresh: bool = False) -> Optional[Path]:
         """
