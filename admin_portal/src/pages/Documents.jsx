@@ -36,7 +36,7 @@ import {
   History as HistoryIcon,
 } from '@mui/icons-material';
 import documentsApi from '../api/documents';
-import usersApi from '../api/users';
+import { listStudents } from '../api/students';
 import leadsApi from '../api/leads';
 import DocumentSignatureDialog from '../components/DocumentSignatureDialog';
 import AuditTrailDialog from '../components/AuditTrailDialog';
@@ -96,7 +96,7 @@ const Documents = () => {
 
   const loadUsers = async () => {
     try {
-      const data = await usersApi.getAllUsers();
+      const data = await listStudents();
       setUsers(data);
     } catch (err) {
       setError('Failed to load users');
