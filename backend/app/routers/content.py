@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.db.models.program import Module
 from app.db.models.user import User
-from app.core.security import get_current_user
+from app.routers.auth import get_current_user
 
 router = APIRouter(prefix="/content", tags=["content"])
 
