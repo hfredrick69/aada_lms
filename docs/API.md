@@ -645,10 +645,12 @@ The AADA LMS provides a RESTful API built with FastAPI. This document supplement
 - `requires_counter_signature` (boolean, default: false) - Requires counter-signature
 - `file` (file, required) - PDF file (max 10MB)
 
-**Validation**:
-- Only PDF files allowed (verified by magic bytes)
-- Maximum file size: 10MB
-- Duplicate check: same name+version rejected
+**Security Validation** (multi-layered):
+1. **Extension check** - Only `.pdf` allowed
+2. **Size limit** - 10MB maximum
+3. **Magic bytes** - Verifies file starts with `%PDF-`
+4. **PDF structure** - PyPDF2 validates PDF integrity (pages, metadata, readability)
+5. **Duplicate check** - Rejects same name+version
 
 **Response**: `201 Created`
 ```json
@@ -704,6 +706,52 @@ The AADA LMS provides a RESTful API built with FastAPI. This document supplement
 **Error Responses**:
 - `400 Bad Request` - Template is in use (referenced by signed documents)
 - `404 Not Found` - Template not found
+
+### Upload Student Document
+
+**Endpoint**: `POST /api/documents/upload`
+
+**Authentication**: Required (students and admins)
+
+**Content-Type**: `multipart/form-data`
+
+**Description**: Upload student documents (ID, transcripts, certifications, etc.)
+
+**Form Fields**:
+- `document_type` (string, required) - Type of document (e.g., "identification", "transcript", "certification")
+- `file` (file, required) - PDF, PNG, JPG, or JPEG file (max 10MB)
+- `description` (string, optional) - Document description
+
+**Security Validation** (multi-layered):
+1. **Extension check** - `.pdf`, `.png`, `.jpg`, `.jpeg` only
+2. **Size limit** - 10MB maximum
+3. **Magic bytes** - Verifies file type matches extension
+4. **Structure validation**:
+   - **PDFs**: PyPDF2 validates PDF integrity
+   - **Images**: Pillow validates image structure, format, and dimensions
+
+**Response**: `200 OK`
+```json
+{
+  "id": "770e8400-e29b-41d4-a716-446655440003",
+  "document_type": "identification",
+  "filename": "drivers_license.jpg",
+  "file_type": "image",
+  "file_path": "documents/student_uploads/1/770e8400-e29b-41d4-a716-446655440003_identification.jpg",
+  "size_bytes": 245678,
+  "uploaded_at": "2025-11-08T14:30:00Z",
+  "uploaded_by": 1
+}
+```
+
+**Error Responses**:
+- `400 Bad Request` - Invalid file type, corrupted file, or file too large
+- `422 Unprocessable Entity` - Validation error
+
+**Supported File Types**:
+- **PDF** - Enrollment documents, transcripts, certifications
+- **PNG** - Screenshots, ID cards, certificates
+- **JPG/JPEG** - Photos, scanned documents, ID cards
 
 ### Send Document
 
