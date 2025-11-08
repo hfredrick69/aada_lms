@@ -583,6 +583,305 @@ The AADA LMS provides a RESTful API built with FastAPI. This document supplement
 ]
 ```
 
+## Documents & E-Signatures
+
+### List Document Templates
+
+**Endpoint**: `GET /api/documents/templates`
+
+**Authentication**: Required
+
+**Query Parameters**:
+- `active_only` (optional, default: true) - Show only active templates
+
+**Response**: `200 OK`
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Enrollment Agreement",
+    "version": "2024.1",
+    "description": "Standard enrollment agreement for all programs",
+    "requires_counter_signature": true,
+    "is_active": true,
+    "file_path": "/app/static/documents/templates/550e8400-e29b-41d4-a716-446655440000_enrollment.pdf",
+    "created_at": "2024-01-15T10:00:00Z"
+  }
+]
+```
+
+### Get Document Template
+
+**Endpoint**: `GET /api/documents/templates/{template_id}`
+
+**Authentication**: Required
+
+**Response**: `200 OK`
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Enrollment Agreement",
+  "version": "2024.1",
+  "description": "Standard enrollment agreement for all programs",
+  "requires_counter_signature": true,
+  "is_active": true,
+  "file_path": "/app/static/documents/templates/550e8400-e29b-41d4-a716-446655440000_enrollment.pdf",
+  "created_at": "2024-01-15T10:00:00Z"
+}
+```
+
+### Create Document Template
+
+**Endpoint**: `POST /api/documents/templates`
+
+**Authentication**: Required (admin only)
+
+**Content-Type**: `multipart/form-data`
+
+**Form Fields**:
+- `name` (string, required) - Template name
+- `version` (string, required) - Version identifier
+- `description` (string, optional) - Template description
+- `requires_counter_signature` (boolean, default: false) - Requires counter-signature
+- `file` (file, required) - PDF file (max 10MB)
+
+**Validation**:
+- Only PDF files allowed (verified by magic bytes)
+- Maximum file size: 10MB
+- Duplicate check: same name+version rejected
+
+**Response**: `201 Created`
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Enrollment Agreement",
+  "version": "2024.1",
+  "description": "Standard enrollment agreement for all programs",
+  "requires_counter_signature": true,
+  "is_active": true,
+  "file_path": "/app/static/documents/templates/550e8400-e29b-41d4-a716-446655440000_enrollment.pdf",
+  "created_at": "2025-11-04T12:34:56Z"
+}
+```
+
+**Error Responses**:
+- `400 Bad Request` - Duplicate template, invalid PDF, or file too large
+- `422 Unprocessable Entity` - Validation error
+
+### Toggle Template Active Status
+
+**Endpoint**: `PATCH /api/documents/templates/{template_id}/toggle-active`
+
+**Authentication**: Required (admin only)
+
+**Description**: Soft delete/restore a template (toggles is_active flag)
+
+**Response**: `200 OK`
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Enrollment Agreement",
+  "version": "2024.1",
+  "is_active": false
+}
+```
+
+### Delete Document Template
+
+**Endpoint**: `DELETE /api/documents/templates/{template_id}`
+
+**Authentication**: Required (admin only)
+
+**Description**: Permanently delete a template (hard delete). Protected - cannot delete templates referenced by signed documents.
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Template deleted successfully"
+}
+```
+
+**Error Responses**:
+- `400 Bad Request` - Template is in use (referenced by signed documents)
+- `404 Not Found` - Template not found
+
+### Send Document
+
+**Endpoint**: `POST /api/documents/send`
+
+**Authentication**: Required (admin only)
+
+**Description**: Send a document to a user or lead for signing
+
+**Request** (to user):
+```json
+{
+  "template_id": "550e8400-e29b-41d4-a716-446655440000",
+  "user_id": 1
+}
+```
+
+**Request** (to lead):
+```json
+{
+  "template_id": "550e8400-e29b-41d4-a716-446655440000",
+  "lead_id": 2
+}
+```
+
+**Response**: `201 Created`
+```json
+{
+  "id": "660e8400-e29b-41d4-a716-446655440001",
+  "template_id": "550e8400-e29b-41d4-a716-446655440000",
+  "user_id": 1,
+  "lead_id": null,
+  "status": "sent",
+  "signing_token": "abc123...",
+  "sent_at": "2025-11-04T12:34:56Z",
+  "public_signing_url": "http://localhost:8000/api/public/sign/abc123..."
+}
+```
+
+### Get User Documents
+
+**Endpoint**: `GET /api/documents/user/{user_id}`
+
+**Authentication**: Required (students see own, admins see all)
+
+**Response**: `200 OK`
+```json
+[
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "template_id": "550e8400-e29b-41d4-a716-446655440000",
+    "template_name": "Enrollment Agreement",
+    "user_id": 1,
+    "status": "signed",
+    "sent_at": "2024-11-01T10:00:00Z",
+    "signed_at": "2024-11-01T14:30:00Z"
+  }
+]
+```
+
+### Get Lead Documents
+
+**Endpoint**: `GET /api/documents/lead/{lead_id}`
+
+**Authentication**: Required (admin only)
+
+**Response**: `200 OK`
+```json
+[
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440002",
+    "template_id": "550e8400-e29b-41d4-a716-446655440000",
+    "template_name": "Enrollment Agreement",
+    "lead_id": 2,
+    "status": "sent",
+    "sent_at": "2024-11-04T10:00:00Z"
+  }
+]
+```
+
+### Get Document Audit Trail
+
+**Endpoint**: `GET /api/documents/{document_id}/audit-trail`
+
+**Authentication**: Required (students see own, admins see all)
+
+**Description**: Get complete audit trail for a document (ESIGN Act compliance)
+
+**Response**: `200 OK`
+```json
+{
+  "document_id": "660e8400-e29b-41d4-a716-446655440001",
+  "audit_logs": [
+    {
+      "id": 1,
+      "event_type": "sent",
+      "occurred_at": "2024-11-01T10:00:00Z",
+      "ip_address": "192.168.1.100",
+      "user_agent": "Mozilla/5.0...",
+      "event_details": "{\"recipient_email\": \"alice.student@aada.edu\"}"
+    },
+    {
+      "id": 2,
+      "event_type": "viewed",
+      "occurred_at": "2024-11-01T14:15:00Z",
+      "ip_address": "192.168.1.101",
+      "user_agent": "Mozilla/5.0...",
+      "event_details": null
+    },
+    {
+      "id": 3,
+      "event_type": "document_signed",
+      "occurred_at": "2024-11-01T14:30:00Z",
+      "ip_address": "192.168.1.101",
+      "user_agent": "Mozilla/5.0...",
+      "event_details": "{\"signature_text\": \"Alice Student\", \"consent_given\": true}"
+    }
+  ]
+}
+```
+
+### Download Document
+
+**Endpoint**: `GET /api/documents/{document_id}/download`
+
+**Authentication**: Required (students see own, admins see all)
+
+**Response**: `200 OK` (binary PDF file)
+- Content-Type: `application/pdf`
+- Content-Disposition: `attachment; filename="enrollment-agreement.pdf"`
+
+### Public Signing Endpoint
+
+**Endpoint**: `GET /api/public/sign/{token}`
+
+**Authentication**: Not required (uses one-time token)
+
+**Description**: Public endpoint for document signing via unique token
+
+**Response**: `200 OK`
+```json
+{
+  "document_id": "660e8400-e29b-41d4-a716-446655440001",
+  "template_name": "Enrollment Agreement",
+  "recipient_email": "alice.student@aada.edu",
+  "requires_counter_signature": true,
+  "pdf_url": "/static/documents/templates/550e8400-e29b-41d4-a716-446655440000_enrollment.pdf"
+}
+```
+
+### Sign Document
+
+**Endpoint**: `POST /api/public/sign/{token}`
+
+**Authentication**: Not required (uses one-time token)
+
+**Content-Type**: `multipart/form-data`
+
+**Form Fields**:
+- `signature_text` (string, required) - Typed signature
+- `consent_given` (boolean, required) - Must be true
+- `signature_image` (file, optional) - Drawn signature image
+
+**Rate Limiting**: 5 requests per minute per IP address
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Document signed successfully",
+  "document_id": "660e8400-e29b-41d4-a716-446655440001",
+  "signed_at": "2025-11-04T12:34:56Z"
+}
+```
+
+**Error Responses**:
+- `400 Bad Request` - Invalid token, already signed, or consent not given
+- `429 Too Many Requests` - Rate limit exceeded
+
 ## xAPI
 
 ### Record xAPI Statement

@@ -61,9 +61,10 @@ aada_lms/
 
 - ✅ JWT authentication for both portals
 - ✅ PostgreSQL database with all migrations
-- ✅ Admin portal: Dashboard, programs, reports, externships
+- ✅ Admin portal: Dashboard, programs, reports, externships, documents
 - ✅ Student portal: Dashboard, authentication
 - ✅ GNPEC compliance APIs (withdrawals, refunds, complaints, transcripts)
+- ✅ E-signature system: Document templates, public signing, audit trail (ESIGN Act compliant)
 - ✅ H5P content delivery system
 - ✅ xAPI/Learning Record Store
 - ✅ Docker Compose orchestration
