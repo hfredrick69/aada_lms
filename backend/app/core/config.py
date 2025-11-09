@@ -44,5 +44,13 @@ class Settings(BaseModel):
     # Backend
     BACKEND_BASE_URL: str = os.getenv("BACKEND_BASE_URL", "http://localhost:8000")
 
+    # CORS - comma-separated list of allowed origins
+    ALLOWED_ORIGINS: str = os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173,"
+        "http://localhost:5174,http://127.0.0.1:5174,"
+        "https://localhost:5173,https://localhost:5174"
+    )
+
 
 settings = Settings()

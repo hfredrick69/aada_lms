@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 import logging
 
 from app.db import models  # noqa: F401 ensure model registration
+from app.core.config import settings
 from app.middleware.security import (
     SecurityHeadersMiddleware,
     AuditLoggingMiddleware
@@ -67,17 +68,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(AuditLoggingMiddleware)
 
-# CORS middleware
+# CORS middleware - use environment variable for production flexibility
+allowed_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",")]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",   # Admin Portal
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",   # Student LMS Frontend
-        "http://127.0.0.1:5174",
-        "https://localhost:5173",  # HTTPS versions
-        "https://localhost:5174",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
