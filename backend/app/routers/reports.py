@@ -38,20 +38,22 @@ COMPLIANCE_MODELS = {
 
 def _serialize_record(record, db: Session) -> Dict[str, Any]:
     row: Dict[str, Any] = {}
-    for column in record.__table__.columns:  # type: ignore[attr-defined]
-        value = getattr(record, column.name)
-        if isinstance(value, (datetime, Decimal)):
-            row[column.name] = value.isoformat() if isinstance(value, datetime) else str(value)
-        else:
-            row[column.name] = str(value) if value is not None else None
 
-    # Add decrypted student name if record has user_id
+    # Add decrypted student name FIRST if record has user_id
     if hasattr(record, 'user_id') and record.user_id:
         user = db.query(User).filter(User.id == record.user_id).first()
         if user:
             first_name = decrypt_value(db, user.first_name)
             last_name = decrypt_value(db, user.last_name)
             row['student_name'] = f"{first_name} {last_name}"
+
+    # Then add all other fields
+    for column in record.__table__.columns:  # type: ignore[attr-defined]
+        value = getattr(record, column.name)
+        if isinstance(value, (datetime, Decimal)):
+            row[column.name] = value.isoformat() if isinstance(value, datetime) else str(value)
+        else:
+            row[column.name] = str(value) if value is not None else None
 
     return row
 
