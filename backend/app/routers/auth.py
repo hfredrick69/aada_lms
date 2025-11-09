@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, Cookie
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import Optional
 import jwt
 import uuid
+import os
 
 from app.core.security import (
     create_access_token,
@@ -16,6 +18,10 @@ from app.core.security import (
 from app.db.models.user import User
 from app.db.session import get_db
 from app.schemas.auth import AuthUser, LoginRequest, RefreshRequest, TokenResponse
+from app.utils.encryption import decrypt_value
+
+# Get encryption key from environment
+ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", "dev_encryption_key_change_in_production_32bytes")
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -70,11 +76,16 @@ def get_current_user(
     if user.status and user.status.lower() != "active":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is not active")
 
+    # Decrypt PII fields
+    decrypted_email = decrypt_value(db, user.email)
+    decrypted_first_name = decrypt_value(db, user.first_name)
+    decrypted_last_name = decrypt_value(db, user.last_name)
+
     return AuthUser(
         id=user.id,
-        email=user.email,
-        first_name=user.first_name,
-        last_name=user.last_name,
+        email=decrypted_email,
+        first_name=decrypted_first_name,
+        last_name=decrypted_last_name,
         roles=_get_user_roles(user),
     )
 
@@ -86,7 +97,22 @@ def login(
     response: Response,
     db: Session = Depends(get_db)
 ) -> TokenResponse:
-    user: User | None = db.query(User).filter(User.email == payload.email).first()
+    # Query user by decrypting email field in SQL
+    result = db.execute(
+        text("""
+            SELECT id, email, password_hash, first_name, last_name, status
+            FROM users
+            WHERE pgp_sym_decrypt(decode(email, 'base64'), :key) = :email
+            LIMIT 1
+        """),
+        {"key": ENCRYPTION_KEY, "email": payload.email}
+    ).fetchone()
+
+    if not result:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+
+    # Get full User object for roles relationship
+    user: User | None = db.query(User).filter(User.id == result.id).first()
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
     if user.status and user.status.lower() != "active":
