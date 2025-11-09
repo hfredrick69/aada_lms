@@ -11,6 +11,7 @@ from app.db.session import get_db
 from app.db.models.user import User
 from app.db.models.compliance.finance import FinancialLedger
 from app.routers.auth import get_current_user
+from app.utils.encryption import decrypt_value
 
 
 class PaymentCreate(BaseModel):
@@ -28,6 +29,7 @@ class InvoiceLineItem(BaseModel):
     amount_cents: int
     description: Optional[str]
     created_at: Optional[datetime] = None
+    student_name: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -41,6 +43,32 @@ class StudentBalance(BaseModel):
 
 
 router = APIRouter(prefix="/payments", tags=["payments"])
+
+
+def _add_student_names(ledger_entries: List[FinancialLedger], db: Session) -> List[InvoiceLineItem]:
+    """Add decrypted student names to ledger entries"""
+    result = []
+    for entry in ledger_entries:
+        user = db.query(User).filter(User.id == entry.user_id).first()
+        student_name = None
+        if user:
+            first_name = decrypt_value(db, user.first_name)
+            last_name = decrypt_value(db, user.last_name)
+            student_name = f"{first_name} {last_name}"
+
+        result.append(
+            InvoiceLineItem(
+                id=entry.id,
+                user_id=entry.user_id,
+                program_id=entry.program_id,
+                line_type=entry.line_type,
+                amount_cents=entry.amount_cents,
+                description=entry.description,
+                created_at=entry.created_at,
+                student_name=student_name
+            )
+        )
+    return result
 
 
 @router.get("/", response_model=List[InvoiceLineItem])
@@ -59,7 +87,8 @@ def list_all_transactions(
     elif not any(role in ["admin", "finance"] for role in current_user.roles):
         query = query.filter(FinancialLedger.user_id == current_user.id)
 
-    return query.order_by(FinancialLedger.created_at.desc()).all()
+    ledger_entries = query.order_by(FinancialLedger.created_at.desc()).all()
+    return _add_student_names(ledger_entries, db)
 
 
 @router.get("/balance/{user_id}", response_model=StudentBalance)
@@ -136,6 +165,7 @@ def get_payment_history(
     if user_id != current_user.id and not any(role in ["admin", "finance"] for role in current_user.roles):
         raise HTTPException(status_code=403, detail="Not authorized to view this history")
 
-    return db.query(FinancialLedger).filter(
+    ledger_entries = db.query(FinancialLedger).filter(
         FinancialLedger.user_id == user_id
     ).order_by(FinancialLedger.created_at.desc()).all()
+    return _add_student_names(ledger_entries, db)

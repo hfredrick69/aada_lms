@@ -7,12 +7,14 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from app.db.models.compliance.extern import Externship
+from app.db.models.user import User
 from app.db.session import get_db
 from app.schemas.externships import (
     ExternshipCreate,
     ExternshipRead,
     ExternshipUpdate,
 )
+from app.utils.encryption import decrypt_value
 
 router = APIRouter(prefix="/externships", tags=["externships"])
 
@@ -36,11 +38,38 @@ def _validate_verification(data: dict, existing: Externship | None = None) -> di
 
 @router.get("", response_model=List[ExternshipRead])
 def list_externships(db: Session = Depends(get_db)) -> List[ExternshipRead]:
-    return (
+    externships = (
         db.query(Externship)
         .order_by(desc(Externship.verified), desc(Externship.verified_at), Externship.id)
         .all()
     )
+
+    # Add decrypted student names
+    result = []
+    for ext in externships:
+        user = db.query(User).filter(User.id == ext.user_id).first()
+        student_name = None
+        if user:
+            first_name = decrypt_value(db, user.first_name)
+            last_name = decrypt_value(db, user.last_name)
+            student_name = f"{first_name} {last_name}"
+
+        result.append(
+            ExternshipRead(
+                id=ext.id,
+                user_id=ext.user_id,
+                site_name=ext.site_name,
+                site_address=ext.site_address,
+                supervisor_name=ext.supervisor_name,
+                supervisor_email=ext.supervisor_email,
+                total_hours=ext.total_hours,
+                verified=ext.verified,
+                verification_doc_url=ext.verification_doc_url,
+                verified_at=ext.verified_at,
+                student_name=student_name
+            )
+        )
+    return result
 
 
 @router.post("", response_model=ExternshipRead, status_code=status.HTTP_201_CREATED)

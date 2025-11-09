@@ -34,5 +34,6 @@ class ExternshipUpdate(BaseModel):
 
 class ExternshipRead(ExternshipBase):
     id: UUID
+    student_name: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
