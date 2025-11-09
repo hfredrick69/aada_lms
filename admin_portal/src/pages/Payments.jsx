@@ -84,39 +84,46 @@ const Payments = () => {
                   </td>
                 </tr>
               ) : (
-                invoices.map((invoice) => (
-                  <tr key={invoice.id}>
-                    <td className="px-4 py-3 text-sm text-slate-600">{invoice.id}</td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{invoice.student || invoice.student_name}</td>
-                    <td className="px-4 py-3 text-sm text-slate-700">
-                      ${(invoice.amount_cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <span
-                        className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
-                          invoice.status === "paid"
-                            ? "bg-emerald-100 text-emerald-600"
-                            : "bg-amber-100 text-amber-600"
-                        }`}
-                      >
-                        {invoice.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-500">{invoice.due_date || "N/A"}</td>
-                    {canEdit && (
-                      <td className="px-4 py-3 text-right">
-                        {invoice.status !== "paid" && (
-                          <button
-                            onClick={() => handleMarkPaid(invoice.id)}
-                            className="text-xs font-medium text-primary-600 hover:text-primary-700"
-                          >
-                            Mark paid
-                          </button>
-                        )}
+                invoices.map((invoice) => {
+                  // Map line_type to display values
+                  const isCharge = ["tuition", "fee"].includes(invoice.line_type);
+                  const isPayment = ["payment", "refund"].includes(invoice.line_type);
+                  const displayType = invoice.line_type.charAt(0).toUpperCase() + invoice.line_type.slice(1);
+
+                  return (
+                    <tr key={invoice.id}>
+                      <td className="px-4 py-3 text-sm text-slate-600">{invoice.id}</td>
+                      <td className="px-4 py-3 text-sm text-slate-600">{invoice.student_name || invoice.student || "N/A"}</td>
+                      <td className="px-4 py-3 text-sm text-slate-700">
+                        ${(Math.abs(invoice.amount_cents) / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </td>
-                    )}
-                  </tr>
-                ))
+                      <td className="px-4 py-3 text-sm">
+                        <span
+                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                            isPayment
+                              ? "bg-emerald-100 text-emerald-600"
+                              : "bg-amber-100 text-amber-600"
+                          }`}
+                        >
+                          {displayType}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-slate-500">{invoice.due_date || invoice.created_at?.substring(0, 10) || "N/A"}</td>
+                      {canEdit && (
+                        <td className="px-4 py-3 text-right">
+                          {isCharge && (
+                            <button
+                              onClick={() => handleMarkPaid(invoice.id)}
+                              className="text-xs font-medium text-primary-600 hover:text-primary-700"
+                            >
+                              Record Payment
+                            </button>
+                          )}
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
