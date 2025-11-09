@@ -18,7 +18,9 @@ from app.db.models.compliance.extern import Externship
 from app.db.models.compliance.skills import SkillCheckoff
 from app.db.models.compliance.transcript import Transcript
 from app.db.models.compliance.withdraw_refund import Refund, Withdrawal
+from app.db.models.user import User
 from app.db.session import get_db
+from app.utils.encryption import decrypt_value
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -34,7 +36,7 @@ COMPLIANCE_MODELS = {
 }
 
 
-def _serialize_record(record) -> Dict[str, Any]:
+def _serialize_record(record, db: Session) -> Dict[str, Any]:
     row: Dict[str, Any] = {}
     for column in record.__table__.columns:  # type: ignore[attr-defined]
         value = getattr(record, column.name)
@@ -42,6 +44,15 @@ def _serialize_record(record) -> Dict[str, Any]:
             row[column.name] = value.isoformat() if isinstance(value, datetime) else str(value)
         else:
             row[column.name] = str(value) if value is not None else None
+
+    # Add decrypted student name if record has user_id
+    if hasattr(record, 'user_id') and record.user_id:
+        user = db.query(User).filter(User.id == record.user_id).first()
+        if user:
+            first_name = decrypt_value(db, user.first_name)
+            last_name = decrypt_value(db, user.last_name)
+            row['student_name'] = f"{first_name} {last_name}"
+
     return row
 
 
@@ -115,7 +126,7 @@ def export_compliance_report(
     if not model:
         raise HTTPException(status_code=404, detail="Compliance resource not found.")
     records = db.query(model).all()
-    rows = [_serialize_record(record) for record in records]
+    rows = [_serialize_record(record, db) for record in records]
     filename = f"{resource}_report"
     if format == "csv":
         return _generate_csv(rows, filename)
