@@ -6,7 +6,7 @@ const Students = () => {
   const { hasRole } = useAuth();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ first_name: "", last_name: "", email: "" });
+  const [form, setForm] = useState({ first_name: "", last_name: "", email: "", password: "" });
   const [error, setError] = useState(null);
 
   const canEdit = hasRole(["admin", "staff"]);
@@ -41,7 +41,7 @@ const Students = () => {
     try {
       const created = await createStudent(form);
       setStudents((prev) => [created, ...prev]);
-      setForm({ first_name: "", last_name: "", email: "" });
+      setForm({ first_name: "", last_name: "", email: "", password: "" });
       setError(null);
     } catch (err) {
       console.error(err);
@@ -75,7 +75,7 @@ const Students = () => {
       {canEdit && (
         <section className="glass-card p-6">
           <h3 className="text-lg font-semibold text-primary-700">Add new student</h3>
-          <form onSubmit={handleSubmit} className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <form onSubmit={handleSubmit} className="mt-4 grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div>
               <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide">First name</label>
               <input
@@ -107,7 +107,18 @@ const Students = () => {
                 className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
               />
             </div>
-            <div className="sm:col-span-3 flex justify-end">
+            <div>
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide">Password</label>
+              <input
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full rounded-md border border-slate-200 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none"
+              />
+            </div>
+            <div className="sm:col-span-4 flex justify-end">
               <button
                 type="submit"
                 className="px-4 py-2 rounded-md bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition"
