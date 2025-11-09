@@ -1,0 +1,50 @@
+{
+  "question": "<p>Which chairside behaviours support four-handed dentistry efficiency?</p>",
+  "answers": [
+    {
+      "text": "Position the assistant 4-6 inches above the operator with hips level to the patient's shoulder.",
+      "correct": true
+    },
+    {
+      "text": "Exchange handpieces across the patient's chest to reduce assistant reach.",
+      "correct": false
+    },
+    {
+      "text": "Stabilize the HVE with a palm-thumb grasp and mirror retraction for visibility.",
+      "correct": true
+    },
+    {
+      "text": "Skip wedges when using sectional matrices if contacts seem tight.",
+      "correct": false
+    },
+    {
+      "text": "Schedule microbreaks every 20 minutes to reset posture and reduce strain.",
+      "correct": true
+    }
+  ],
+  "behaviour": {
+    "type": "multi",
+    "singlePoint": false,
+    "enableRetry": true,
+    "enableSolutionsButton": true,
+    "randomAnswers": true,
+    "autoCheck": false
+  },
+  "overallFeedback": [
+    {
+      "from": 0,
+      "to": 33,
+      "feedback": "Review the operator zone, HVE, and matrix setup sections."
+    },
+    {
+      "from": 34,
+      "to": 66,
+      "feedback": "Solid effort—double-check instrument transfer and isolation cues."
+    },
+    {
+      "from": 67,
+      "to": 100,
+      "feedback": "Excellent anticipatory assisting habits!"
+    }
+  ]
+}

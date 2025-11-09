@@ -257,18 +257,31 @@ async def serve_h5p_player(activity_id: str):
             console.log('Initializing H5P with path:', options.h5pJsonPath);
             console.log('Document location:', window.location.href);
 
-            const removeBlockers = () => {{
-                const blockers = el.querySelectorAll('.h5p-prevent-interaction');
-                blockers.forEach((node) => node.remove());
+            const stripIframeBlockers = () => {{
+                const iframe = el.querySelector('iframe.h5p-iframe');
+                if (!iframe || !iframe.contentDocument) {{
+                    return;
+                }}
+                const iframeDoc = iframe.contentDocument;
+                const removeBlockers = () => {{
+                    iframeDoc.querySelectorAll('.h5p-prevent-interaction').forEach((node) => node.remove());
+                }};
+                removeBlockers();
+
+                const iframeObserver = new MutationObserver(removeBlockers);
+                iframeObserver.observe(iframeDoc.documentElement, {{
+                    childList: true,
+                    subtree: true
+                }});
             }};
-            const observer = new MutationObserver(removeBlockers);
-            observer.observe(el, {{ childList: true, subtree: true }});
+            const containerObserver = new MutationObserver(stripIframeBlockers);
+            containerObserver.observe(el, {{ childList: true, subtree: true }});
 
             try {{
                 if (window.H5PStandalone && window.H5PStandalone.H5P) {{
                     new window.H5PStandalone.H5P(el, options);
                     console.log('H5P initialized with H5PStandalone.H5P');
-                    setTimeout(removeBlockers, 1000);
+                    setTimeout(stripIframeBlockers, 500);
                     setTimeout(() => {{
                         const inputs = el.querySelectorAll('input');
                         console.log(
@@ -282,7 +295,7 @@ async def serve_h5p_player(activity_id: str):
                 }} else if (window.H5PStandalone) {{
                     new window.H5PStandalone(el, options);
                     console.log('H5P initialized with H5PStandalone');
-                    setTimeout(removeBlockers, 1000);
+                    setTimeout(stripIframeBlockers, 500);
                 }} else {{
                     console.error('H5PStandalone not loaded');
                 }}
