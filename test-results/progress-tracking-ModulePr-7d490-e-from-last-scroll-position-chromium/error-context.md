@@ -1,0 +1,52 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "AADA Admin Portal" [ref=e7] [cursor=pointer]:
+        - /url: /dashboard
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - paragraph [ref=e10]: Alice Student
+          - paragraph [ref=e11]: alice.student@aada.edu
+        - button "Sign out" [ref=e12] [cursor=pointer]
+  - generic [ref=e13]:
+    - complementary [ref=e14]:
+      - generic [ref=e15]:
+        - heading "AADA Admin" [level=1] [ref=e16]
+        - paragraph [ref=e17]: student
+      - navigation [ref=e18]:
+        - link "Dashboard" [ref=e19] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=e20]: 📊
+          - text: Dashboard
+    - main [ref=e21]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - heading "Dashboard" [level=2] [ref=e25]
+          - paragraph [ref=e26]: Monitor enrollment, compliance, and financial health in real time.
+        - generic [ref=e27]:
+          - generic [ref=e28]:
+            - paragraph [ref=e29]: Active Students
+            - paragraph [ref=e30]: "0"
+            - paragraph [ref=e31]: +3 new this week
+          - generic [ref=e32]:
+            - paragraph [ref=e33]: Programs & Modules
+            - paragraph [ref=e34]: "10"
+            - paragraph [ref=e35]: Updated nightly
+          - generic [ref=e36]:
+            - paragraph [ref=e37]: Open Invoices
+            - paragraph [ref=e38]: "0"
+            - paragraph [ref=e39]: Review finance queue
+          - generic [ref=e40]:
+            - paragraph [ref=e41]: Externship Placements
+            - paragraph [ref=e42]: "16"
+            - paragraph [ref=e43]: 2 approvals pending
+        - generic [ref=e44]:
+          - heading "Compliance Reminders" [level=3] [ref=e45]
+          - list [ref=e46]:
+            - listitem [ref=e47]: • Refunds must be remitted within 45 days of approval.
+            - listitem [ref=e48]: • Ensure externship verification documents are uploaded for current cohort.
+            - listitem [ref=e49]: • GNPEC complaints require resolution documentation within 30 days.
+```

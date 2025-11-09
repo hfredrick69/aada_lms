@@ -277,11 +277,29 @@ async def serve_h5p_player(activity_id: str):
             const containerObserver = new MutationObserver(stripIframeBlockers);
             containerObserver.observe(el, {{ childList: true, subtree: true }});
 
+            const logDiagnostics = () => {{
+                const iframe = el.querySelector('iframe.h5p-iframe');
+                const win = iframe?.contentWindow;
+                const instances = win?.H5P?.instances;
+                if (!instances || !instances.length) {{
+                    console.warn('[H5P diagnostics] instances missing or empty', instances);
+                    return;
+                }}
+                const instance = instances[0];
+                console.log('[H5P diagnostics] instance keys',
+                    Object.keys(instance || {{}}));
+                console.log('[H5P diagnostics] params', instance?.params);
+                const answerCount = iframe?.contentDocument
+                    ?.querySelectorAll('.h5p-answer').length;
+                console.log('[H5P diagnostics] answers in DOM', answerCount);
+            }};
+
             try {{
                 if (window.H5PStandalone && window.H5PStandalone.H5P) {{
                     new window.H5PStandalone.H5P(el, options);
                     console.log('H5P initialized with H5PStandalone.H5P');
                     setTimeout(stripIframeBlockers, 500);
+                    setTimeout(logDiagnostics, 1500);
                     setTimeout(() => {{
                         const inputs = el.querySelectorAll('input');
                         console.log(
@@ -296,6 +314,7 @@ async def serve_h5p_player(activity_id: str):
                     new window.H5PStandalone(el, options);
                     console.log('H5P initialized with H5PStandalone');
                     setTimeout(stripIframeBlockers, 500);
+                    setTimeout(logDiagnostics, 1500);
                 }} else {{
                     console.error('H5PStandalone not loaded');
                 }}
