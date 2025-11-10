@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import {
@@ -17,6 +17,7 @@ import { H5PPlayer } from '@/components/H5PPlayer';
 import { ModuleProgressTracker } from '@/components/ModuleProgressTracker';
 import { useAuthStore } from '@/stores/auth-store';
 import { axiosInstance } from '@/api/http-client';
+import { resolveApiBaseUrl } from '@/utils/apiBase';
 
 /**
  * Module Player Page
@@ -35,27 +36,7 @@ export const ModulePlayerPage = () => {
   const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-
-  // Extract H5P activity IDs from HTML content
-  const h5pActivities = useMemo(() => {
-    if (!htmlContent) return [];
-
-    const activities: Array<{ id: string; title: string }> = [];
-
-    // Look for H5P activity references in the HTML
-    // Pattern: data-h5p-activity="M1_H5P_EthicsBranching" or similar
-    const h5pPattern = /data-h5p-activity=["']([^"']+)["']/g;
-    let match;
-    while ((match = h5pPattern.exec(htmlContent)) !== null) {
-      activities.push({
-        id: match[1],
-        title: match[1].replace(/^M\d+_H5P_/, '').replace(/_/g, ' '),
-      });
-    }
-
-    return activities;
-  }, [htmlContent, id]);
+  const apiBaseUrl = resolveApiBaseUrl();
 
   // Fetch user's active enrollment
   useEffect(() => {

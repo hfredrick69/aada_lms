@@ -5,10 +5,9 @@ import type {
   AxiosResponse,
 } from 'axios';
 import { useAuthStore } from '@/stores/auth-store';
+import { resolveApiBaseUrl } from '@/utils/apiBase';
 
-const baseURL =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ||
-  'http://localhost:8000';
+const baseURL = resolveApiBaseUrl();
 
 const instance = axios.create({
   baseURL,

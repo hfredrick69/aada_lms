@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, Alert, CircularProgress, Typography } from '@mui/material';
 import { axiosInstance } from '@/api/http-client';
+import { resolveApiBaseUrl } from '@/utils/apiBase';
 
 export interface H5PPlayerProps {
   /** H5P activity ID (e.g., 'M1_H5P_EthicsBranching') */
@@ -36,7 +37,7 @@ export const H5PPlayer = ({
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const normalizedBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+  const normalizedBaseUrl = resolveApiBaseUrl();
   const h5pUrl = `${normalizedBaseUrl}/api/h5p/${activityId}`;
 
   if (import.meta.env.DEV) {

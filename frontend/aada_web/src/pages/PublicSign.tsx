@@ -1,18 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas';
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+import { resolveApiBaseUrl } from '@/utils/apiBase';
+
+const API_BASE_URL = `${resolveApiBaseUrl()}/api`;
+
+interface DocumentData {
+  template_name?: string;
+  template_description?: string;
+  signer_name?: string;
+  signer_email?: string;
+  expires_at?: string;
+}
 
 export default function PublicSign() {
   const { token } = useParams();
-  const navigate = useNavigate();
-  const sigPad = useRef(null);
+  const sigPad = useRef<SignatureCanvas | null>(null);
 
   const [loading, setLoading] = useState(true);
-  const [document, setDocument] = useState(null);
-  const [error, setError] = useState(null);
+  const [document, setDocument] = useState<DocumentData | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [typedName, setTypedName] = useState('');
   const [signing, setSigning] = useState(false);
   const [signed, setSigned] = useState(false);
@@ -26,7 +35,7 @@ export default function PublicSign() {
         const response = await axios.get(`${API_BASE_URL}/public/sign/${token}`);
         setDocument(response.data);
         setTypedName(response.data.signer_name || '');
-      } catch (err) {
+      } catch (err: any) {
         if (err.response?.status === 404) {
           setError('Document not found or link has expired');
         } else if (err.response?.status === 429) {
@@ -54,7 +63,7 @@ export default function PublicSign() {
     setSignatureError('');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSignatureError('');
 
@@ -74,10 +83,10 @@ export default function PublicSign() {
       setSigning(true);
 
       // Get signature as base64
-      const signatureData = sigPad.current.toDataURL().split(',')[1]; // Remove data:image/png;base64, prefix
+      const signatureData = sigPad.current?.toDataURL()?.split(',')[1]; // Remove data:image/png;base64, prefix
 
       // Submit signature
-      const response = await axios.post(`${API_BASE_URL}/public/sign/${token}`, {
+      await axios.post(`${API_BASE_URL}/public/sign/${token}`, {
         signature_data: signatureData,
         typed_name: typedName.trim()
       });
@@ -89,7 +98,7 @@ export default function PublicSign() {
         // Could redirect to a thank you page or show final status
       }, 2000);
 
-    } catch (err) {
+    } catch (err: any) {
       if (err.response?.status === 400) {
         setSignatureError(err.response.data?.detail || 'Invalid signature data');
       } else if (err.response?.status === 404) {
