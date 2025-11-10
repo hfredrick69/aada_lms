@@ -36,14 +36,13 @@ export const H5PPlayer = ({
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // TEMPORARY: Hardcode URL to test - environment variable not being read
-  const apiBaseUrl = 'http://localhost:8000';
-  const h5pUrl = `${apiBaseUrl}/api/h5p/${activityId}`;
+  const normalizedBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+  const h5pUrl = `${normalizedBaseUrl}/api/h5p/${activityId}`;
 
-  // Debug logging
-  console.log('[H5PPlayer] API Base URL:', apiBaseUrl);
-  console.log('[H5PPlayer] H5P URL:', h5pUrl);
-  console.log('[H5PPlayer] Env check:', import.meta.env.VITE_API_BASE_URL);
+  if (import.meta.env.DEV) {
+    console.log('[H5PPlayer] API Base URL:', normalizedBaseUrl);
+    console.log('[H5PPlayer] H5P URL:', h5pUrl);
+  }
 
   useEffect(() => {
     // Listen for xAPI statements from H5P and post them to backend
@@ -147,10 +146,7 @@ export const H5PPlayer = ({
             border: 'none',
           }}
           allowFullScreen
-          onLoad={() => {
-            console.log('[H5PPlayer] iframe loaded, src:', iframeRef.current?.src);
-            handleIframeLoad();
-          }}
+          onLoad={handleIframeLoad}
           onError={handleIframeError}
         />
         {/* Debug: Show the URL being used */}
