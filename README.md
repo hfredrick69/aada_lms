@@ -35,6 +35,20 @@ See **[TEST_CREDENTIALS.md](TEST_CREDENTIALS.md)** for all test accounts and qui
 - Admin: `admin@aada.edu` / `AdminPass!23`
 - Student: `alice.student@aada.edu` / `AlicePass!23`
 
+## 🔍 Admin Smoke Test
+
+Use the automated smoke script to make sure admin login, `/auth/me`, and CORS headers still work after a deploy:
+
+```bash
+python scripts/smoke_admin_login.py \
+  --api-base https://aada-backend.nicedune-8fdc50bb.eastus2.azurecontainerapps.io/api \
+  --origin https://aada-admin.nicedune-8fdc50bb.eastus2.azurecontainerapps.io \
+  --email admin@aada.edu \
+  --password AdminPass!23
+```
+
+You can also set `SMOKE_API_BASE_URL`, `SMOKE_ADMIN_ORIGIN`, `SMOKE_ADMIN_EMAIL`, and `SMOKE_ADMIN_PASSWORD` environment variables instead of passing flags.
+
 ## 📚 Documentation
 
 - **[Status & Progress](aada_lms_sis_10312025.md)** - Current state, gaps, and priorities

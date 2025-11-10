@@ -20,6 +20,7 @@ from app.db.models.xapi import XapiStatement
 from app.db.models.crm import Lead, LeadSource, Activity
 import bcrypt
 from uuid import uuid4
+from app.utils.encryption import encrypt_value
 
 
 def hash_password_for_seed(password: str) -> str:
@@ -27,6 +28,18 @@ def hash_password_for_seed(password: str) -> str:
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed.decode('utf-8')
+
+
+def build_encrypted_user(db, email: str, password: str, first_name: str, last_name: str, status: str = "active") -> User:
+    """Create a seed user with pgcrypto-encrypted PHI fields."""
+    return User(
+        id=uuid4(),
+        email=encrypt_value(db, email),
+        password_hash=hash_password_for_seed(password),
+        first_name=encrypt_value(db, first_name),
+        last_name=encrypt_value(db, last_name),
+        status=status
+    )
 
 
 def reset_and_seed():
@@ -95,78 +108,15 @@ def reset_and_seed():
         db.commit()
 
         # Create specific test accounts for each role
-        admin_user = User(
-            id=uuid4(),
-            email="admin@aada.edu",
-            password_hash=hash_password_for_seed("AdminPass!23"),
-            first_name="Ada",
-            last_name="Administrator",
-            status="active"
-        )
-        staff_user = User(
-            id=uuid4(),
-            email="staff@aada.edu",
-            password_hash=hash_password_for_seed("StaffPass!23"),
-            first_name="Sam",
-            last_name="Staffer",
-            status="active"
-        )
-        instructor_user = User(
-            id=uuid4(),
-            email="instructor@aada.edu",
-            password_hash=hash_password_for_seed("InstructorPass!23"),
-            first_name="Ian",
-            last_name="Instructor",
-            status="active"
-        )
-        finance_user = User(
-            id=uuid4(),
-            email="finance@aada.edu",
-            password_hash=hash_password_for_seed("FinancePass!23"),
-            first_name="Fiona",
-            last_name="Finance",
-            status="active"
-        )
-        registrar_user = User(
-            id=uuid4(),
-            email="registrar@aada.edu",
-            password_hash=hash_password_for_seed("RegistrarPass!23"),
-            first_name="Rita",
-            last_name="Registrar",
-            status="active"
-        )
-        admissions_counselor_user = User(
-            id=uuid4(),
-            email="counselor@aada.edu",
-            password_hash=hash_password_for_seed("CounselorPass!23"),
-            first_name="Carl",
-            last_name="Counselor",
-            status="active"
-        )
-        admissions_manager_user = User(
-            id=uuid4(),
-            email="admissions@aada.edu",
-            password_hash=hash_password_for_seed("AdmissionsPass!23"),
-            first_name="Amy",
-            last_name="Admissions",
-            status="active"
-        )
-        alice_user = User(
-            id=uuid4(),
-            email="alice.student@aada.edu",
-            password_hash=hash_password_for_seed("AlicePass!23"),
-            first_name="Alice",
-            last_name="Student",
-            status="active"
-        )
-        bob_user = User(
-            id=uuid4(),
-            email="bob.student@aada.edu",
-            password_hash=hash_password_for_seed("BobLearner!23"),
-            first_name="Bob",
-            last_name="Learner",
-            status="active"
-        )
+        admin_user = build_encrypted_user(db, "admin@aada.edu", "AdminPass!23", "Ada", "Administrator")
+        staff_user = build_encrypted_user(db, "staff@aada.edu", "StaffPass!23", "Sam", "Staffer")
+        instructor_user = build_encrypted_user(db, "instructor@aada.edu", "InstructorPass!23", "Ian", "Instructor")
+        finance_user = build_encrypted_user(db, "finance@aada.edu", "FinancePass!23", "Fiona", "Finance")
+        registrar_user = build_encrypted_user(db, "registrar@aada.edu", "RegistrarPass!23", "Rita", "Registrar")
+        admissions_counselor_user = build_encrypted_user(db, "counselor@aada.edu", "CounselorPass!23", "Carl", "Counselor")
+        admissions_manager_user = build_encrypted_user(db, "admissions@aada.edu", "AdmissionsPass!23", "Amy", "Admissions")
+        alice_user = build_encrypted_user(db, "alice.student@aada.edu", "AlicePass!23", "Alice", "Student")
+        bob_user = build_encrypted_user(db, "bob.student@aada.edu", "BobLearner!23", "Bob", "Learner")
 
         users = [
             admin_user,
@@ -183,13 +133,12 @@ def reset_and_seed():
 
         # Create additional generic users
         for i in range(1, 8):
-            user = User(
-                id=uuid4(),
+            user = build_encrypted_user(
+                db,
                 email=f"user{i}@aada.edu",
-                password_hash=hash_password_for_seed("Pass123!Word"),
+                password="Pass123!Word",
                 first_name=f"Student{i}",
-                last_name="Tester",
-                status="active"
+                last_name="Tester"
             )
             users.append(user)
             db.add(user)
