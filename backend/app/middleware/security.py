@@ -12,6 +12,7 @@ from starlette.types import ASGIApp
 import time
 import logging
 
+from app.core.config import settings
 from app.db.models.audit_log import AuditLog
 from app.db.session import SessionLocal
 
@@ -51,6 +52,22 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # XSS Protection (legacy browsers)
         response.headers["X-XSS-Protection"] = "1; mode=block"
 
+        # Build frame-ancestors directive dynamically so hosted portals can embed backend pages (e.g. H5P iframe)
+        default_frame_origins = [
+            "http://localhost:5173",
+            "http://localhost:5174",
+        ]
+        allowed_origins = [
+            origin.strip()
+            for origin in settings.ALLOWED_ORIGINS.split(",")
+            if origin.strip()
+        ]
+        frame_ancestors = []
+        for origin in default_frame_origins + allowed_origins:
+            if origin not in frame_ancestors:
+                frame_ancestors.append(origin)
+        frame_ancestors_directive = "frame-ancestors 'self' " + " ".join(frame_ancestors)
+
         # Content Security Policy
         # Restricts resource loading to prevent XSS attacks
         csp_directives = [
@@ -61,7 +78,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "media-src 'self' blob: data:",  # H5P audio/video
             "font-src 'self' data: https://cdn.jsdelivr.net",  # H5P fonts
             "connect-src 'self' https:",
-            "frame-ancestors 'self' http://localhost:5173 http://localhost:5174",  # Allow frontend iframes
+            frame_ancestors_directive,  # Allow configured frontends to embed backend (H5P)
             "base-uri 'self'",
             "form-action 'self'",
         ]
