@@ -39,19 +39,15 @@ export const ModuleDetailPage = () => {
         }
       />
 
-      <Box sx={{ mt: 4, px: { xs: 0, md: 2 }, pb: { xs: 6, md: 8 } }}>
+      <Box sx={{ mt: { xs: 2, md: 4 }, px: { xs: 0, md: 4 }, pb: { xs: 6, md: 10 } }}>
         {moduleContent ? (
           <Box
             className="module-html"
             sx={{
-              maxWidth: 'min(960px, 100%)',
+              maxWidth: 1200,
               mx: 'auto',
-              bgcolor: 'background.paper',
-              borderRadius: 3,
-              border: '1px solid',
-              borderColor: 'divider',
-              boxShadow: { md: '0px 24px 70px rgba(15,23,42,0.08)' },
-              p: { xs: 3, md: 5 },
+              bgcolor: 'transparent',
+              p: { xs: 2, md: 0 },
               '& h1, & h2, & h3': {
                 color: 'text.primary',
                 fontFamily: 'inherit',
