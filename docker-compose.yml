@@ -43,7 +43,7 @@ services:
     command: npm run dev
     working_dir: /app
     environment:
-      - VITE_API_BASE_URL=http://localhost:8000/api
+      - VITE_API_BASE_URL=http://localhost:8000
     volumes:
       - ./admin_portal:/app
       - /app/node_modules
@@ -65,7 +65,7 @@ services:
       - ./frontend/aada_web:/app
       - /app/node_modules
     ports:
-      - "5174:5173"  # student LMS frontend
+      - "5174:5174"  # student LMS frontend
     depends_on:
       - backend
 
