@@ -97,7 +97,8 @@ export const ModuleDetailPage = () => {
                 borderColor: 'divider',
                 borderRadius: 2,
                 boxShadow: '0px 8px 30px rgba(15,23,42,0.08)',
-                minHeight: 420,
+                minHeight: { xs: 520, md: 640 },
+                aspectRatio: '16 / 9',
               },
             }}
             dangerouslySetInnerHTML={{ __html: moduleContent }}
