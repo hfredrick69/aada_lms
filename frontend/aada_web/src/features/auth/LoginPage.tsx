@@ -26,7 +26,7 @@ export default function LoginPage() {
 
   const loginMutation = useLoginMutation({
     mutation: {
-      onSuccess: async (response) => {
+      onSuccess: async () => {
         // Tokens are stored in httpOnly cookies (Phase 4), no need to store in state
         try {
           const { queryFn, queryKey } = getMeApiAuthMeGetQueryOptions();
@@ -76,7 +76,7 @@ export default function LoginPage() {
           <Stack spacing={3}>
             <Box textAlign="center">
               <Typography variant="h4" fontWeight={700}>
-                Welcome Back
+                Student Portal
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 Sign in to continue learning with AADA
