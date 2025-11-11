@@ -42,6 +42,9 @@ async def get_module(module_id: str, request: Request, db: Session = Depends(get
         extensions=['extra', 'fenced_code', 'tables', 'nl2br', 'attr_list', 'toc']
     )
 
+    # Remove inline style blocks so frontend controls presentation
+    html_content = re.sub(r'<style.*?>.*?</style>', '', html_content, flags=re.DOTALL | re.IGNORECASE)
+
     # Convert H5P references to data attributes for frontend embedding
     # Pattern matches: (H5P: `M1_H5P_ActivityName`)
     h5p_pattern = r'\(H5P:\s*<code>([^<]+)</code>\)'
