@@ -104,9 +104,9 @@ const SendDocumentModal = ({ lead, onClose }) => {
                 )}
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded p-4 mb-4">
-                <h4 className="text-sm font-semibold text-blue-900 mb-2">How it works:</h4>
-                <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
+              <div className="bg-primary-50 border border-primary-200 rounded p-4 mb-4">
+                <h4 className="text-sm font-semibold text-primary-900 mb-2">How it works:</h4>
+                <ol className="text-sm text-primary-700 space-y-1 list-decimal list-inside">
                   <li>Select a document template above</li>
                   <li>Click "Generate Signing Link"</li>
                   <li>Copy the secure link and send it to {lead.first_name} via email or SMS</li>

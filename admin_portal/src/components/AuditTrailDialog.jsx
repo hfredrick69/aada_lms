@@ -28,7 +28,7 @@ const AuditTrailDialog = ({ open, onClose, documentId, documentName }) => {
 
   const getEventColor = (eventType) => {
     const colors = {
-      viewed: 'bg-blue-100 text-blue-700',
+      viewed: 'bg-primary-100 text-primary-700',
       sent: 'bg-purple-100 text-purple-700',
       signed: 'bg-green-100 text-green-700',
       document_signed: 'bg-green-100 text-green-700',
@@ -160,8 +160,8 @@ const AuditTrailDialog = ({ open, onClose, documentId, documentName }) => {
                 </table>
               </div>
 
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
-                <p className="text-xs text-blue-700">
+              <div className="mt-4 p-4 bg-primary-50 border border-primary-200 rounded">
+                <p className="text-xs text-primary-700">
                   This audit trail provides a complete record of all actions taken on this document
                   in compliance with the ESIGN Act. All timestamps are recorded in UTC and converted to local time for display.
                 </p>

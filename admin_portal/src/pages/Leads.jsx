@@ -213,7 +213,7 @@ const Leads = () => {
 
   const getStatusBadge = (status) => {
     const colors = {
-      new: "bg-blue-100 text-blue-700",
+      new: "bg-primary-100 text-primary-700",
       contacted: "bg-yellow-100 text-yellow-700",
       qualified: "bg-green-100 text-green-700",
       unqualified: "bg-red-100 text-red-700",

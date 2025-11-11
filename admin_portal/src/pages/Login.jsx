@@ -27,8 +27,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#f0f6ff' }}>
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-primary-50 via-white to-primary-100">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-primary-50">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
           <p className="text-base text-gray-600 mt-2">Sign in to continue learning with AADA</p>
@@ -68,10 +68,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full text-white py-3 rounded-md text-base font-medium transition disabled:opacity-60 mt-6"
-            style={{ backgroundColor: '#d4af37' }}
-            onMouseEnter={(e) => !submitting && (e.target.style.backgroundColor = '#b5942d')}
-            onMouseLeave={(e) => !submitting && (e.target.style.backgroundColor = '#d4af37')}
+            className="w-full text-white py-3 rounded-md text-base font-medium transition-colors disabled:opacity-60 mt-6 bg-primary-500 hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
             {submitting ? "SIGNING IN..." : "SIGN IN"}
           </button>

@@ -247,8 +247,8 @@ const Content = () => {
             : "Manage module content, H5P activities, and supplemental files"}
         </p>
         {isInstructor && (
-          <div className="mt-2 bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-800">
+          <div className="mt-2 bg-primary-50 border border-primary-200 rounded-lg p-3">
+            <p className="text-sm text-primary-800">
               ℹ️ You have read-only access. Contact an administrator to upload or modify content.
             </p>
           </div>
@@ -267,8 +267,8 @@ const Content = () => {
         </div>
       )}
       {uploadProgress && (
-        <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-blue-800">{uploadProgress}</p>
+        <div className="mb-4 bg-primary-50 border border-primary-200 rounded-lg p-4">
+          <p className="text-primary-800">{uploadProgress}</p>
         </div>
       )}
 

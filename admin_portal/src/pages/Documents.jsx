@@ -259,7 +259,7 @@ const Documents = () => {
     const colors = {
       pending: "bg-yellow-100 text-yellow-700",
       signed: "bg-green-100 text-green-700",
-      partially_signed: "bg-blue-100 text-blue-700",
+      partially_signed: "bg-primary-100 text-primary-700",
       voided: "bg-red-100 text-red-700",
     };
     return colors[status] || "bg-gray-100 text-gray-700";
@@ -587,7 +587,7 @@ const Documents = () => {
                             </button>
                             <button
                               onClick={() => handleViewAuditTrail(doc)}
-                              className="text-blue-600 hover:text-blue-800 text-sm"
+                              className="text-primary-600 hover:text-primary-800 text-sm"
                             >
                               Audit Trail
                             </button>
@@ -649,7 +649,7 @@ const Documents = () => {
                         </button>
                         <button
                           onClick={() => handleViewAuditTrail(doc)}
-                          className="text-blue-600 hover:text-blue-800 text-sm"
+                          className="text-primary-600 hover:text-primary-800 text-sm"
                         >
                           Audit Trail
                         </button>
