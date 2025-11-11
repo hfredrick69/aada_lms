@@ -87,6 +87,59 @@ export const H5PPlayer = ({
     setError(null);
   };
 
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    const iframe = iframeRef.current;
+    if (!iframe) {
+      return;
+    }
+
+    const injectResponsiveStyles = () => {
+      const doc = iframe.contentDocument;
+      if (!doc) {
+        return;
+      }
+      const existing = doc.getElementById('aada-h5p-responsive');
+      const style = existing || doc.createElement('style');
+      style.id = 'aada-h5p-responsive';
+      style.textContent = `
+        .h5p-interactive-video,
+        .h5p-content,
+        .h5p-iframe-wrapper {
+          width: 100% !important;
+          max-width: none !important;
+        }
+        .h5p-interactive-video .h5p-iv-video-container,
+        .h5p-interactive-video .h5p-video-wrapper {
+          width: 100% !important;
+          height: auto !important;
+        }
+        .h5p-interactive-video .h5p-video-wrapper video {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover;
+        }
+        .h5p-iv-interactions-overlay {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      `;
+      if (!existing) {
+        doc.head.appendChild(style);
+      }
+    };
+
+    const observer = new MutationObserver(() => injectResponsiveStyles());
+    if (iframe.contentDocument?.body) {
+      observer.observe(iframe.contentDocument.body, { childList: true, subtree: true });
+    }
+    injectResponsiveStyles();
+
+    return () => observer.disconnect();
+  }, [loading]);
+
   const handleIframeError = () => {
     setLoading(false);
     setError('Failed to load H5P activity. Please try again or contact support.');
