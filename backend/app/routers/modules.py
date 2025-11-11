@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse
 from pathlib import Path
 from sqlalchemy.orm import Session
+from urllib.parse import urljoin
 import markdown
 import re
 
@@ -50,80 +51,19 @@ async def get_module(module_id: str, request: Request, db: Session = Depends(get
         html_content
     )
 
-    base_href = str(request.base_url)
+    base_url = str(request.base_url)
 
-    return f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Module {numeric_id}</title>
-        <base href="{base_href}">
-        <style>
-            html {{
-                scroll-behavior: smooth;
-            }}
-            body {{
-                max-width: 900px;
-                margin: 40px auto;
-                padding: 20px;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-            }}
-            h1, h2, h3 {{
-                color: #2c3e50;
-                scroll-margin-top: 20px;
-            }}
-            h1 {{ border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
-            h2 {{ border-bottom: 1px solid #ecf0f1; padding-bottom: 8px; margin-top: 30px; }}
-            iframe {{
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                margin: 20px 0;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }}
-            code {{
-                background: #f4f4f4;
-                padding: 2px 6px;
-                border-radius: 3px;
-                font-family: 'Courier New', monospace;
-            }}
-            pre {{
-                background: #f4f4f4;
-                padding: 15px;
-                border-radius: 4px;
-                overflow-x: auto;
-            }}
-            table {{
-                border-collapse: collapse;
-                width: 100%;
-                margin: 20px 0;
-            }}
-            th, td {{
-                border: 1px solid #ddd;
-                padding: 12px;
-                text-align: left;
-            }}
-            th {{
-                background-color: #3498db;
-                color: white;
-            }}
-            blockquote {{
-                border-left: 4px solid #3498db;
-                padding-left: 20px;
-                margin-left: 0;
-                color: #555;
-            }}
-            .h5p-embed {{
-                margin: 20px 0;
-                min-height: 400px;
-            }}
-        </style>
-    </head>
-    <body>
-        {html_content}
-    </body>
-    </html>
-    """
+    def _absolutize_attr(attr: str, content: str) -> str:
+        pattern = rf'{attr}="/([^"]+)"'
+
+        def replacer(match: re.Match) -> str:
+            relative_path = match.group(1)
+            absolute_path = urljoin(base_url, relative_path)
+            return f'{attr}="{absolute_path}"'
+
+        return re.sub(pattern, replacer, content)
+
+    html_content = _absolutize_attr("src", html_content)
+    html_content = _absolutize_attr("href", html_content)
+
+    return HTMLResponse(content=html_content)
