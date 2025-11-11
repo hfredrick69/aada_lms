@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse
 from pathlib import Path
 from sqlalchemy.orm import Session
@@ -19,7 +19,7 @@ MODULE_CODE_TO_NUMERIC = {
 
 
 @router.get("/{module_id}", response_class=HTMLResponse)
-async def get_module(module_id: str, db: Session = Depends(get_db)):
+async def get_module(module_id: str, request: Request, db: Session = Depends(get_db)):
     """Render module markdown as HTML"""
     # Look up module from database by UUID
     module = db.query(Module).filter(Module.id == module_id).first()
@@ -50,6 +50,8 @@ async def get_module(module_id: str, db: Session = Depends(get_db)):
         html_content
     )
 
+    base_href = str(request.base_url)
+
     return f"""
     <!DOCTYPE html>
     <html>
@@ -57,6 +59,7 @@ async def get_module(module_id: str, db: Session = Depends(get_db)):
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Module {numeric_id}</title>
+        <base href="{base_href}">
         <style>
             html {{
                 scroll-behavior: smooth;
