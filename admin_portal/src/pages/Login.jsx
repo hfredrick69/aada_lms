@@ -31,7 +31,7 @@ const Login = () => {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Admin Portal</h1>
-          <p className="text-base text-gray-600 mt-2">Our Students Are Our Top Priority!!!</p>
+          <p className="text-base text-gray-600 mt-2">Students Are Our Top Priority!!!</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
