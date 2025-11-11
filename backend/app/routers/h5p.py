@@ -211,12 +211,32 @@ async def serve_h5p_player(activity_id: str):
             background: #f5f5f5;
         }}
         .h5p-container {{
-            max-width: 1024px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.08);
+            border-radius: 8px;
+        }}
+        .h5p-iframe-wrapper,
+        .h5p-content,
+        .h5p-iframe,
+        .h5p-interactive-video {{
+            width: 100% !important;
+            max-width: none !important;
+        }}
+        .h5p-iframe-wrapper {{
+            min-height: 600px;
+        }}
+        .h5p-interactive-video .h5p-video-wrapper,
+        .h5p-interactive-video .h5p-iv-video-container {{
+            width: 100% !important;
+            height: auto !important;
+        }}
+        .h5p-interactive-video .h5p-video-wrapper video {{
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
         }}
         .h5p-question-container {{
             position: relative;
@@ -257,6 +277,33 @@ async def serve_h5p_player(activity_id: str):
             console.log('Initializing H5P with path:', options.h5pJsonPath);
             console.log('Document location:', window.location.href);
 
+            const injectSelectionStyles = () => {{
+                const iframe = el.querySelector('iframe.h5p-iframe');
+                if (!iframe || !iframe.contentDocument) {{
+                    return;
+                }}
+                const doc = iframe.contentDocument;
+                if (doc.getElementById('aada-h5p-selection-style')) {{
+                    return;
+                }}
+                const style = doc.createElement('style');
+                style.id = 'aada-h5p-selection-style';
+                style.textContent = `
+                    .h5p-question-container .h5p-answer[aria-checked="true"] .h5p-alternative-container,
+                    .h5p-question-container .h5p-answer.h5p-selected .h5p-alternative-container {{
+                        background-color: #e8f0fe !important;
+                        border-radius: 4px;
+                        border: 1px solid #4285f4;
+                        color: #1a237e !important;
+                    }}
+                    .h5p-question-container .h5p-answer[aria-checked="true"] .h5p-alternative-inner,
+                    .h5p-question-container .h5p-answer.h5p-selected .h5p-alternative-inner {{
+                        font-weight: 600;
+                    }}
+                `;
+                doc.head.appendChild(style);
+            }};
+
             const stripIframeBlockers = () => {{
                 const iframe = el.querySelector('iframe.h5p-iframe');
                 if (!iframe || !iframe.contentDocument) {{
@@ -273,25 +320,36 @@ async def serve_h5p_player(activity_id: str):
                     childList: true,
                     subtree: true
                 }});
+                injectSelectionStyles();
             }};
             const containerObserver = new MutationObserver(stripIframeBlockers);
             containerObserver.observe(el, {{ childList: true, subtree: true }});
+            const styleObserver = new MutationObserver(injectSelectionStyles);
+            styleObserver.observe(el, {{ childList: true, subtree: true }});
 
-            const logDiagnostics = () => {{
+            const bootstrapInstance = () => {{
                 const iframe = el.querySelector('iframe.h5p-iframe');
                 const win = iframe?.contentWindow;
                 const instances = win?.H5P?.instances;
                 if (!instances || !instances.length) {{
-                    console.warn('[H5P diagnostics] instances missing or empty', instances);
                     return;
                 }}
                 const instance = instances[0];
-                console.log('[H5P diagnostics] instance keys',
-                    Object.keys(instance || {{}}));
-                console.log('[H5P diagnostics] params', instance?.params);
-                const answerCount = iframe?.contentDocument
-                    ?.querySelectorAll('.h5p-answer').length;
-                console.log('[H5P diagnostics] answers in DOM', answerCount);
+                const contentInfo = win.H5P?.integration?.contents?.[instance.contentId];
+                if (!instance.params && contentInfo?.jsonContent) {{
+                    try {{
+                        const parsed = JSON.parse(contentInfo.jsonContent);
+                        instance.params = parsed;
+                        if (typeof instance.resetTask === 'function') {{
+                            instance.resetTask();
+                        }}
+                    }} catch (err) {{
+                        console.warn('[H5P diagnostics] failed to parse jsonContent', err);
+                    }}
+                }}
+                iframe?.contentDocument?.querySelectorAll('.h5p-prevent-interaction')
+                    .forEach((node) => node.remove());
+                injectSelectionStyles();
             }};
 
             try {{
@@ -299,7 +357,7 @@ async def serve_h5p_player(activity_id: str):
                     new window.H5PStandalone.H5P(el, options);
                     console.log('H5P initialized with H5PStandalone.H5P');
                     setTimeout(stripIframeBlockers, 500);
-                    setTimeout(logDiagnostics, 1500);
+                    setTimeout(bootstrapInstance, 800);
                     setTimeout(() => {{
                         const inputs = el.querySelectorAll('input');
                         console.log(
@@ -314,7 +372,7 @@ async def serve_h5p_player(activity_id: str):
                     new window.H5PStandalone(el, options);
                     console.log('H5P initialized with H5PStandalone');
                     setTimeout(stripIframeBlockers, 500);
-                    setTimeout(logDiagnostics, 1500);
+                    setTimeout(bootstrapInstance, 800);
                 }} else {{
                     console.error('H5PStandalone not loaded');
                 }}
