@@ -6,12 +6,17 @@ with full audit trail for legal compliance.
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime, Text, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
+
+
+def utcnow() -> datetime:
+    """Return timezone-aware UTC timestamp for database defaults."""
+    return datetime.now(timezone.utc)
 
 
 class DocumentTemplate(Base):
@@ -26,8 +31,8 @@ class DocumentTemplate(Base):
     is_active = Column(Boolean, default=True)
     requires_counter_signature = Column(Boolean, default=False)  # School official signature
 
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
     # Relationships
     document_instances = relationship("SignedDocument", back_populates="template")
@@ -61,12 +66,12 @@ class SignedDocument(Base):
     signed_file_path = Column(String(500), nullable=True)  # Final signed PDF
 
     # Timestamps
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    sent_at = Column(DateTime, nullable=True)  # When sent to student
-    student_viewed_at = Column(DateTime, nullable=True)  # First view
-    student_signed_at = Column(DateTime, nullable=True)
-    counter_signed_at = Column(DateTime, nullable=True)
-    completed_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
+    sent_at = Column(DateTime(timezone=True), nullable=True)  # When sent to student
+    student_viewed_at = Column(DateTime(timezone=True), nullable=True)  # First view
+    student_signed_at = Column(DateTime(timezone=True), nullable=True)
+    counter_signed_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
 
     # Relationships
     template = relationship("DocumentTemplate", back_populates="document_instances")
@@ -88,7 +93,7 @@ class DocumentSignature(Base):
     signature_data = Column(Text, nullable=False)  # Base64 encoded signature image
 
     # Legal audit trail
-    signed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    signed_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
     ip_address = Column(String(45), nullable=False)  # IPv6 support
     user_agent = Column(Text, nullable=False)
 
@@ -115,7 +120,7 @@ class DocumentAuditLog(Base):
     event_details = Column(Text, nullable=True)  # JSON string with additional context
 
     # Audit metadata
-    occurred_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    occurred_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
     ip_address = Column(String(45), nullable=True)
     user_agent = Column(Text, nullable=True)
 

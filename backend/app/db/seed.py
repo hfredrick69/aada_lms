@@ -30,7 +30,14 @@ def hash_password_for_seed(password: str) -> str:
     return hashed.decode('utf-8')
 
 
-def build_encrypted_user(db, email: str, password: str, first_name: str, last_name: str, status: str = "active") -> User:
+def build_encrypted_user(
+    db,
+    email: str,
+    password: str,
+    first_name: str,
+    last_name: str,
+    status: str = "active",
+) -> User:
     """Create a seed user with pgcrypto-encrypted PHI fields."""
     return User(
         id=uuid4(),
@@ -113,8 +120,12 @@ def reset_and_seed():
         instructor_user = build_encrypted_user(db, "instructor@aada.edu", "InstructorPass!23", "Ian", "Instructor")
         finance_user = build_encrypted_user(db, "finance@aada.edu", "FinancePass!23", "Fiona", "Finance")
         registrar_user = build_encrypted_user(db, "registrar@aada.edu", "RegistrarPass!23", "Rita", "Registrar")
-        admissions_counselor_user = build_encrypted_user(db, "counselor@aada.edu", "CounselorPass!23", "Carl", "Counselor")
-        admissions_manager_user = build_encrypted_user(db, "admissions@aada.edu", "AdmissionsPass!23", "Amy", "Admissions")
+        admissions_counselor_user = build_encrypted_user(
+            db, "counselor@aada.edu", "CounselorPass!23", "Carl", "Counselor"
+        )
+        admissions_manager_user = build_encrypted_user(
+            db, "admissions@aada.edu", "AdmissionsPass!23", "Amy", "Admissions"
+        )
         alice_user = build_encrypted_user(db, "alice.student@aada.edu", "AlicePass!23", "Alice", "Student")
         bob_user = build_encrypted_user(db, "bob.student@aada.edu", "BobLearner!23", "Bob", "Learner")
 

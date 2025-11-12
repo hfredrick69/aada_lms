@@ -76,15 +76,18 @@ export const ModulesPage = () => {
     fetchProgress();
   }, [user?.id]);
 
-  useEffect(() => {
-    if (!activeProgramId && programs.length > 0) {
-      setActiveProgramId(programs[0].id);
-    }
-  }, [activeProgramId, programs]);
+  const defaultProgramId = programs[0]?.id ?? null;
+  const selectedProgramId = activeProgramId ?? defaultProgramId;
 
-  const modulesQuery = useProgramModulesQuery(activeProgramId ?? 'noop', {
+  useEffect(() => {
+    if (!activeProgramId && defaultProgramId) {
+      setActiveProgramId(defaultProgramId);
+    }
+  }, [activeProgramId, defaultProgramId]);
+
+  const modulesQuery = useProgramModulesQuery(selectedProgramId ?? 'noop', {
     query: {
-      enabled: Boolean(activeProgramId),
+      enabled: Boolean(selectedProgramId),
       staleTime: 5 * 60_000,
     },
   });
@@ -120,7 +123,7 @@ export const ModulesPage = () => {
       />
 
       <Tabs
-        value={activeProgramId}
+        value={selectedProgramId ?? false}
         onChange={(_, value) => setActiveProgramId(value)}
         variant="scrollable"
         allowScrollButtonsMobile

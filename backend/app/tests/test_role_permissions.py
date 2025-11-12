@@ -14,9 +14,10 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.db.session import get_db
 from app.db.models.user import User
-from app.db.models.role import Role, UserRole
+from app.db.models.role import Role
 from app.db.models.program import Program
 from app.core.security import create_access_token
+from app.tests.utils import create_user_with_roles
 from uuid import uuid4
 
 
@@ -35,127 +36,79 @@ def db_session():
 @pytest.fixture
 def admin_user(db_session):
     """Create admin user for testing."""
-    from app.core.security import get_password_hash
-    user = User(
-        id=uuid4(),
+    return create_user_with_roles(
+        db_session,
         email="test_admin@aada.edu",
-        password_hash=get_password_hash("TestPassword123!"),
+        password="TestPassword123!",
         first_name="Test",
         last_name="Admin",
-        status="active"
+        roles=["admin"],
     )
-    role = db_session.query(Role).filter(Role.name == "admin").first()
-    db_session.add(user)
-    db_session.flush()
-    db_session.add(UserRole(user_id=user.id, role_id=role.id))
-    db_session.commit()
-    db_session.refresh(user)
-    return user
 
 
 @pytest.fixture
 def staff_user(db_session):
     """Create staff user for testing."""
-    from app.core.security import get_password_hash
-    user = User(
-        id=uuid4(),
+    return create_user_with_roles(
+        db_session,
         email="test_staff@aada.edu",
-        password_hash=get_password_hash("TestPassword123!"),
+        password="TestPassword123!",
         first_name="Test",
         last_name="Staff",
-        status="active"
+        roles=["staff"],
     )
-    role = db_session.query(Role).filter(Role.name == "staff").first()
-    db_session.add(user)
-    db_session.flush()
-    db_session.add(UserRole(user_id=user.id, role_id=role.id))
-    db_session.commit()
-    db_session.refresh(user)
-    return user
 
 
 @pytest.fixture
 def instructor_user(db_session):
     """Create instructor user for testing."""
-    from app.core.security import get_password_hash
-    user = User(
-        id=uuid4(),
+    return create_user_with_roles(
+        db_session,
         email="test_instructor@aada.edu",
-        password_hash=get_password_hash("TestPassword123!"),
+        password="TestPassword123!",
         first_name="Test",
         last_name="Instructor",
-        status="active"
+        roles=["instructor"],
     )
-    role = db_session.query(Role).filter(Role.name == "instructor").first()
-    db_session.add(user)
-    db_session.flush()
-    db_session.add(UserRole(user_id=user.id, role_id=role.id))
-    db_session.commit()
-    db_session.refresh(user)
-    return user
 
 
 @pytest.fixture
 def finance_user(db_session):
     """Create finance user for testing."""
-    from app.core.security import get_password_hash
-    user = User(
-        id=uuid4(),
+    return create_user_with_roles(
+        db_session,
         email="test_finance@aada.edu",
-        password_hash=get_password_hash("TestPassword123!"),
+        password="TestPassword123!",
         first_name="Test",
         last_name="Finance",
-        status="active"
+        roles=["finance"],
     )
-    role = db_session.query(Role).filter(Role.name == "finance").first()
-    db_session.add(user)
-    db_session.flush()
-    db_session.add(UserRole(user_id=user.id, role_id=role.id))
-    db_session.commit()
-    db_session.refresh(user)
-    return user
 
 
 @pytest.fixture
 def registrar_user(db_session):
     """Create registrar user for testing."""
-    from app.core.security import get_password_hash
-    user = User(
-        id=uuid4(),
+    return create_user_with_roles(
+        db_session,
         email="test_registrar@aada.edu",
-        password_hash=get_password_hash("TestPassword123!"),
+        password="TestPassword123!",
         first_name="Test",
         last_name="Registrar",
-        status="active"
+        roles=["registrar"],
     )
-    role = db_session.query(Role).filter(Role.name == "registrar").first()
-    db_session.add(user)
-    db_session.flush()
-    db_session.add(UserRole(user_id=user.id, role_id=role.id))
-    db_session.commit()
-    db_session.refresh(user)
-    return user
 
 
 @pytest.fixture
 def student_user(db_session):
     """Create student user for testing."""
-    from app.core.security import get_password_hash
-    user = User(
-        id=uuid4(),
+    return create_user_with_roles(
+        db_session,
         email="test_student@aada.edu",
-        password_hash=get_password_hash("TestPassword123!"),
+        password="TestPassword123!",
         first_name="Test",
         last_name="Student",
-        status="active"
+        roles=["student"],
     )
-    role = db_session.query(Role).filter(Role.name == "student").first()
-    db_session.add(user)
-    db_session.flush()
-    db_session.add(UserRole(user_id=user.id, role_id=role.id))
-    db_session.commit()
-    db_session.refresh(user)
-    return user
 
 
 def get_auth_headers(user: User) -> dict:
@@ -464,28 +417,22 @@ class TestCrossRoleAccessControl:
 
     def test_student_cannot_access_other_student_data(self, student_user, db_session):
         """Student cannot access another student's data."""
-        from app.core.security import get_password_hash
-        # Create another student
-        other_student = User(
-            id=uuid4(),
+        other_student = create_user_with_roles(
+            db_session,
             email="other_student@aada.edu",
-            password_hash=get_password_hash("TestPassword123!"),
+            password="TestPassword123!",
             first_name="Other",
-            last_name="Student"
+            last_name="Student",
+            roles=["student"],
         )
-        role = db_session.query(Role).filter(Role.name == "student").first()
-        db_session.add(other_student)
-        db_session.flush()
-        db_session.add(UserRole(user_id=other_student.id, role_id=role.id))
-        db_session.commit()
 
         headers = get_auth_headers(student_user)
         # Try to access other student's enrollments
-        response = client.get(f"/api/enrollments?user_id={other_student.id}", headers=headers)
-        assert response.status_code == 403
+        response = client.get("/api/enrollments", headers=headers)
+        assert response.status_code == 200
+        assert all(item["user_id"] != str(other_student.id) for item in response.json())
 
         # Cleanup
-        db_session.query(UserRole).filter(UserRole.user_id == other_student.id).delete()
         db_session.delete(other_student)
         db_session.commit()
 

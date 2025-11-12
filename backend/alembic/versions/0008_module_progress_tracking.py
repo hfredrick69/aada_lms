@@ -20,11 +20,30 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.add_column('module_progress', sa.Column('last_scroll_position', sa.Integer(), server_default='0', nullable=False))
-    op.add_column('module_progress', sa.Column('active_time_seconds', sa.Integer(), server_default='0', nullable=False))
-    op.add_column('module_progress', sa.Column('sections_viewed', postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'[]'::jsonb"), nullable=False))
-    op.add_column('module_progress', sa.Column('last_accessed_at', sa.TIMESTAMP(timezone=True), nullable=True))
-    op.execute("UPDATE module_progress SET last_accessed_at = NOW() WHERE last_accessed_at IS NULL")
+    op.add_column(
+        'module_progress',
+        sa.Column('last_scroll_position', sa.Integer(), server_default='0', nullable=False),
+    )
+    op.add_column(
+        'module_progress',
+        sa.Column('active_time_seconds', sa.Integer(), server_default='0', nullable=False),
+    )
+    op.add_column(
+        'module_progress',
+        sa.Column(
+            'sections_viewed',
+            postgresql.JSONB(astext_type=sa.Text()),
+            server_default=sa.text("'[]'::jsonb"),
+            nullable=False,
+        ),
+    )
+    op.add_column(
+        'module_progress',
+        sa.Column('last_accessed_at', sa.TIMESTAMP(timezone=True), nullable=True),
+    )
+    op.execute(
+        "UPDATE module_progress SET last_accessed_at = NOW() WHERE last_accessed_at IS NULL"
+    )
     op.alter_column('module_progress', 'last_scroll_position', server_default=None)
     op.alter_column('module_progress', 'active_time_seconds', server_default=None)
     op.alter_column('module_progress', 'sections_viewed', server_default=None)
