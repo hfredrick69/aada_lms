@@ -9,6 +9,7 @@ const baseLinks = [
   { to: "/courses", label: "Courses", icon: "📘", roles: ["admin", "instructor", "staff"] },
   { to: "/content", label: "Content", icon: "📝", roles: ["admin", "instructor"] },
   { to: "/documents", label: "Documents", icon: "📄", roles: ["admin", "registrar", "staff"] },
+  { to: "/agreements", label: "Agreements", icon: "🖊️", roles: ["admin", "registrar"] },
   { to: "/payments", label: "Payments", icon: "💳", roles: ["admin", "finance", "staff"] },
   { to: "/externships", label: "Externships", icon: "🏥", roles: ["admin", "instructor", "staff"] },
   { to: "/reports", label: "Reports", icon: "🧾", roles: ["admin", "finance", "registrar", "staff"] },

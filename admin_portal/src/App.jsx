@@ -10,6 +10,7 @@ import Reports from "./pages/Reports.jsx";
 import Settings from "./pages/Settings.jsx";
 import Leads from "./pages/Leads.jsx";
 import Documents from "./pages/Documents.jsx";
+import Agreements from "./pages/Agreements.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import RoleGate from "./components/RoleGate.jsx";
 
@@ -89,6 +90,14 @@ const App = () => {
           element={
             <RoleGate allowedRoles={["admin", "registrar", "staff"]}>
               <Documents />
+            </RoleGate>
+          }
+        />
+        <Route
+          path="/agreements"
+          element={
+            <RoleGate allowedRoles={["admin", "registrar"]}>
+              <Agreements />
             </RoleGate>
           }
         />

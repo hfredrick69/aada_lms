@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 import base64
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.db.session import get_db
 from app.db.models.document import SignedDocument, DocumentSignature, DocumentAuditLog
@@ -102,7 +102,7 @@ def create_audit_log(
         user_id=document.user_id,  # Will be None for lead documents
         event_type=event_type,
         event_details=event_details,
-        occurred_at=datetime.utcnow(),
+        occurred_at=datetime.now(timezone.utc),
         ip_address=ip_address,
         user_agent=user_agent
     )
@@ -140,7 +140,7 @@ async def get_document_for_signing(
 
     # Update first view timestamp
     if not document.student_viewed_at:
-        document.student_viewed_at = datetime.utcnow()
+        document.student_viewed_at = datetime.now(timezone.utc)
         create_audit_log(document, "viewed", request, db)
         db.commit()
 
@@ -151,6 +151,9 @@ async def get_document_for_signing(
         "template_description": document.template.description if document.template else None,
         "signer_name": document.signer_name,
         "signer_email": document.signer_email,
+        "course_type": document.course_type,
+        "course_label": document.form_data.get("course_label") if document.form_data else None,
+        "form_data": document.form_data or {},
         "status": document.status,
         "created_at": document.created_at.isoformat(),
         "expires_at": document.token_expires_at.isoformat() if document.token_expires_at else None,
@@ -262,7 +265,7 @@ async def submit_signature(
         signer_id=document.user_id,  # None for leads
         signature_type="applicant" if document.lead_id else "student",
         signature_data=sign_request.signature_data,
-        signed_at=datetime.utcnow(),
+        signed_at=datetime.now(timezone.utc),
         ip_address=ip_address,
         user_agent=user_agent,
         typed_name=sign_request.typed_name,
@@ -272,7 +275,11 @@ async def submit_signature(
     db.add(signature)
 
     # Update document status
-    document.student_signed_at = datetime.utcnow()
+    document.student_signed_at = datetime.now(timezone.utc)
+    if sign_request.form_data:
+        existing_form = document.form_data or {}
+        existing_form.update(sign_request.form_data)
+        document.form_data = existing_form
 
     # If counter-signature required, move to counter_signed status
     # Otherwise, mark as completed
@@ -280,7 +287,7 @@ async def submit_signature(
         document.status = "student_signed"
     else:
         document.status = "completed"
-        document.completed_at = datetime.utcnow()
+        document.completed_at = datetime.now(timezone.utc)
 
     # Invalidate token (make single-use)
     document.signing_token = None

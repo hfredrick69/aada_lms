@@ -58,8 +58,8 @@ export const getLeadDocuments = async (leadId) => {
   return data;
 };
 
-export const getAllDocuments = async () => {
-  const { data } = await axiosClient.get('/documents');
+export const getAllDocuments = async (params = {}) => {
+  const { data } = await axiosClient.get('/documents', { params });
   return data;
 };
 
@@ -71,6 +71,16 @@ export const getDocument = async (documentId) => {
 // Document Audit Trail
 export const getDocumentAuditTrail = async (documentId) => {
   const { data } = await axiosClient.get(`/documents/${documentId}/audit-trail`);
+  return data;
+};
+
+export const sendEnrollmentAgreement = async (payload) => {
+  const { data } = await axiosClient.post('/documents/enrollment/send', payload);
+  return data;
+};
+
+export const counterSignDocument = async (documentId, payload) => {
+  const { data } = await axiosClient.post(`/documents/${documentId}/counter-sign`, payload);
   return data;
 };
 
@@ -101,6 +111,8 @@ export default {
   getUserDocuments,
   getLeadDocuments,
   getAllDocuments,
+  sendEnrollmentAgreement,
+  counterSignDocument,
   getDocument,
   getDocumentAuditTrail,
   downloadDocument,

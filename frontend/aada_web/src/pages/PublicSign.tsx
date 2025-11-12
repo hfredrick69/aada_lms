@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import SignatureCanvas from 'react-signature-canvas';
-import axios from 'axios';
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import SignatureCanvas from "react-signature-canvas";
+import axios from "axios";
 
-import { resolveApiBaseUrl } from '@/utils/apiBase';
+import { resolveApiBaseUrl } from "@/utils/apiBase";
 
 const API_BASE_URL = `${resolveApiBaseUrl()}/api`;
 
@@ -13,7 +13,24 @@ interface DocumentData {
   signer_name?: string;
   signer_email?: string;
   expires_at?: string;
+  course_type?: string;
+  course_label?: string;
+  form_data?: Record<string, unknown>;
 }
+
+interface EnrollmentFormValues {
+  phone: string;
+  preferred_start: string;
+  emergency_contact: string;
+  housing_needs: string;
+  questions: string;
+}
+
+const steps = [
+  { id: "overview", title: "Review agreement" },
+  { id: "details", title: "Student details" },
+  { id: "signature", title: "Sign" },
+];
 
 export default function PublicSign() {
   const { token } = useParams();
@@ -22,28 +39,53 @@ export default function PublicSign() {
   const [loading, setLoading] = useState(true);
   const [document, setDocument] = useState<DocumentData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [typedName, setTypedName] = useState('');
+  const [typedName, setTypedName] = useState("");
   const [signing, setSigning] = useState(false);
   const [signed, setSigned] = useState(false);
-  const [signatureError, setSignatureError] = useState('');
+  const [signatureError, setSignatureError] = useState("");
+  const [activeStep, setActiveStep] = useState(0);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<EnrollmentFormValues>({
+    phone: "",
+    preferred_start: "",
+    emergency_contact: "",
+    housing_needs: "not_needed",
+    questions: "",
+  });
 
-  // Fetch document details
+  const courseLabel = useMemo(() => {
+    if (document?.course_label) return document.course_label;
+    if (!document?.course_type) return "Enrollment Agreement";
+    if (document.course_type === "twenty_week") return "20-Week Course";
+    if (document.course_type === "expanded_functions") return "Expanded Functions Course";
+    return "Enrollment Agreement";
+  }, [document]);
+
   useEffect(() => {
     const fetchDocument = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`${API_BASE_URL}/public/sign/${token}`);
         setDocument(response.data);
-        setTypedName(response.data.signer_name || '');
+        setTypedName(response.data.signer_name || "");
+        if (response.data.form_data) {
+          setFormValues((prev) => ({
+            ...prev,
+            ...response.data.form_data,
+          }));
+        }
       } catch (err: any) {
         if (err.response?.status === 404) {
-          setError('Document not found or link has expired');
+          setError("Document not found or link has expired");
         } else if (err.response?.status === 429) {
-          setError('Too many requests. Please try again later.');
-        } else if (err.response?.status === 400 && err.response?.data?.detail?.includes('already been signed')) {
-          setError('This document has already been signed');
+          setError("Too many requests. Please try again later.");
+        } else if (
+          err.response?.status === 400 &&
+          err.response?.data?.detail?.includes("already been signed")
+        ) {
+          setError("This document has already been signed");
         } else {
-          setError('Failed to load document. Please check your link and try again.');
+          setError("Failed to load document. Please check your link and try again.");
         }
       } finally {
         setLoading(false);
@@ -53,60 +95,61 @@ export default function PublicSign() {
     if (token) {
       fetchDocument();
     } else {
-      setError('Invalid signing link');
+      setError("Invalid signing link");
       setLoading(false);
     }
   }, [token]);
 
   const clearSignature = () => {
     sigPad.current?.clear();
-    setSignatureError('');
+    setSignatureError("");
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSignatureError('');
-
-    // Validate typed name
-    if (!typedName.trim()) {
-      setSignatureError('Please type your full name');
+  const handleNextStep = () => {
+    if (activeStep === 1 && !formValues.phone.trim()) {
+      setFormError("Please provide a phone number so our team can reach you.");
       return;
     }
+    setFormError(null);
+    setSignatureError("");
+    setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
 
-    // Validate signature exists
+  const handleBack = () => {
+    setFormError(null);
+    setSignatureError("");
+    setActiveStep((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handleSubmit = async () => {
+    setSignatureError("");
+    if (!typedName.trim()) {
+      setSignatureError("Please type your full name");
+      return;
+    }
     if (sigPad.current?.isEmpty()) {
-      setSignatureError('Please provide your signature');
+      setSignatureError("Please provide your signature");
       return;
     }
 
     try {
       setSigning(true);
-
-      // Get signature as base64
-      const signatureData = sigPad.current?.toDataURL()?.split(',')[1]; // Remove data:image/png;base64, prefix
-
-      // Submit signature
+      const signatureData = sigPad.current?.toDataURL()?.split(",")[1];
       await axios.post(`${API_BASE_URL}/public/sign/${token}`, {
         signature_data: signatureData,
-        typed_name: typedName.trim()
+        typed_name: typedName.trim(),
+        form_data: formValues,
       });
-
       setSigned(true);
-
-      // Show success message briefly, then redirect or show completion
-      setTimeout(() => {
-        // Could redirect to a thank you page or show final status
-      }, 2000);
-
     } catch (err: any) {
       if (err.response?.status === 400) {
-        setSignatureError(err.response.data?.detail || 'Invalid signature data');
+        setSignatureError(err.response.data?.detail || "Invalid signature data");
       } else if (err.response?.status === 404) {
-        setSignatureError('Document not found or link has expired');
+        setSignatureError("Document not found or link has expired");
       } else if (err.response?.status === 429) {
-        setSignatureError('Too many requests. Please try again later.');
+        setSignatureError("Too many requests. Please try again later.");
       } else {
-        setSignatureError('Failed to submit signature. Please try again.');
+        setSignatureError("Failed to submit signature. Please try again.");
       }
     } finally {
       setSigning(false);
@@ -175,151 +218,276 @@ export default function PublicSign() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="bg-white shadow rounded-lg mb-6 p-6">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-slate-50 py-10 px-4">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <header className="bg-white rounded-2xl shadow p-6 space-y-2">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {document?.template_name || 'Document Signature'}
+              <p className="text-sm text-slate-500 uppercase tracking-wide">{courseLabel}</p>
+              <h1 className="text-2xl font-semibold text-slate-900">
+                {document?.template_name || "Enrollment Agreement"}
               </h1>
               {document?.template_description && (
-                <p className="mt-1 text-sm text-gray-500">{document.template_description}</p>
+                <p className="text-sm text-slate-500 mt-1">{document.template_description}</p>
               )}
             </div>
-            <div className="flex-shrink-0">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                Pending Signature
+            <div className="flex flex-col items-end text-sm text-slate-500">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">
+                Awaiting signature
               </span>
-            </div>
-          </div>
-
-          {/* Signer Info */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Signer Name</dt>
-                <dd className="mt-1 text-sm text-gray-900">{document?.signer_name}</dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Email</dt>
-                <dd className="mt-1 text-sm text-gray-900">{document?.signer_email}</dd>
-              </div>
               {document?.expires_at && (
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Link Expires</dt>
-                  <dd className="mt-1 text-sm text-gray-900">
-                    {new Date(document.expires_at).toLocaleDateString()}
-                  </dd>
-                </div>
+                <span className="mt-2">
+                  Link expires {new Date(document.expires_at).toLocaleDateString()}
+                </span>
               )}
-            </dl>
+            </div>
           </div>
-        </div>
-
-        {/* Document Preview (if available) */}
-        {/* TODO: Add PDF preview iframe when preview endpoint is implemented */}
-
-        {/* Signature Form */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Sign Document</h2>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Typed Name */}
+          <dl className="grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 md:grid-cols-2">
             <div>
-              <label htmlFor="typedName" className="block text-sm font-medium text-gray-700">
-                Type Your Full Name <span className="text-red-500">*</span>
-              </label>
-              <p className="mt-1 text-sm text-gray-500">
-                By typing your name, you agree that this constitutes a legal signature.
-              </p>
-              <input
-                type="text"
-                id="typedName"
-                value={typedName}
-                onChange={(e) => setTypedName(e.target.value)}
-                className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your full name"
-                required
-              />
+              <dt className="text-xs uppercase tracking-wide text-slate-500">Student</dt>
+              <dd className="text-sm text-slate-900">{document?.signer_name || "Student"}</dd>
             </div>
-
-            {/* Signature Pad */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Draw Your Signature <span className="text-red-500">*</span>
-              </label>
-              <div className="border-2 border-gray-300 rounded-lg bg-white">
-                <SignatureCanvas
-                  ref={sigPad}
-                  canvasProps={{
-                    className: 'w-full h-48 cursor-crosshair',
-                  }}
-                  backgroundColor="white"
-                />
-              </div>
-              <div className="mt-2 flex justify-between items-center">
-                <p className="text-sm text-gray-500">Sign above using your mouse or touchscreen</p>
-                <button
-                  type="button"
-                  onClick={clearSignature}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                >
-                  Clear Signature
-                </button>
-              </div>
+              <dt className="text-xs uppercase tracking-wide text-slate-500">Email</dt>
+              <dd className="text-sm text-slate-900">{document?.signer_email}</dd>
             </div>
+          </dl>
+        </header>
 
-            {/* Legal Notice */}
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-sm text-gray-700">
-                <strong>Electronic Signature Consent:</strong> By clicking "Sign Document" below,
-                I agree that my typed name and drawn signature are the electronic representation of my signature
-                and have the same legal force and effect as a handwritten signature.
-              </p>
+        <section className="bg-white rounded-2xl shadow divide-y divide-slate-100">
+          <div className="flex flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex gap-2">
+              {steps.map((step, idx) => (
+                <div key={step.id} className="flex items-center gap-2 text-sm font-medium">
+                  <div
+                    className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                      idx <= activeStep
+                        ? "bg-primary-600 text-white"
+                        : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {idx + 1}
+                  </div>
+                  <span className={idx === activeStep ? "text-primary-700" : "text-slate-500"}>
+                    {step.title}
+                  </span>
+                  {idx < steps.length - 1 && (
+                    <div className="hidden md:block w-12 h-px bg-slate-200 mx-1" />
+                  )}
+                </div>
+              ))}
             </div>
+            <p className="text-xs text-slate-500">
+              Step {activeStep + 1} of {steps.length}
+            </p>
+          </div>
 
-            {/* Error Message */}
-            {signatureError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm text-red-700">{signatureError}</p>
+          <div className="p-6 space-y-6">
+            {activeStep === 0 && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-slate-900">Review the agreement</h2>
+                <p className="text-sm text-slate-600">
+                  Please take a moment to review the summary below. You can download the full PDF
+                  in your welcome email or request a copy from the admissions team.
+                </p>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 p-4">
+                    <p className="text-xs font-semibold text-slate-500 uppercase">Program</p>
+                    <p className="text-lg text-slate-900 mt-1">{courseLabel}</p>
+                    <p className="text-xs text-slate-500 mt-2">
+                      Confirm this is the track you intend to enroll in.
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-slate-200 p-4">
+                    <p className="text-xs font-semibold text-slate-500 uppercase">Contact</p>
+                    <p className="text-sm text-slate-900 mt-1">
+                      admissions@aada.edu • (404) 555-1234
+                    </p>
+                    <p className="text-xs text-slate-500 mt-2">
+                      Reach out if anything looks incorrect or you have questions.
+                    </p>
+                  </div>
+                </div>
+                <ul className="list-disc pl-6 text-sm text-slate-600 space-y-2">
+                  <li>Review tuition, fees, and payment schedule outlined in the agreement.</li>
+                  <li>Confirm that your contact information is accurate.</li>
+                  <li>Plan for the listed clinical dates and required equipment.</li>
+                </ul>
               </div>
             )}
 
-            {/* Submit Button */}
-            <div className="flex justify-end space-x-3">
+            {activeStep === 1 && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-slate-900">Tell us about you</h2>
+                <p className="text-sm text-slate-600">
+                  We use this information to finalize your enrollment and connect you with our
+                  student success team.
+                </p>
+                {formError && (
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                    {formError}
+                  </p>
+                )}
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">Phone number</label>
+                    <input
+                      type="tel"
+                      value={formValues.phone}
+                      onChange={(e) =>
+                        setFormValues((prev) => ({ ...prev, phone: e.target.value }))
+                      }
+                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">Preferred start date</label>
+                    <input
+                      type="date"
+                      value={formValues.preferred_start}
+                      onChange={(e) =>
+                        setFormValues((prev) => ({ ...prev, preferred_start: e.target.value }))
+                      }
+                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">
+                      Emergency contact
+                    </label>
+                    <input
+                      type="text"
+                      value={formValues.emergency_contact}
+                      onChange={(e) =>
+                        setFormValues((prev) => ({ ...prev, emergency_contact: e.target.value }))
+                      }
+                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                      placeholder="Name & phone"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">Housing needs</label>
+                    <select
+                      value={formValues.housing_needs}
+                      onChange={(e) =>
+                        setFormValues((prev) => ({ ...prev, housing_needs: e.target.value }))
+                      }
+                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                    >
+                      <option value="not_needed">No housing support needed</option>
+                      <option value="interested">I’d like housing resources</option>
+                      <option value="undecided">Undecided</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">
+                      Questions or accessibility requests
+                    </label>
+                    <textarea
+                      value={formValues.questions}
+                      onChange={(e) =>
+                        setFormValues((prev) => ({ ...prev, questions: e.target.value }))
+                      }
+                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                      rows={3}
+                      placeholder="Let us know if there’s anything we can prepare before class begins."
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeStep === 2 && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-slate-900">Sign your agreement</h2>
+                <p className="text-sm text-slate-600">
+                  Please type your full legal name and draw your signature. Both will appear on the
+                  final enrollment agreement.
+                </p>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Full name</label>
+                  <input
+                    type="text"
+                    value={typedName}
+                    onChange={(e) => setTypedName(e.target.value)}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Draw signature
+                  </label>
+                  <div className="border-2 border-dashed border-slate-300 rounded-xl bg-white">
+                    <SignatureCanvas
+                      ref={sigPad}
+                      canvasProps={{
+                        className: "w-full h-48 cursor-crosshair",
+                      }}
+                      backgroundColor="white"
+                    />
+                  </div>
+                  <div className="flex justify-between text-xs text-slate-500 mt-2">
+                    <span>Use your mouse, stylus, or finger to sign.</span>
+                    <button
+                      type="button"
+                      onClick={clearSignature}
+                      className="text-primary-600 hover:text-primary-700 font-medium"
+                    >
+                      Clear signature
+                    </button>
+                  </div>
+                  {signatureError && (
+                    <p className="text-xs text-red-600 mt-2">{signatureError}</p>
+                  )}
+                </div>
+
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600">
+                  <strong className="text-slate-800">Electronic Signature Consent:</strong> By
+                  submitting this form you agree that your electronic signature is the legal
+                  equivalent of your handwritten signature on this agreement.
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="button"
-                onClick={() => window.close()}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                onClick={handleBack}
+                disabled={activeStep === 0}
+                className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 disabled:opacity-40"
               >
-                Cancel
+                Back
               </button>
-              <button
-                type="submit"
-                disabled={signing}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {signing ? (
-                  <>
-                    <span className="inline-block animate-spin mr-2">⏳</span>
-                    Signing...
-                  </>
-                ) : (
-                  'Sign Document'
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
 
-        {/* Footer */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
-            This is a secure document signing process. Your signature is encrypted and legally binding.
-          </p>
-        </div>
+              {activeStep < steps.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700"
+                >
+                  Next step
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={signing}
+                  className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 disabled:opacity-50"
+                >
+                  {signing ? "Submitting..." : "Submit signature"}
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <footer className="text-center text-xs text-slate-500">
+          This secure workflow meets ESIGN and HIPAA requirements. Need help? Email
+          admissions@aada.edu.
+        </footer>
       </div>
     </div>
   );

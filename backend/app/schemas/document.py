@@ -172,6 +172,7 @@ class DocumentSignRequest(BaseModel):
     """Request to sign a document via public endpoint"""
     signature_data: str = Field(..., min_length=1)  # Base64 encoded signature image
     typed_name: str = Field(..., min_length=1, max_length=255)
+    form_data: Optional[Dict[str, Any]] = None
 
 
 class DocumentSignResponse(BaseModel):

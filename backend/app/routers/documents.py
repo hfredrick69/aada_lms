@@ -266,6 +266,9 @@ def send_enrollment_agreement(
         days=ENROLLMENT_RETENTION_YEARS * 365
     )
 
+    form_payload = dict(payload.form_data or {})
+    form_payload.setdefault("course_label", ENROLLMENT_COURSES[payload.course_type])
+
     document = SignedDocument(
         template_id=template.id,
         user_id=user.id,
@@ -276,7 +279,7 @@ def send_enrollment_agreement(
         status="pending",
         unsigned_file_path=template.file_path,
         course_type=payload.course_type,
-        form_data=payload.form_data,
+        form_data=form_payload,
         retention_expires_at=retention_expires_at,
         sent_at=datetime.now(timezone.utc),
     )
