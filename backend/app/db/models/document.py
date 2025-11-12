@@ -8,7 +8,7 @@ with full audit trail for legal compliance.
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime, Text, ForeignKey, Boolean
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -60,6 +60,10 @@ class SignedDocument(Base):
     # Document status workflow
     status = Column(String(50), nullable=False, default="pending")
     # pending -> student_signed -> completed (if no counter-sig) or counter_signed -> completed
+
+    course_type = Column(String(50), nullable=True)
+    form_data = Column(JSONB, nullable=True)
+    retention_expires_at = Column(DateTime(timezone=True), nullable=True)
 
     # File paths
     unsigned_file_path = Column(String(500), nullable=True)  # Pre-filled PDF

@@ -5,14 +5,15 @@ Provides endpoints for managing enrollment agreements and other signed documents
 Implements legally compliant e-signature workflow with full audit trail.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Request
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Request, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from pathlib import Path
-from typing import List
+from typing import List, Optional, Tuple
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import json
+import shutil
 
 from app.db.session import get_db
 from app.db.models.user import User
@@ -32,9 +33,13 @@ from app.schemas.document import (
     DocumentSignatureCreate,
     DocumentSignatureResponse,
     DocumentAuditLogListResponse,
+    EnrollmentAgreementRequest,
+    CounterSignRequest,
 )
 from app.services.pdf_service import PDFSignatureService
 from app.core.file_validation import validate_pdf, validate_file
+from app.utils.encryption import decrypt_value
+from app.core.rbac import require_admin, require_roles
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -48,11 +53,107 @@ SIGNED_DIR = DOCUMENTS_BASE / "signed"
 for directory in [TEMPLATES_DIR, UNSIGNED_DIR, SIGNED_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
+ENROLLMENT_COURSES = {
+    "twenty_week": "20-Week Course",
+    "expanded_functions": "Expanded Functions Course",
+}
+ENROLLMENT_RETENTION_YEARS = 5
+admin_or_registrar = require_roles(["admin", "registrar"])
+STAFF_ROLES = {"admin", "staff", "registrar", "instructor", "finance"}
 
-def require_admin(current_user: User = Depends(get_current_user)):
-    """Require admin role"""
-    # TODO: Implement proper role checking
-    return current_user
+
+def _has_staff_access(current_user: User) -> bool:
+    """Check if current user belongs to any staff role."""
+    return any(role.name in STAFF_ROLES for role in getattr(current_user, "roles", []))
+
+
+def _normalize_template_path(template_path: str) -> Path:
+    """Resolve a template file path relative to the documents directory."""
+    candidate = Path(template_path)
+    if candidate.is_absolute():
+        return candidate
+    return DOCUMENTS_BASE.parent / candidate
+
+
+def _copy_template_to_unsigned(document_id: uuid.UUID, template_path: str) -> str:
+    """Copy the template PDF into the unsigned directory for tracking."""
+    source = _normalize_template_path(template_path)
+    if not source.exists():
+        return template_path
+
+    filename = f"{document_id}_unsigned{source.suffix or '.pdf'}"
+    destination = UNSIGNED_DIR / filename
+    shutil.copyfile(source, destination)
+    return str(destination.relative_to(DOCUMENTS_BASE.parent))
+
+
+def _serialize_document(doc: SignedDocument, template: Optional[DocumentTemplate]) -> dict:
+    """Prepare document payload enriched with template metadata."""
+    return {
+        "id": doc.id,
+        "template_id": doc.template_id,
+        "user_id": doc.user_id,
+        "lead_id": doc.lead_id,
+        "signer_name": doc.signer_name,
+        "signer_email": doc.signer_email,
+        "signing_token": doc.signing_token,
+        "token_expires_at": doc.token_expires_at,
+        "status": doc.status,
+        "unsigned_file_path": doc.unsigned_file_path,
+        "signed_file_path": doc.signed_file_path,
+        "created_at": doc.created_at,
+        "sent_at": doc.sent_at,
+        "student_viewed_at": doc.student_viewed_at,
+        "student_signed_at": doc.student_signed_at,
+        "counter_signed_at": doc.counter_signed_at,
+        "completed_at": doc.completed_at,
+        "course_type": doc.course_type,
+        "form_data": doc.form_data,
+        "retention_expires_at": doc.retention_expires_at,
+        "template_name": template.name if template else "Unknown",
+        "template_version": template.version if template else "Unknown",
+        "requires_counter_signature": template.requires_counter_signature if template else False,
+    }
+
+
+def _resolve_enrollment_template(db: Session, template_id: Optional[uuid.UUID]) -> DocumentTemplate:
+    """Locate the template that should be used for enrollment agreements."""
+    query = db.query(DocumentTemplate).filter(DocumentTemplate.is_active.is_(True))
+    template: Optional[DocumentTemplate] = None
+
+    if template_id:
+        template = query.filter(DocumentTemplate.id == template_id).first()
+    else:
+        template = (
+            query.filter(DocumentTemplate.name == "Enrollment Agreement")
+            .order_by(DocumentTemplate.updated_at.desc())
+            .first()
+        )
+
+    if not template:
+        raise HTTPException(
+            status_code=404,
+            detail="Enrollment agreement template not found. Upload a template before sending agreements.",
+        )
+    return template
+
+
+def _derive_signer_fields(
+    db: Session,
+    user: User,
+    provided_name: Optional[str],
+    provided_email: Optional[str],
+) -> Tuple[Optional[str], Optional[str]]:
+    """Determine signer display name and email, falling back to decrypted PHI."""
+    decrypted_first = decrypt_value(db, user.first_name) if user.first_name else None
+    decrypted_last = decrypt_value(db, user.last_name) if user.last_name else None
+    decrypted_email = decrypt_value(db, user.email) if user.email else None
+
+    default_name = " ".join(
+        part for part in [decrypted_first, decrypted_last] if part
+    ) or None
+
+    return provided_name or default_name, provided_email or decrypted_email
 
 
 def log_document_event(
@@ -134,6 +235,79 @@ async def create_document_template(
     db.refresh(template)
 
     return template
+
+
+@router.post("/enrollment/send", response_model=SignedDocumentResponse)
+def send_enrollment_agreement(
+    payload: EnrollmentAgreementRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(admin_or_registrar),
+):
+    """Create a course-specific enrollment agreement for a student."""
+    template = _resolve_enrollment_template(db, payload.template_id)
+    user = db.query(User).filter(User.id == payload.user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    if payload.course_type not in ENROLLMENT_COURSES:
+        raise HTTPException(status_code=400, detail="Unsupported course type")
+
+    signer_name, signer_email = _derive_signer_fields(
+        db,
+        user,
+        payload.signer_name,
+        payload.signer_email,
+    )
+
+    signing_token = TokenService.generate_signing_token(48)
+    token_expires_at = datetime.now(timezone.utc) + timedelta(days=14)
+    retention_expires_at = datetime.now(timezone.utc) + timedelta(
+        days=ENROLLMENT_RETENTION_YEARS * 365
+    )
+
+    document = SignedDocument(
+        template_id=template.id,
+        user_id=user.id,
+        signer_name=signer_name,
+        signer_email=signer_email,
+        signing_token=signing_token,
+        token_expires_at=token_expires_at,
+        status="pending",
+        unsigned_file_path=template.file_path,
+        course_type=payload.course_type,
+        form_data=payload.form_data,
+        retention_expires_at=retention_expires_at,
+        sent_at=datetime.now(timezone.utc),
+    )
+
+    db.add(document)
+    db.commit()
+    db.refresh(document)
+
+    # Copy template into unsigned directory for auditing
+    document.unsigned_file_path = _copy_template_to_unsigned(document.id, template.file_path)
+    db.commit()
+    db.refresh(document)
+
+    log_document_event(
+        db=db,
+        document_id=document.id,
+        event_type="enrollment_sent",
+        user_id=current_user.id,
+        event_details=json.dumps(
+            {
+                "course_type": payload.course_type,
+                "course_label": ENROLLMENT_COURSES[payload.course_type],
+            }
+        ),
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+
+    # TODO: Trigger ACS email with signing link once provider credentials are finalized.
+
+    return document
 
 
 @router.get("/templates", response_model=List[DocumentTemplateResponse])
@@ -277,7 +451,7 @@ async def upload_student_document(
         "file_type": file_type,
         "file_path": str(file_path.relative_to(Path("app/static"))),
         "size_bytes": len(content),
-        "uploaded_at": datetime.utcnow().isoformat(),
+        "uploaded_at": datetime.now(timezone.utc).isoformat(),
         "uploaded_by": current_user.id
     }
 
@@ -356,7 +530,7 @@ def send_document(
         signing_token=signing_token,
         token_expires_at=token_expires_at,
         status="pending",
-        sent_at=datetime.utcnow()
+        sent_at=datetime.now(timezone.utc)
     )
 
     db.add(document)
@@ -380,48 +554,97 @@ def send_document(
     return document
 
 
+@router.post("/{document_id}/counter-sign", response_model=SignedDocumentResponse)
+def counter_sign_document(
+    document_id: uuid.UUID,
+    payload: CounterSignRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(admin_or_registrar),
+):
+    """Apply the AADA counter-signature to a signed document."""
+    document = db.query(SignedDocument).filter(SignedDocument.id == document_id).first()
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    if document.status not in {"student_signed", "pending"}:
+        raise HTTPException(
+            status_code=400,
+            detail="Document cannot be counter-signed in its current state",
+        )
+
+    signature = DocumentSignature(
+        document_id=document.id,
+        signer_id=current_user.id,
+        signature_type="school_official",
+        signature_data=payload.signature_data,
+        signed_at=datetime.now(timezone.utc),
+        ip_address=request.client.host if request.client else "unknown",
+        user_agent=request.headers.get("user-agent") or "unknown",
+        typed_name=payload.typed_name,
+    )
+    db.add(signature)
+
+    document.counter_signed_at = signature.signed_at
+    document.completed_at = signature.signed_at
+    document.status = "completed"
+    document.signing_token = None
+    document.token_expires_at = None
+
+    # For now, reuse the unsigned document path as the signed artifact placeholder.
+    # TODO: Generate a final PDF that includes both the student and staff signatures.
+    document.signed_file_path = document.signed_file_path or document.unsigned_file_path
+
+    db.commit()
+    db.refresh(document)
+
+    log_document_event(
+        db=db,
+        document_id=document.id,
+        event_type="document_counter_signed",
+        user_id=current_user.id,
+        event_details=json.dumps({"typed_name": payload.typed_name}),
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+
+    return document
+
+
 @router.get("/user/{user_id}", response_model=SignedDocumentListResponse)
 def get_user_documents(
     user_id: uuid.UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Get all documents for a specific user"""
 
-    # Users can only see their own documents unless they're admin
-    # TODO: Add proper role check for admin
-    if str(current_user.id) != str(user_id):
+    if str(current_user.id) != str(user_id) and not _has_staff_access(current_user):
         raise HTTPException(status_code=403, detail="Access denied")
 
-    documents = db.query(SignedDocument).filter(
-        SignedDocument.user_id == user_id
-    ).all()
+    documents = (
+        db.query(SignedDocument)
+        .filter(SignedDocument.user_id == user_id)
+        .order_by(SignedDocument.created_at.desc())
+        .all()
+    )
 
-    # Enrich with template information
-    enriched_docs = []
-    for doc in documents:
-        template = db.query(DocumentTemplate).filter(
-            DocumentTemplate.id == doc.template_id
-        ).first()
+    enriched_docs = [
+        _serialize_document(
+            doc,
+            db.query(DocumentTemplate).filter(DocumentTemplate.id == doc.template_id).first(),
+        )
+        for doc in documents
+    ]
 
-        enriched_docs.append({
-            **doc.__dict__,
-            "template_name": template.name if template else "Unknown",
-            "template_version": template.version if template else "Unknown",
-            "requires_counter_signature": template.requires_counter_signature if template else False
-        })
-
-    return {
-        "documents": enriched_docs,
-        "total": len(enriched_docs)
-    }
+    return {"documents": enriched_docs, "total": len(enriched_docs)}
 
 
 @router.get("/lead/{lead_id}", response_model=SignedDocumentListResponse)
 def get_lead_documents(
     lead_id: uuid.UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(require_admin),
 ):
     """Get all documents for a specific lead"""
 
@@ -430,57 +653,49 @@ def get_lead_documents(
     if not lead:
         raise HTTPException(status_code=404, detail="Lead not found")
 
-    documents = db.query(SignedDocument).filter(
-        SignedDocument.lead_id == lead_id
-    ).all()
+    documents = (
+        db.query(SignedDocument)
+        .filter(SignedDocument.lead_id == lead_id)
+        .order_by(SignedDocument.created_at.desc())
+        .all()
+    )
 
-    # Enrich with template information
-    enriched_docs = []
-    for doc in documents:
-        template = db.query(DocumentTemplate).filter(
-            DocumentTemplate.id == doc.template_id
-        ).first()
+    enriched_docs = [
+        _serialize_document(
+            doc,
+            db.query(DocumentTemplate).filter(DocumentTemplate.id == doc.template_id).first(),
+        )
+        for doc in documents
+    ]
 
-        enriched_docs.append({
-            **doc.__dict__,
-            "template_name": template.name if template else "Unknown",
-            "template_version": template.version if template else "Unknown",
-            "requires_counter_signature": template.requires_counter_signature if template else False
-        })
-
-    return {
-        "documents": enriched_docs,
-        "total": len(enriched_docs)
-    }
+    return {"documents": enriched_docs, "total": len(enriched_docs)}
 
 
 @router.get("/", response_model=SignedDocumentListResponse)
 def get_all_documents(
+    course_type: Optional[str] = Query(None, description="Filter by course type slug"),
+    status_filter: Optional[str] = Query(None, alias="status", description="Filter by document status"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(admin_or_registrar),
 ):
-    """Get all documents (admin only)"""
+    """Get all documents (admin/registrar access)."""
 
-    documents = db.query(SignedDocument).all()
+    query = db.query(SignedDocument)
+    if course_type:
+        query = query.filter(SignedDocument.course_type == course_type)
+    if status_filter:
+        query = query.filter(SignedDocument.status == status_filter)
 
-    # Enrich with template information
-    enriched_docs = []
-    for doc in documents:
-        template = db.query(DocumentTemplate).filter(
-            DocumentTemplate.id == doc.template_id
-        ).first()
+    documents = query.order_by(SignedDocument.created_at.desc()).all()
+    enriched_docs = [
+        _serialize_document(
+            doc,
+            db.query(DocumentTemplate).filter(DocumentTemplate.id == doc.template_id).first(),
+        )
+        for doc in documents
+    ]
 
-        enriched_docs.append({
-            **doc.__dict__,
-            "template_name": template.name if template else "Unknown",
-            "template_version": template.version if template else "Unknown",
-            "requires_counter_signature": template.requires_counter_signature if template else False
-        })
-
-    return {
-        "documents": enriched_docs,
-        "total": len(enriched_docs)
-    }
+    return {"documents": enriched_docs, "total": len(enriched_docs)}
 
 
 @router.get("/{document_id}", response_model=SignedDocumentResponse)
@@ -488,7 +703,7 @@ def get_document(
     document_id: uuid.UUID,
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Get a specific document"""
 
@@ -498,13 +713,12 @@ def get_document(
         raise HTTPException(status_code=404, detail="Document not found")
 
     # Check access: user can see their own documents or admin can see all
-    # TODO: Add proper role check for admin
-    if str(document.user_id) != str(current_user.id):
+    if str(document.user_id) != str(current_user.id) and not _has_staff_access(current_user):
         raise HTTPException(status_code=403, detail="Access denied")
 
     # Log document viewed event (first time only)
     if not document.student_viewed_at:
-        document.student_viewed_at = datetime.utcnow()
+        document.student_viewed_at = datetime.now(timezone.utc)
         db.commit()
 
         log_document_event(
@@ -567,12 +781,12 @@ async def sign_document(
 
     # Update document status
     if signature_data.signature_type == "student":
-        document.student_signed_at = datetime.utcnow()
+        document.student_signed_at = datetime.now(timezone.utc)
         document.status = "student_signed"
     elif signature_data.signature_type == "school_official":
-        document.counter_signed_at = datetime.utcnow()
+        document.counter_signed_at = datetime.now(timezone.utc)
         document.status = "completed"
-        document.completed_at = datetime.utcnow()
+        document.completed_at = datetime.now(timezone.utc)
 
     db.commit()
     db.refresh(signature)
@@ -630,7 +844,7 @@ async def sign_document(
             'author': 'AADA LMS',
             'subject': template.name,
             'document_id': str(document.id),
-            'signed_date': datetime.utcnow().isoformat()
+            'signed_date': datetime.now(timezone.utc).isoformat()
         }
 
         success = PDFSignatureService.overlay_signatures(
@@ -643,7 +857,7 @@ async def sign_document(
         if success:
             document.signed_file_path = str(signed_path.relative_to(Path("app")))
             document.status = "completed"
-            document.completed_at = datetime.utcnow()
+            document.completed_at = datetime.now(timezone.utc)
             db.commit()
 
             # Log PDF generation

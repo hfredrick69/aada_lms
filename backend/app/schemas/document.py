@@ -2,7 +2,7 @@
 Document and E-Signature Schemas
 """
 
-from typing import Optional, List
+from typing import Optional, List, Dict, Any, Literal
 from uuid import UUID
 from datetime import datetime
 from pydantic import BaseModel, Field
@@ -47,6 +47,8 @@ class SignedDocumentCreate(BaseModel):
     lead_id: Optional[UUID] = None
     signer_name: Optional[str] = Field(None, max_length=255)
     signer_email: Optional[str] = Field(None, max_length=255)
+    course_type: Optional[str] = Field(None, max_length=50)
+    form_data: Optional[Dict[str, Any]] = None
 
     class Config:
         # Must have either user_id or lead_id, not both
@@ -72,6 +74,9 @@ class SignedDocumentResponse(BaseModel):
     student_signed_at: Optional[datetime] = None
     counter_signed_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
+    course_type: Optional[str] = None
+    form_data: Optional[Dict[str, Any]] = None
+    retention_expires_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -87,6 +92,20 @@ class SignedDocumentWithTemplate(SignedDocumentResponse):
 class SignedDocumentListResponse(BaseModel):
     documents: List[SignedDocumentWithTemplate]
     total: int
+
+
+class EnrollmentAgreementRequest(BaseModel):
+    user_id: UUID
+    course_type: Literal["twenty_week", "expanded_functions"]
+    template_id: Optional[UUID] = None
+    signer_name: Optional[str] = Field(None, max_length=255)
+    signer_email: Optional[str] = Field(None, max_length=255)
+    form_data: Optional[Dict[str, Any]] = None
+
+
+class CounterSignRequest(BaseModel):
+    signature_data: str = Field(..., min_length=1)
+    typed_name: str = Field(..., max_length=255)
 
 
 # ==================== Document Signature Schemas ====================
