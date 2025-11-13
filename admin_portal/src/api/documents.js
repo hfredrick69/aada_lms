@@ -84,6 +84,13 @@ export const counterSignDocument = async (documentId, payload) => {
   return data;
 };
 
+export const fetchDocumentBlob = async (documentId) => {
+  const response = await axiosClient.get(`/documents/${documentId}/download`, {
+    responseType: 'blob'
+  });
+  return response.data;
+};
+
 // Download Document
 export const downloadDocument = async (documentId, filename) => {
   const response = await axiosClient.get(`/documents/${documentId}/download`, {
@@ -115,5 +122,6 @@ export default {
   counterSignDocument,
   getDocument,
   getDocumentAuditTrail,
+  fetchDocumentBlob,
   downloadDocument,
 };

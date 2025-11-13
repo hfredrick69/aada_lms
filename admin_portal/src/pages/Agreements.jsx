@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import {
   listDocumentTemplates,
   getAllDocuments,
   sendEnrollmentAgreement,
   counterSignDocument,
+  fetchDocumentBlob,
 } from "../api/documents.js";
 import { listStudents } from "../api/students.js";
 import SignaturePad from "../components/SignaturePad.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import {
   Dialog,
   DialogTitle,
@@ -38,6 +41,10 @@ const statusStyles = {
 };
 
 const Agreements = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { hasRole } = useAuth();
+  const canCounterSign = hasRole(["admin", "registrar"]);
   const [students, setStudents] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [agreements, setAgreements] = useState([]);
@@ -65,6 +72,13 @@ const Agreements = () => {
     saving: false,
     error: null,
   });
+  const [viewerModal, setViewerModal] = useState({
+    open: false,
+    document: null,
+    pdfUrl: "",
+    loading: false,
+    error: null,
+  });
 
   const enrollmentTemplates = useMemo(
     () =>
@@ -86,7 +100,7 @@ const Agreements = () => {
   const loadStudents = async () => {
     try {
       const data = await listStudents();
-      setStudents(Array.isArray(data.students) ? data.students : []);
+      setStudents(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     }
@@ -131,6 +145,21 @@ const Agreements = () => {
   useEffect(() => {
     loadAgreements();
   }, [courseFilter, statusFilter]);
+
+  useEffect(() => {
+    if (location.state?.statusFilter) {
+      setStatusFilter(location.state.statusFilter);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname]);
+
+  useEffect(() => {
+    return () => {
+      if (viewerModal.pdfUrl) {
+        URL.revokeObjectURL(viewerModal.pdfUrl);
+      }
+    };
+  }, [viewerModal.pdfUrl]);
 
   const handleSend = async (event) => {
     event.preventDefault();
@@ -228,6 +257,11 @@ const Agreements = () => {
       });
       closeCounterModal();
       loadAgreements();
+      setViewerModal((prev) =>
+        prev.document?.id === counterModal.document.id
+          ? { ...prev, document: { ...prev.document, status: "completed" } }
+          : prev
+      );
     } catch (err) {
       console.error(err);
       setCounterModal((prev) => ({
@@ -236,6 +270,54 @@ const Agreements = () => {
         saving: false,
       }));
     }
+  };
+
+  const openDocumentViewer = async (doc) => {
+    if (!doc) return;
+    setViewerModal((prev) => {
+      if (prev.pdfUrl) {
+        URL.revokeObjectURL(prev.pdfUrl);
+      }
+      return {
+        open: true,
+        document: doc,
+        pdfUrl: "",
+        loading: true,
+        error: null,
+      };
+    });
+    try {
+      const blobResponse = await fetchDocumentBlob(doc.id);
+      const fileBlob = blobResponse instanceof Blob ? blobResponse : new Blob([blobResponse], { type: "application/pdf" });
+      const url = URL.createObjectURL(fileBlob);
+      setViewerModal((prev) => ({
+        ...prev,
+        loading: false,
+        pdfUrl: url,
+      }));
+    } catch (err) {
+      console.error(err);
+      setViewerModal((prev) => ({
+        ...prev,
+        loading: false,
+        error: err?.response?.data?.detail || "Unable to load document preview.",
+      }));
+    }
+  };
+
+  const closeViewerModal = () => {
+    setViewerModal((prev) => {
+      if (prev.pdfUrl) {
+        URL.revokeObjectURL(prev.pdfUrl);
+      }
+      return {
+        open: false,
+        document: null,
+        pdfUrl: "",
+        loading: false,
+        error: null,
+      };
+    });
   };
 
   const stats = useMemo(() => {
@@ -295,6 +377,7 @@ const Agreements = () => {
           <div className="space-y-1">
             <label className="text-sm font-medium text-slate-700">Student</label>
             <select
+              data-testid="agreement-student-select"
               value={sendForm.studentId}
               onChange={(e) =>
                 setSendForm((prev) => ({ ...prev, studentId: e.target.value }))
@@ -338,6 +421,7 @@ const Agreements = () => {
           <div className="space-y-1">
             <label className="text-sm font-medium text-slate-700">Template</label>
             <select
+              data-testid="agreement-template-select"
               value={sendForm.templateId}
               onChange={(e) =>
                 setSendForm((prev) => ({ ...prev, templateId: e.target.value }))
@@ -463,7 +547,19 @@ const Agreements = () => {
                     const student = studentsById.get(doc.user_id);
                     const statusClass = statusStyles[doc.status] || "bg-slate-100 text-slate-700";
                     return (
-                      <tr key={doc.id} className="hover:bg-slate-50">
+                      <tr
+                        key={doc.id}
+                        className="hover:bg-slate-50 cursor-pointer"
+                        onClick={() => openDocumentViewer(doc)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            openDocumentViewer(doc);
+                          }
+                        }}
+                      >
                         <td className="px-4 py-3">
                           <div className="font-medium text-slate-900">
                             {student ? `${student.first_name} ${student.last_name}` : "Student"}
@@ -495,7 +591,10 @@ const Agreements = () => {
                             <button
                               type="button"
                               className="px-3 py-1.5 rounded-lg text-sm font-medium bg-primary-600 text-white hover:bg-primary-700"
-                              onClick={() => openCounterSign(doc)}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                openCounterSign(doc);
+                              }}
                             >
                               Counter-sign
                             </button>
@@ -548,6 +647,53 @@ const Agreements = () => {
           >
             {counterModal.saving ? "Submitting..." : "Submit signature"}
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={viewerModal.open} onClose={closeViewerModal} maxWidth="lg" fullWidth>
+        <DialogTitle>Enrollment agreement</DialogTitle>
+        <DialogContent dividers>
+          {viewerModal.document && (
+            <div className="mb-4 text-sm text-slate-600 space-y-1">
+              <p>
+                <span className="font-medium text-slate-700">Status:</span>{" "}
+                {viewerModal.document.status === "student_signed"
+                  ? "Awaiting counter-sign"
+                  : viewerModal.document.status?.replace("_", " ")}
+              </p>
+              {viewerModal.document.sent_at && (
+                <p>
+                  <span className="font-medium text-slate-700">Sent:</span>{" "}
+                  {format(new Date(viewerModal.document.sent_at), "MMM d, yyyy")}
+                </p>
+              )}
+            </div>
+          )}
+          {viewerModal.loading && (
+            <div className="py-10 text-center text-primary-700">Loading document preview...</div>
+          )}
+          {viewerModal.error && <Alert severity="error">{viewerModal.error}</Alert>}
+          {!viewerModal.loading && !viewerModal.error && viewerModal.pdfUrl && (
+            <iframe
+              title="Agreement Preview"
+              src={viewerModal.pdfUrl}
+              className="w-full h-[600px] border border-slate-200 rounded-lg"
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          {viewerModal.document?.status === "student_signed" && canCounterSign && (
+            <Button
+              variant="contained"
+              onClick={() => {
+                openCounterSign(viewerModal.document);
+              }}
+              sx={{ textTransform: "none" }}
+            >
+              Counter-sign
+            </Button>
+          )}
+          <Button onClick={closeViewerModal}>Close</Button>
         </DialogActions>
       </Dialog>
     </div>
