@@ -55,11 +55,16 @@ interface ModuleProgressTrackerProps {
  *
  * Auto-saves progress every 30 seconds (configurable)
  */
+const DEFAULT_SAVE_INTERVAL = (() => {
+  const raw = Number(import.meta.env.VITE_PROGRESS_AUTOSAVE_INTERVAL_MS);
+  return Number.isFinite(raw) && raw > 0 ? raw : 30000;
+})();
+
 export const ModuleProgressTracker: React.FC<ModuleProgressTrackerProps> = ({
   moduleId,
   enrollmentId,
   sectionSelector = 'h2, h3',
-  saveInterval = 30000, // 30 seconds
+  saveInterval = DEFAULT_SAVE_INTERVAL,
   enableResumeScroll = true,
   onProgressSaved,
 }) => {
@@ -76,8 +81,8 @@ export const ModuleProgressTracker: React.FC<ModuleProgressTrackerProps> = ({
   const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
 
   // Refs for intervals and observers
-  const activeTimeIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const saveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const activeTimeIntervalRef = useRef<number | null>(null);
+  const saveIntervalRef = useRef<number | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
   const isPageFocusedRef = useRef<boolean>(true);
   const observerRef = useRef<IntersectionObserver | null>(null);

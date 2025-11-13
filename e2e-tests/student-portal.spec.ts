@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { apiLogin, ensureEnrollmentTemplate, getStudentByEmail, seedEnrollmentAgreement, drawSignature } from './helpers';
 
 /**
  * Student Portal E2E Tests
@@ -8,14 +9,15 @@ import { test, expect } from '@playwright/test';
 
 const STUDENT_EMAIL = 'alice.student@aada.edu';
 const STUDENT_PASSWORD = 'AlicePass!23';
-const STUDENT_PORTAL_URL = 'http://localhost:5174';
+const E2E_HOST = process.env.E2E_HOST ?? 'localhost';
+const STUDENT_PORTAL_URL = process.env.STUDENT_PORTAL_URL ?? `http://${E2E_HOST}:5174`;
 
 test.describe('Student Portal - Authentication', () => {
   test('should load login page', async ({ page }) => {
     await page.goto(STUDENT_PORTAL_URL + '/login');
 
     // Verify login page elements
-    await expect(page.locator('h1, h4').filter({ hasText: 'Welcome Back' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /student portal/i })).toBeVisible();
     await expect(page.getByLabel('Email', { exact: false })).toBeVisible();
     await expect(page.getByLabel('Password', { exact: false })).toBeVisible();
     await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
@@ -57,7 +59,7 @@ test.describe('Student Portal - Authentication', () => {
     await page.getByRole('button', { name: /sign in/i }).click();
 
     // Wait for potential error
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
 
     // Should still be on login page (not redirected to dashboard)
     expect(page.url()).toContain('/login');
@@ -94,7 +96,7 @@ test.describe('Student Portal - All Pages Load', () => {
     });
 
     // Wait for content to load
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
 
     // Verify dashboard content - check for any heading (more flexible)
     await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 5000 });
@@ -130,7 +132,7 @@ test.describe('Student Portal - All Pages Load', () => {
 
     // Navigate to Modules
     await page.click('text=Modules');
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
 
     // Verify actual modules content exists
     await expect(page.getByRole('heading', { name: /Program Modules/i })).toBeVisible({ timeout: 5000 });
@@ -172,7 +174,7 @@ test.describe('Student Portal - All Pages Load', () => {
 
     // Navigate to Payments
     await page.click('text=Payments');
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
 
     // Verify actual content exists
     await expect(page.getByRole('heading', { name: /Payments & Tuition/i })).toBeVisible();
@@ -214,7 +216,7 @@ test.describe('Student Portal - All Pages Load', () => {
 
     // Navigate to Externships
     await page.click('text=Externships');
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
 
     // Verify actual content exists
     await expect(page.getByRole('heading', { name: /Externship Tracker/i })).toBeVisible();
@@ -262,7 +264,7 @@ test.describe('Student Portal - All Pages Load', () => {
 
     // Navigate to Documents
     await page.click('text=Documents');
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
 
     // Verify actual content exists
     await expect(page.getByRole('heading', { name: /Documents & Uploads/i })).toBeVisible();
@@ -286,6 +288,35 @@ test.describe('Student Portal - All Pages Load', () => {
   });
 });
 
+test.describe('Public Enrollment Wizard', () => {
+  test('student can complete multi-step signing flow', async ({ page, request }) => {
+    const adminToken = await apiLogin(request, 'admin@aada.edu', 'AdminPass!23');
+    const template = await ensureEnrollmentTemplate(request, adminToken);
+    const student = await getStudentByEmail(request, adminToken, STUDENT_EMAIL);
+    const agreement = await seedEnrollmentAgreement(request, adminToken, student.id, template.id, 'twenty_week');
+
+    await page.goto(`${STUDENT_PORTAL_URL}/sign/${agreement.signing_token}`);
+
+    // Step 1: review
+    await page.getByRole('button', { name: 'Next step' }).click();
+
+    // Step 2: details
+    await page.fill('input[name="student-phone"]', '(555) 987-6543');
+    await page.fill('input[name="student-start"]', '2030-01-15');
+    await page.fill('input[name="student-emergency"]', 'Parent 555-0000');
+    await page.selectOption('select[name="student-housing"]', 'interested');
+    await page.fill('textarea[name="student-questions"]', 'Looking forward to the program!');
+    await page.getByRole('button', { name: 'Next step' }).click();
+
+    // Step 3: signature
+    await page.fill('input[name="typedName"]', 'Alice Student');
+    await drawSignature(page, 'canvas');
+    await page.getByRole('button', { name: 'Submit signature' }).click();
+
+    await expect(page.getByText('Document Signed Successfully')).toBeVisible({ timeout: 10000 });
+  });
+});
+
 test.describe('Student Portal - Progress Tracking', () => {
   test.beforeEach(async ({ page }) => {
     // Login before each test
@@ -299,7 +330,7 @@ test.describe('Student Portal - Progress Tracking', () => {
   test('should display module progress on modules page', async ({ page }) => {
     // Navigate to Modules page
     await page.click('text=Modules');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Wait for modules to load
     await expect(page.getByRole('heading', { name: /Program Modules/i })).toBeVisible();
@@ -329,23 +360,23 @@ test.describe('Student Portal - Progress Tracking', () => {
   test('should track scroll position when viewing module', async ({ page }) => {
     // Navigate to Modules
     await page.click('text=Modules');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Click first module's "View lessons" link
     const viewLessonsLink = page.getByText(/View lessons|Review lessons/i).first();
     await viewLessonsLink.click();
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Should be on module player page
     expect(page.url()).toContain('/modules/');
 
     // Scroll down the page
     await page.evaluate(() => window.scrollTo(0, 500));
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('networkidle');
 
     // Scroll more
     await page.evaluate(() => window.scrollTo(0, 1000));
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('networkidle');
 
     // Progress tracking component should automatically save scroll position
     // (happens in background via ModuleProgressTracker component)
@@ -357,7 +388,7 @@ test.describe('Student Portal - Progress Tracking', () => {
   test('should display completion status chip for completed modules', async ({ page }) => {
     // Navigate to Modules
     await page.click('text=Modules');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Look for completed chip (may not exist for new users)
     const completedChip = page.locator('text=Completed').first();
@@ -380,7 +411,7 @@ test.describe('Student Portal - Progress Tracking', () => {
   test('should show progress percentage on module cards', async ({ page }) => {
     // Navigate to Modules
     await page.click('text=Modules');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Look for progress indicators
     const progressLabels = page.locator('text=Progress');
@@ -406,19 +437,19 @@ test.describe('Student Portal - Progress Tracking', () => {
   test('should save progress when scrolling through module content', async ({ page }) => {
     // Navigate to Modules
     await page.click('text=Modules');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Click first module
     const viewLink = page.getByText(/View lessons|Review lessons/i).first();
     await viewLink.click();
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Initial scroll position
     const initialScrollY = await page.evaluate(() => window.scrollY);
 
     // Scroll down the page
     await page.evaluate(() => window.scrollTo(0, 1500));
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Verify we scrolled
     const newScrollY = await page.evaluate(() => window.scrollY);
@@ -426,7 +457,7 @@ test.describe('Student Portal - Progress Tracking', () => {
 
     // ModuleProgressTracker should auto-save in background
     // Wait for potential save (happens every 30s by default, but also on unmount)
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('networkidle');
 
     // Test passes if scroll tracking works
     // (actual verification would require checking database or API)
@@ -454,11 +485,11 @@ test.describe('Student Portal - Protected Routes', () => {
 
     // Navigate to another page
     await page.click('text=Modules');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Navigate to different page to test session
     await page.click('text=Payments');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Should still be authenticated (not redirected to login)
     expect(page.url()).not.toContain('/login');
