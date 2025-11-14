@@ -5,7 +5,7 @@ Document and E-Signature Schemas
 from typing import Optional, List, Dict, Any, Literal
 from uuid import UUID
 from datetime import datetime
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field
 
 
 # ==================== Document Template Schemas ====================
@@ -102,14 +102,6 @@ class EnrollmentAgreementRequest(BaseModel):
     signer_name: Optional[str] = Field(None, max_length=255)
     signer_email: Optional[str] = Field(None, max_length=255)
     form_data: Optional[Dict[str, Any]] = None
-
-    @root_validator
-    def validate_recipient(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        user_id = values.get("user_id")
-        lead_id = values.get("lead_id")
-        if bool(user_id) == bool(lead_id):
-            raise ValueError("Provide either user_id or lead_id for enrollment agreements.")
-        return values
 
 
 class CounterSignRequest(BaseModel):
