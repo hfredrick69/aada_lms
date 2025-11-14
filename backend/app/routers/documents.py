@@ -64,7 +64,12 @@ STAFF_ROLES = {"admin", "staff", "registrar", "instructor", "finance"}
 
 def _has_staff_access(current_user: User) -> bool:
     """Check if current user belongs to any staff role."""
-    return any(role.name in STAFF_ROLES for role in getattr(current_user, "roles", []))
+    roles = getattr(current_user, "roles", []) or []
+    for role in roles:
+        role_name = role.name if hasattr(role, "name") else role
+        if role_name in STAFF_ROLES:
+            return True
+    return False
 
 
 def _normalize_template_path(template_path: str) -> Path:
@@ -73,6 +78,30 @@ def _normalize_template_path(template_path: str) -> Path:
     if candidate.is_absolute():
         return candidate
     return DOCUMENTS_BASE.parent / candidate
+
+
+def _resolve_document_file(path_value: Optional[str]) -> Optional[Path]:
+    """Resolve stored document/template paths to absolute filesystem paths."""
+    if not path_value:
+        return None
+
+    candidate = Path(path_value)
+    if candidate.is_absolute() and candidate.exists():
+        return candidate
+
+    search_roots = [
+        DOCUMENTS_BASE.parent,  # app/static
+        Path("app"),
+        Path("."),
+    ]
+
+    for root in search_roots:
+        resolved = (root / candidate).resolve()
+        if resolved.exists():
+            return resolved
+
+    # Fall back to app/static root even if file is missing to keep previous behavior.
+    return (DOCUMENTS_BASE.parent / candidate).resolve()
 
 
 def _copy_template_to_unsigned(document_id: uuid.UUID, template_path: str) -> str:
@@ -85,6 +114,82 @@ def _copy_template_to_unsigned(document_id: uuid.UUID, template_path: str) -> st
     destination = UNSIGNED_DIR / filename
     shutil.copyfile(source, destination)
     return str(destination.relative_to(DOCUMENTS_BASE.parent))
+
+
+def _generate_signed_pdf(
+    document: SignedDocument,
+    template: DocumentTemplate,
+    db: Session,
+    current_user: Optional[User],
+    request: Optional[Request]
+) -> bool:
+    """Generate/refresh the final signed PDF with all collected signatures."""
+    template_path = _resolve_document_file(template.file_path)
+    if not template_path or not template_path.exists():
+        return False
+
+    all_signatures = (
+        db.query(DocumentSignature)
+        .filter(DocumentSignature.document_id == document.id)
+        .order_by(DocumentSignature.signed_at.asc())
+        .all()
+    )
+
+    if not all_signatures:
+        return False
+
+    # Arrange signatures in two columns to avoid overlap
+    signature_list: List[Tuple[str, str, int, int]] = []
+    base_x = 80
+    base_y = 120
+    column_width = 250
+    row_height = 90
+    signatures_per_row = 2
+
+    for index, sig in enumerate(all_signatures):
+        row = index // signatures_per_row
+        column = index % signatures_per_row
+        x_pos = base_x + column * column_width
+        y_pos = base_y + row * row_height
+        signature_list.append((sig.signature_data, sig.signature_type, x_pos, y_pos))
+
+    signed_filename = f"{document.id}_signed.pdf"
+    signed_path = SIGNED_DIR / signed_filename
+
+    metadata = {
+        "title": template.name,
+        "author": "AADA LMS",
+        "subject": template.name,
+        "document_id": str(document.id),
+        "signed_date": datetime.now(timezone.utc).isoformat(),
+    }
+
+    success = PDFSignatureService.overlay_signatures(
+        template_pdf_path=template_path,
+        output_pdf_path=signed_path,
+        signatures=signature_list,
+        metadata=metadata,
+    )
+
+    if not success:
+        return False
+
+    document.signed_file_path = str(signed_path.relative_to(Path("app")))
+    if document.status == "completed" and not document.completed_at:
+        document.completed_at = datetime.now(timezone.utc)
+    db.commit()
+
+    log_document_event(
+        db=db,
+        document_id=document.id,
+        event_type="pdf_generated",
+        user_id=getattr(current_user, "id", None),
+        event_details=json.dumps({"signed_file_path": document.signed_file_path}),
+        ip_address=request.client.host if (request and request.client) else None,
+        user_agent=request.headers.get("user-agent") if request else None,
+    )
+
+    return True
 
 
 def _serialize_document(doc: SignedDocument, template: Optional[DocumentTemplate]) -> dict:
@@ -246,19 +351,45 @@ def send_enrollment_agreement(
 ):
     """Create a course-specific enrollment agreement for a student."""
     template = _resolve_enrollment_template(db, payload.template_id)
-    user = db.query(User).filter(User.id == payload.user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Student not found")
+
+    recipient_user: Optional[User] = None
+    recipient_lead: Optional[Lead] = None
+
+    if payload.user_id:
+        recipient_user = db.query(User).filter(User.id == payload.user_id).first()
+        if not recipient_user:
+            raise HTTPException(status_code=404, detail="Student not found")
+    elif payload.lead_id:
+        recipient_lead = db.query(Lead).filter(Lead.id == payload.lead_id).first()
+        if not recipient_lead:
+            raise HTTPException(status_code=404, detail="Lead not found")
+    else:
+        raise HTTPException(status_code=400, detail="Recipient is required")
 
     if payload.course_type not in ENROLLMENT_COURSES:
         raise HTTPException(status_code=400, detail="Unsupported course type")
 
-    signer_name, signer_email = _derive_signer_fields(
-        db,
-        user,
-        payload.signer_name,
-        payload.signer_email,
-    )
+    if recipient_user:
+        signer_name, signer_email = _derive_signer_fields(
+            db,
+            recipient_user,
+            payload.signer_name,
+            payload.signer_email,
+        )
+    else:
+        default_name = " ".join(
+            part
+            for part in [
+                getattr(recipient_lead, "first_name", None),
+                getattr(recipient_lead, "last_name", None),
+            ]
+            if part
+        ).strip()
+        signer_name = payload.signer_name or default_name or recipient_lead.email
+        signer_email = payload.signer_email or recipient_lead.email
+
+        if not signer_email:
+            raise HTTPException(status_code=400, detail="Lead email is required to send agreements.")
 
     signing_token = TokenService.generate_signing_token(48)
     token_expires_at = datetime.now(timezone.utc) + timedelta(days=14)
@@ -271,7 +402,8 @@ def send_enrollment_agreement(
 
     document = SignedDocument(
         template_id=template.id,
-        user_id=user.id,
+        user_id=recipient_user.id if recipient_user else None,
+        lead_id=recipient_lead.id if recipient_lead else None,
         signer_name=signer_name,
         signer_email=signer_email,
         signing_token=signing_token,
@@ -302,6 +434,7 @@ def send_enrollment_agreement(
             {
                 "course_type": payload.course_type,
                 "course_label": ENROLLMENT_COURSES[payload.course_type],
+                "recipient_type": "student" if recipient_user else "lead",
             }
         ),
         ip_address=request.client.host if request.client else None,
@@ -594,10 +727,6 @@ def counter_sign_document(
     document.signing_token = None
     document.token_expires_at = None
 
-    # For now, reuse the unsigned document path as the signed artifact placeholder.
-    # TODO: Generate a final PDF that includes both the student and staff signatures.
-    document.signed_file_path = document.signed_file_path or document.unsigned_file_path
-
     db.commit()
     db.refresh(document)
 
@@ -610,6 +739,19 @@ def counter_sign_document(
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )
+
+    template = db.query(DocumentTemplate).filter(DocumentTemplate.id == document.template_id).first()
+    generated_pdf = False
+    if template:
+        generated_pdf = _generate_signed_pdf(document, template, db, current_user, request)
+        if generated_pdf:
+            db.refresh(document)
+
+    if not generated_pdf and not document.signed_file_path:
+        # Fallback to the unsigned file so downloads still succeed.
+        document.signed_file_path = document.unsigned_file_path
+        db.commit()
+        db.refresh(document)
 
     return document
 
@@ -817,62 +959,11 @@ async def sign_document(
         is_completed = True
 
     if is_completed and template:
-        # Gather all signatures
-        all_signatures = db.query(DocumentSignature).filter(
-            DocumentSignature.document_id == document_id
-        ).all()
-
-        # Prepare signature data for PDF overlay
-        # Position signatures at bottom of page (adjust x,y coordinates as needed)
-        signature_list = []
-        x_position = 100
-        y_position = 100
-
-        for sig in all_signatures:
-            signature_list.append((
-                sig.signature_data,
-                sig.signature_type,
-                x_position,
-                y_position
-            ))
-            x_position += 250  # Space signatures horizontally
-
-        # Generate signed PDF
-        template_path = Path(template.file_path)
-        signed_filename = f"{document.id}_signed.pdf"
-        signed_path = SIGNED_DIR / signed_filename
-
-        metadata = {
-            'title': template.name,
-            'author': 'AADA LMS',
-            'subject': template.name,
-            'document_id': str(document.id),
-            'signed_date': datetime.now(timezone.utc).isoformat()
-        }
-
-        success = PDFSignatureService.overlay_signatures(
-            template_pdf_path=template_path,
-            output_pdf_path=signed_path,
-            signatures=signature_list,
-            metadata=metadata
-        )
-
-        if success:
-            document.signed_file_path = str(signed_path.relative_to(Path("app")))
+        if document.status != "completed":
             document.status = "completed"
-            document.completed_at = datetime.now(timezone.utc)
+            document.completed_at = document.completed_at or datetime.now(timezone.utc)
             db.commit()
-
-            # Log PDF generation
-            log_document_event(
-                db=db,
-                document_id=document_id,
-                event_type="pdf_generated",
-                user_id=current_user.id,
-                event_details=json.dumps({"signed_file_path": document.signed_file_path}),
-                ip_address=request.client.host if request.client else None,
-                user_agent=request.headers.get("user-agent")
-            )
+        _generate_signed_pdf(document, template, db, current_user, request)
 
     return signature
 
@@ -892,9 +983,8 @@ async def download_document(
     if not document:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    # Check access
-    # TODO: Add proper role check for admin
-    if str(document.user_id) != str(current_user.id):
+    # Allow the student who owns the document or any staff role to download
+    if str(document.user_id) != str(current_user.id) and not _has_staff_access(current_user):
         raise HTTPException(status_code=403, detail="Access denied")
 
     # Get template for unsigned version
@@ -905,13 +995,13 @@ async def download_document(
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 
-    # Return signed version if exists, otherwise template
-    if document.signed_file_path and Path(document.signed_file_path).exists():
-        file_path = Path(document.signed_file_path)
-    else:
-        file_path = Path(template.file_path)
+    signed_path = _resolve_document_file(document.signed_file_path)
+    template_path = _resolve_document_file(template.file_path)
 
-    if not file_path.exists():
+    # Return signed version if exists, otherwise template
+    file_path = signed_path if signed_path and signed_path.exists() else template_path
+
+    if not file_path or not file_path.exists():
         raise HTTPException(status_code=404, detail="Document file not found")
 
     return FileResponse(

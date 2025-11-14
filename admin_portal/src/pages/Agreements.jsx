@@ -9,6 +9,7 @@ import {
   fetchDocumentBlob,
 } from "../api/documents.js";
 import { listStudents } from "../api/students.js";
+import { listLeads } from "../api/leads.js";
 import SignaturePad from "../components/SignaturePad.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import {
@@ -47,6 +48,7 @@ const Agreements = () => {
   const canCounterSign = hasRole(["admin", "registrar"]);
   const [students, setStudents] = useState([]);
   const [templates, setTemplates] = useState([]);
+  const [leads, setLeads] = useState([]);
   const [agreements, setAgreements] = useState([]);
   const [courseFilter, setCourseFilter] = useState("twenty_week");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -55,7 +57,9 @@ const Agreements = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [sendForm, setSendForm] = useState({
+    recipientType: "student",
     studentId: "",
+    leadId: "",
     templateId: "",
     courseType: "twenty_week",
     signerName: "",
@@ -106,6 +110,15 @@ const Agreements = () => {
     }
   };
 
+  const loadLeads = async () => {
+    try {
+      const data = await listLeads({});
+      setLeads(Array.isArray(data?.leads) ? data.leads : Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const loadTemplates = async () => {
     try {
       const data = await listDocumentTemplates(false);
@@ -139,6 +152,7 @@ const Agreements = () => {
 
   useEffect(() => {
     loadStudents();
+    loadLeads();
     loadTemplates();
   }, []);
 
@@ -163,16 +177,17 @@ const Agreements = () => {
 
   const handleSend = async (event) => {
     event.preventDefault();
-    if (!sendForm.studentId) {
-      setError("Select a student to send the agreement.");
+    const isStudent = sendForm.recipientType === "student";
+    const recipientId = isStudent ? sendForm.studentId : sendForm.leadId;
+    if (!recipientId) {
+      setError(isStudent ? "Select a student to send the agreement." : "Select a lead to send the agreement.");
       return;
     }
 
     setSending(true);
     setError(null);
     try {
-      await sendEnrollmentAgreement({
-        user_id: sendForm.studentId,
+      const payload = {
         template_id: sendForm.templateId || undefined,
         course_type: sendForm.courseType,
         signer_name: sendForm.signerName || undefined,
@@ -181,10 +196,19 @@ const Agreements = () => {
           advisor_notes: sendForm.advisorNotes || undefined,
           course_label: courseLabel(sendForm.courseType),
         },
-      });
+      };
+      if (isStudent) {
+        payload.user_id = recipientId;
+      } else {
+        payload.lead_id = recipientId;
+      }
+
+      await sendEnrollmentAgreement(payload);
       setSuccessMessage("Enrollment agreement sent successfully.");
       setSendForm({
+        recipientType: "student",
         studentId: "",
+        leadId: "",
         templateId: "",
         courseType: "twenty_week",
         signerName: "",
@@ -199,6 +223,15 @@ const Agreements = () => {
       setSending(false);
       setTimeout(() => setSuccessMessage(""), 4000);
     }
+  };
+
+  const handleRecipientTypeChange = (newType) => {
+    setSendForm((prev) => ({
+      ...prev,
+      recipientType: newType,
+      studentId: newType === "student" ? prev.studentId : "",
+      leadId: newType === "lead" ? prev.leadId : "",
+    }));
   };
 
   const openCounterSign = (document) => {
@@ -369,29 +402,65 @@ const Agreements = () => {
           <div>
             <h2 className="text-lg font-semibold text-primary-800">Send new agreement</h2>
             <p className="text-sm text-slate-500">
-              Choose the student and course track to generate the enrollment agreement.
+              Choose the recipient (student or lead) and course track to generate the enrollment agreement.
             </p>
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700">Student</label>
+            <label className="text-sm font-medium text-slate-700">Recipient type</label>
             <select
-              data-testid="agreement-student-select"
-              value={sendForm.studentId}
-              onChange={(e) =>
-                setSendForm((prev) => ({ ...prev, studentId: e.target.value }))
-              }
+              value={sendForm.recipientType}
+              onChange={(e) => handleRecipientTypeChange(e.target.value)}
               className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
-              required
             >
-              <option value="">Select a student</option>
-              {students.map((student) => (
-                <option key={student.id} value={student.id}>
-                  {student.first_name} {student.last_name} • {student.email}
-                </option>
-              ))}
+              <option value="student">Current student</option>
+              <option value="lead">Lead / applicant</option>
             </select>
           </div>
+
+          {sendForm.recipientType === "student" ? (
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">Student</label>
+              <select
+                data-testid="agreement-student-select"
+                value={sendForm.studentId}
+                onChange={(e) =>
+                  setSendForm((prev) => ({ ...prev, studentId: e.target.value }))
+                }
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
+                required
+              >
+                <option value="">Select a student</option>
+                {students.map((student) => (
+                  <option key={student.id} value={student.id}>
+                    {student.first_name} {student.last_name} • {student.email}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">Lead</label>
+              <select
+                value={sendForm.leadId}
+                onChange={(e) =>
+                  setSendForm((prev) => ({ ...prev, leadId: e.target.value }))
+                }
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
+                required
+              >
+                <option value="">Select a lead</option>
+                {leads.map((lead) => (
+                  <option key={lead.id} value={lead.id}>
+                    {lead.first_name} {lead.last_name} • {lead.email}
+                  </option>
+                ))}
+              </select>
+              {leads.length === 0 && (
+                <p className="text-xs text-slate-500">No leads available. Add leads from the CRM first.</p>
+              )}
+            </div>
+          )}
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-700">Course</label>
@@ -519,7 +588,7 @@ const Agreements = () => {
             <table className="min-w-full divide-y divide-slate-200 text-sm">
               <thead className="bg-slate-50">
                 <tr>
-                  <th className="px-4 py-2 text-left font-semibold text-slate-600">Student</th>
+                  <th className="px-4 py-2 text-left font-semibold text-slate-600">Recipient</th>
                   <th className="px-4 py-2 text-left font-semibold text-slate-600">Course</th>
                   <th className="px-4 py-2 text-left font-semibold text-slate-600">Status</th>
                   <th className="px-4 py-2 text-left font-semibold text-slate-600">Sent</th>
@@ -544,6 +613,12 @@ const Agreements = () => {
                 {!loading &&
                   agreements.map((doc) => {
                     const student = studentsById.get(doc.user_id);
+                    const recipientLabel =
+                      student?.first_name || student?.last_name
+                        ? `${student?.first_name || ""} ${student?.last_name || ""}`.trim()
+                        : doc.signer_name || (doc.lead_id ? "Lead recipient" : "Recipient");
+                    const recipientEmail = student?.email || doc.signer_email || "N/A";
+                    const recipientType = student ? "Student" : doc.lead_id ? "Lead" : "Recipient";
                     const statusClass = statusStyles[doc.status] || "bg-slate-100 text-slate-700";
                     return (
                       <tr
@@ -560,10 +635,10 @@ const Agreements = () => {
                         }}
                       >
                         <td className="px-4 py-3">
-                          <div className="font-medium text-slate-900">
-                            {student ? `${student.first_name} ${student.last_name}` : "Student"}
+                          <div className="font-medium text-slate-900">{recipientLabel}</div>
+                          <div className="text-xs text-slate-500">
+                            {recipientType} • {recipientEmail}
                           </div>
-                          <div className="text-xs text-slate-500">{student?.email || "N/A"}</div>
                         </td>
                         <td className="px-4 py-3">
                           <div className="text-sm text-slate-700">{courseLabel(doc.course_type)}</div>
