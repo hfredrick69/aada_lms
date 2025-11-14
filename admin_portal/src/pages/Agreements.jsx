@@ -224,11 +224,10 @@ const Agreements = () => {
   };
 
   const handleCounterSignatureSave = (dataUrl) => {
-    const base64 = dataUrl?.split(",")[1] || null;
     setCounterModal((prev) => ({
       ...prev,
-      signatureData: base64,
-      error: null,
+      signatureData: dataUrl || null,
+      error: dataUrl ? null : prev.error,
     }));
   };
 
@@ -664,7 +663,7 @@ const Agreements = () => {
               {viewerModal.document.sent_at && (
                 <p>
                   <span className="font-medium text-slate-700">Sent:</span>{" "}
-                  {format(new Date(viewerModal.document.sent_at), "MMM d, yyyy")}
+                  {format(new Date(viewerModal.document.sent_at), "MMM d, yyyy h:mm a")}
                 </p>
               )}
             </div>
