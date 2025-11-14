@@ -25,6 +25,7 @@ from app.db.models.document import (
     DocumentAuditLog
 )
 from app.services.token_service import TokenService
+from app.services.email import send_enrollment_agreement_email, EmailDeliveryError
 from app.routers.auth import get_current_user
 from app.schemas.document import (
     DocumentTemplateResponse,
@@ -40,6 +41,7 @@ from app.services.pdf_service import PDFSignatureService
 from app.core.file_validation import validate_pdf, validate_file
 from app.utils.encryption import decrypt_value
 from app.core.rbac import require_admin, require_roles
+from app.core.config import settings
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -441,7 +443,18 @@ def send_enrollment_agreement(
         user_agent=request.headers.get("user-agent"),
     )
 
-    # TODO: Trigger ACS email with signing link once provider credentials are finalized.
+    signing_url = f"{settings.FRONTEND_BASE_URL.rstrip('/')}/sign/{signing_token}"
+    course_label = form_payload.get("course_label", ENROLLMENT_COURSES[payload.course_type])
+    try:
+        send_enrollment_agreement_email(
+            to_email=signer_email,
+            signer_name=signer_name or "",
+            course_label=course_label,
+            signing_url=signing_url,
+            token_expires_at=token_expires_at,
+        )
+    except EmailDeliveryError as exc:
+        raise HTTPException(status_code=502, detail=f"Failed to send enrollment email: {exc}") from exc
 
     return document
 
