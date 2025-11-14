@@ -8,7 +8,7 @@ Handles PDF manipulation for digital signatures:
 """
 
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import base64
 import io
 from typing import List, Tuple
@@ -16,7 +16,7 @@ from typing import List, Tuple
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
-from PyPDF2 import PdfReader, PdfWriter
+from pypdf import PdfReader, PdfWriter
 
 
 class PDFSignatureService:
@@ -26,8 +26,9 @@ class PDFSignatureService:
     def overlay_signatures(
         template_pdf_path: Path,
         output_pdf_path: Path,
-        signatures: List[Tuple[str, str, int, int]],  # [(base64_image, signature_type, x, y), ...]
-        metadata: dict = None
+        signatures: List[Tuple[str, str, int, int]],  # [(base64_image, type, x, y), ...]
+        metadata: dict = None,
+        acknowledgements: List[Tuple[str, int, int]] | None = None,
     ) -> bool:
         """
         Overlay signature images onto a PDF template
@@ -67,12 +68,18 @@ class PDFSignatureService:
                 c.setFont("Helvetica", 8)
                 c.drawString(x, y - 10, f"{sig_type.replace('_', ' ').title()} Signature")
 
+            # Add acknowledgement initials
+            if acknowledgements:
+                c.setFont("Helvetica-Bold", 10)
+                for initials, x, y in acknowledgements:
+                    c.drawString(x, y, initials)
+
             # Add timestamp and metadata
             if metadata:
                 c.setFont("Helvetica", 6)
                 y_pos = 30
                 signed_date = metadata.get(
-                    'signed_date', datetime.utcnow().isoformat()
+                    'signed_date', datetime.now(timezone.utc).isoformat()
                 )
                 c.drawString(50, y_pos, f"Digitally signed on: {signed_date}")
                 doc_id = metadata.get('document_id', 'N/A')
@@ -99,7 +106,7 @@ class PDFSignatureService:
                     '/Subject': metadata.get('subject', 'Enrollment Agreement'),
                     '/Creator': 'AADA E-Signature System',
                     '/Producer': 'AADA LMS PDF Service',
-                    '/CreationDate': datetime.utcnow().strftime('D:%Y%m%d%H%M%S')
+                    '/CreationDate': datetime.now(timezone.utc).strftime('D:%Y%m%d%H%M%S')
                 })
 
             # Write output PDF
@@ -166,7 +173,7 @@ class PDFSignatureService:
 
         # Footer
         c.setFont("Helvetica", 8)
-        c.drawCentredString(300, 50, f"Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
+        c.drawCentredString(300, 50, f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
         c.drawCentredString(300, 35, "AADA E-Signature System - Legally Binding Digital Signatures")
 
         c.save()

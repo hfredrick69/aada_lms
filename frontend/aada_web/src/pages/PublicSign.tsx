@@ -24,12 +24,41 @@ interface EnrollmentFormValues {
   emergency_contact: string;
   housing_needs: string;
   questions: string;
+  acknowledgements: Record<string, string>;
 }
 
 const steps = [
   { id: "overview", title: "Review agreement" },
-  { id: "details", title: "Student details" },
+  { id: "details", title: "Student details & acknowledgements" },
   { id: "signature", title: "Sign" },
+];
+
+const ACKNOWLEDGEMENT_FIELDS = [
+  {
+    key: "initial_agreement_catalog",
+    label: "I have read and received the enrollment agreement and school catalog.",
+  },
+  {
+    key: "initial_school_outcomes",
+    label: "I reviewed the school's retention, graduation, placement, and licensure results.",
+  },
+  {
+    key: "initial_employment",
+    label: "I understand job placement assistance is offered but employment/salary are not guaranteed.",
+  },
+  {
+    key: "initial_refund_policy",
+    label: "I reviewed the refund policy provided in the catalog.",
+  },
+  {
+    key: "initial_complaint_procedure",
+    label: "I reviewed the complaint procedure and appeal options.",
+  },
+  {
+    key: "initial_authorization",
+    label:
+      "I acknowledge the school's authorization status and that credits may not transfer to other institutions.",
+  },
 ];
 
 export default function PublicSign() {
@@ -51,6 +80,10 @@ export default function PublicSign() {
     emergency_contact: "",
     housing_needs: "not_needed",
     questions: "",
+    acknowledgements: ACKNOWLEDGEMENT_FIELDS.reduce(
+      (acc, field) => ({ ...acc, [field.key]: "" }),
+      {}
+    ),
   });
 
   const courseLabel = useMemo(() => {
@@ -72,6 +105,10 @@ export default function PublicSign() {
           setFormValues((prev) => ({
             ...prev,
             ...response.data.form_data,
+            acknowledgements: {
+              ...prev.acknowledgements,
+              ...(response.data.form_data.acknowledgements || {}),
+            },
           }));
         }
       } catch (err: any) {
@@ -106,9 +143,18 @@ export default function PublicSign() {
   };
 
   const handleNextStep = () => {
-    if (activeStep === 1 && !formValues.phone.trim()) {
-      setFormError("Please provide a phone number so our team can reach you.");
-      return;
+    if (activeStep === 1) {
+      if (!formValues.phone.trim()) {
+        setFormError("Please provide a phone number so our team can reach you.");
+        return;
+      }
+      const missingAck = ACKNOWLEDGEMENT_FIELDS.find(
+        (field) => !formValues.acknowledgements[field.key]?.trim()
+      );
+      if (missingAck) {
+        setFormError("Please type your initials for every acknowledgement.");
+        return;
+      }
     }
     setFormError(null);
     setSignatureError("");
@@ -330,71 +376,128 @@ export default function PublicSign() {
                 )}
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-slate-700">Phone number</label>
-                    <input
-                      type="tel"
-                      value={formValues.phone}
-                      onChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, phone: e.target.value }))
-                      }
-                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      placeholder="(555) 123-4567"
-                    />
+                    <label className="text-sm font-medium text-slate-700" htmlFor="student-phone">
+                      Phone number
+                    </label>
+                  <input
+                    id="student-phone"
+                    name="student-phone"
+                    type="tel"
+                    value={formValues.phone}
+                    onChange={(e) =>
+                      setFormValues((prev) => ({ ...prev, phone: e.target.value }))
+                    }
+                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="(555) 123-4567"
+                  />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-700">Preferred start date</label>
-                    <input
-                      type="date"
-                      value={formValues.preferred_start}
-                      onChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, preferred_start: e.target.value }))
-                      }
-                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                    />
+                    <label className="text-sm font-medium text-slate-700" htmlFor="student-start">
+                      Preferred start date
+                    </label>
+                  <input
+                    id="student-start"
+                    name="student-start"
+                    type="date"
+                    value={formValues.preferred_start}
+                    onChange={(e) =>
+                      setFormValues((prev) => ({ ...prev, preferred_start: e.target.value }))
+                    }
+                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                  />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-700">
+                    <label className="text-sm font-medium text-slate-700" htmlFor="student-emergency">
                       Emergency contact
                     </label>
-                    <input
-                      type="text"
-                      value={formValues.emergency_contact}
-                      onChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, emergency_contact: e.target.value }))
-                      }
-                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                      placeholder="Name & phone"
-                    />
+                  <input
+                    id="student-emergency"
+                    name="student-emergency"
+                    type="text"
+                    value={formValues.emergency_contact}
+                    onChange={(e) =>
+                      setFormValues((prev) => ({ ...prev, emergency_contact: e.target.value }))
+                    }
+                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                    placeholder="Name & phone"
+                  />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-700">Housing needs</label>
-                    <select
-                      value={formValues.housing_needs}
-                      onChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, housing_needs: e.target.value }))
-                      }
-                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                    >
+                    <label className="text-sm font-medium text-slate-700" htmlFor="student-housing">
+                      Housing needs
+                    </label>
+                  <select
+                    id="student-housing"
+                    name="student-housing"
+                    value={formValues.housing_needs}
+                    onChange={(e) =>
+                      setFormValues((prev) => ({ ...prev, housing_needs: e.target.value }))
+                    }
+                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                  >
                       <option value="not_needed">No housing support needed</option>
                       <option value="interested">I’d like housing resources</option>
                       <option value="undecided">Undecided</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-slate-700">
+                    <label
+                      className="text-sm font-medium text-slate-700"
+                      htmlFor="student-questions"
+                    >
                       Questions or accessibility requests
                     </label>
-                    <textarea
-                      value={formValues.questions}
-                      onChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, questions: e.target.value }))
-                      }
-                      className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                      rows={3}
-                      placeholder="Let us know if there’s anything we can prepare before class begins."
-                    />
+                  <textarea
+                    id="student-questions"
+                    name="student-questions"
+                    value={formValues.questions}
+                    onChange={(e) =>
+                      setFormValues((prev) => ({ ...prev, questions: e.target.value }))
+                    }
+                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
+                    rows={3}
+                    placeholder="Let us know if there’s anything we can prepare before class begins."
+                  />
                   </div>
                 </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-slate-900">Acknowledgements</h3>
+                  <p className="text-sm text-slate-600">
+                    Please type your initials in each box to confirm you have read and understand the statements below.
+                    These acknowledgements will appear on your final enrollment agreement.
+                  </p>
+                  <div className="space-y-4">
+                    {ACKNOWLEDGEMENT_FIELDS.map((field) => (
+                      <div
+                        key={field.key}
+                        className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3"
+                      >
+                        <p className="text-sm text-slate-700">{field.label}</p>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="text"
+                            maxLength={4}
+                            value={formValues.acknowledgements[field.key] || ""}
+                            onChange={(e) =>
+                              setFormValues((prev) => ({
+                                ...prev,
+                                acknowledgements: {
+                                  ...prev.acknowledgements,
+                                  [field.key]: e.target.value.toUpperCase(),
+                                },
+                              }))
+                            }
+                            className="w-24 text-center uppercase border border-slate-300 rounded-lg px-3 py-2 focus:ring-primary-500 focus:border-primary-500 tracking-wide"
+                            placeholder="ABC"
+                          />
+                          <span className="text-xs text-slate-500">Initials</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
             )}
 
@@ -407,8 +510,12 @@ export default function PublicSign() {
                 </p>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">Full name</label>
+                  <label className="text-sm font-medium text-slate-700" htmlFor="typedName">
+                    Full name
+                  </label>
                   <input
+                    id="typedName"
+                    name="typedName"
                     type="text"
                     value={typedName}
                     onChange={(e) => setTypedName(e.target.value)}

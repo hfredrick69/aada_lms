@@ -62,6 +62,14 @@ ENROLLMENT_COURSES = {
 ENROLLMENT_RETENTION_YEARS = 5
 admin_or_registrar = require_roles(["admin", "registrar"])
 STAFF_ROLES = {"admin", "staff", "registrar", "instructor", "finance"}
+ACKNOWLEDGEMENT_POSITIONS = [
+    ("initial_agreement_catalog", (420, 530)),
+    ("initial_school_outcomes", (420, 485)),
+    ("initial_employment", (420, 440)),
+    ("initial_refund_policy", (420, 395)),
+    ("initial_complaint_procedure", (420, 350)),
+    ("initial_authorization", (420, 305)),
+]
 
 
 def _has_staff_access(current_user: User) -> bool:
@@ -155,6 +163,16 @@ def _generate_signed_pdf(
         y_pos = base_y + row * row_height
         signature_list.append((sig.signature_data, sig.signature_type, x_pos, y_pos))
 
+    acknowledgements = []
+    form_data = document.form_data if isinstance(document.form_data, dict) else {}
+    ack_values = form_data.get("acknowledgements") if isinstance(form_data, dict) else None
+    if isinstance(ack_values, dict):
+        for key, (ack_x, ack_y) in ACKNOWLEDGEMENT_POSITIONS:
+            value = ack_values.get(key)
+            if isinstance(value, str) and value.strip():
+                initials = value.strip().upper()[:4]
+                acknowledgements.append((initials, ack_x, ack_y))
+
     signed_filename = f"{document.id}_signed.pdf"
     signed_path = SIGNED_DIR / signed_filename
 
@@ -171,6 +189,7 @@ def _generate_signed_pdf(
         output_pdf_path=signed_path,
         signatures=signature_list,
         metadata=metadata,
+        acknowledgements=acknowledgements,
     )
 
     if not success:
