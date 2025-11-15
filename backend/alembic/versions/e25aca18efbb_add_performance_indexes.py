@@ -71,12 +71,8 @@ def upgrade() -> None:
         ['user_id', 'program_id'],
         if_not_exists=True
     )
-    op.create_index(
-        'idx_audit_logs_user_created',
-        'audit_logs',
-        ['user_id', 'created_at'],
-        if_not_exists=True
-    )
+    # Note: audit_logs already has idx_audit_user_timestamp
+    # defined in the model, so we don't create it here
 
     # XAPI JSONB index for faster JSONB queries (only if table exists)
     op.execute("""
@@ -93,7 +89,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     # Drop all indexes in reverse order (if they exist)
     op.execute("DROP INDEX IF EXISTS idx_xapi_actor_gin")
-    op.drop_index('idx_audit_logs_user_created', 'audit_logs', if_exists=True)
     op.drop_index('idx_enrollments_user_program', 'enrollments', if_exists=True)
     op.drop_index('idx_enrollments_status', 'enrollments', if_exists=True)
     op.drop_index('idx_users_status', 'users', if_exists=True)
