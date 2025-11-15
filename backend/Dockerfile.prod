@@ -15,10 +15,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Run migrations and start application
+# Run migrations and start application with Gunicorn + multiple workers
 CMD PYTHONPATH=/app alembic upgrade head && \
-    uvicorn app.main:app \
-    --host 0.0.0.0 \
-    --port 8000 \
-    --proxy-headers \
+    gunicorn app.main:app \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --workers 4 \
+    --bind 0.0.0.0:8000 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile - \
     --forwarded-allow-ips='*'

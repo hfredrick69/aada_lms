@@ -64,6 +64,25 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
     return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
+
+# Cache headers middleware for performance optimization
+@app.middleware("http")
+async def add_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+
+    # Static content - cache for 1 year
+    if request.url.path.startswith("/static"):
+        response.headers["Cache-Control"] = "public, max-age=31536000"
+    # API GET responses - cache for 5 minutes
+    elif request.method == "GET" and request.url.path.startswith("/api"):
+        response.headers["Cache-Control"] = "private, max-age=300"
+    # No cache for mutations
+    else:
+        response.headers["Cache-Control"] = "no-store"
+
+    return response
+
+
 # Security middleware (order matters - first added = outermost layer)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(AuditLoggingMiddleware)
