@@ -1,5 +1,10 @@
 """Comprehensive API endpoint tests"""
 
+from datetime import date, datetime, timezone
+from uuid import uuid4
+
+from app.db.models.enrollment import Enrollment, ModuleProgress
+
 
 def test_programs_list(client, auth_headers):
     """Test GET /programs"""
@@ -80,20 +85,61 @@ def test_externship_verification(client, auth_headers, test_user):
     assert response.json()["verified"] is True
 
 
-def test_credentials_issuance(client, auth_headers, test_user, test_program):
+def test_credentials_issuance(client, auth_headers, test_user, test_program, test_module, db):
     """Test credential issuance"""
+    enrollment = Enrollment(
+        user_id=test_user.id,
+        program_id=test_program.id,
+        start_date=date.today(),
+        status="completed",
+    )
+    db.add(enrollment)
+    db.commit()
+    db.refresh(enrollment)
+
+    progress = ModuleProgress(
+        enrollment_id=enrollment.id,
+        module_id=test_module.id,
+        scorm_status="completed",
+        score=95,
+        progress_pct=100,
+    )
+    db.add(progress)
+    db.commit()
+
     data = {
         "user_id": str(test_user.id),
         "program_id": str(test_program.id),
-        "credential_type": "certificate"
+        "credential_type": "certificate",
+        "cert_serial": f"CERT-{uuid4().hex[:8]}",
     }
     response = client.post("/credentials", json=data, headers=auth_headers)
     assert response.status_code == 201
     assert "cert_serial" in response.json()
 
 
-def test_transcript_generation(client, auth_headers, test_user, test_program):
+def test_transcript_generation(client, auth_headers, test_user, test_program, test_module, db):
     """Test transcript generation"""
+    enrollment = Enrollment(
+        user_id=test_user.id,
+        program_id=test_program.id,
+        start_date=date.today(),
+        status="completed",
+    )
+    db.add(enrollment)
+    db.commit()
+    db.refresh(enrollment)
+
+    progress = ModuleProgress(
+        enrollment_id=enrollment.id,
+        module_id=test_module.id,
+        scorm_status="completed",
+        score=92,
+        progress_pct=100,
+    )
+    db.add(progress)
+    db.commit()
+
     data = {
         "user_id": str(test_user.id),
         "program_id": str(test_program.id)
@@ -109,7 +155,8 @@ def test_complaint_workflow(client, auth_headers, test_user):
     data = {
         "user_id": str(test_user.id),
         "category": "Academic",
-        "details": "Test complaint details"
+        "details": "Test complaint details",
+        "submitted_at": datetime.now(timezone.utc).isoformat()
     }
     response = client.post("/complaints", json=data, headers=auth_headers)
     assert response.status_code == 201
@@ -135,7 +182,8 @@ def test_xapi_statements(client, auth_headers):
     data = {
         "actor": {"mbox": "mailto:test@aada.edu", "name": "Test Student"},
         "verb": {"id": "http://adlnet.gov/expapi/verbs/completed"},
-        "object": {"id": "http://aada.edu/modules/test"}
+        "object": {"id": "http://aada.edu/modules/test"},
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     response = client.post("/xapi/statements", json=data, headers=auth_headers)
     assert response.status_code == 201

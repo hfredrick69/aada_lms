@@ -60,7 +60,7 @@ const Documents = () => {
   const loadUsers = async () => {
     try {
       const data = await listStudents();
-      setUsers(Array.isArray(data.students) ? data.students : []);
+      setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     }

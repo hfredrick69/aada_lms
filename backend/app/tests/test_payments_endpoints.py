@@ -2,13 +2,11 @@
 from uuid import uuid4
 from fastapi.testclient import TestClient
 
-from app.core.security import get_password_hash
-from app.db.models.role import Role
-from app.db.models.user import User
 from app.db.models.compliance.finance import FinancialLedger
 from app.db.session import SessionLocal
 from app.main import app
-from datetime import datetime
+from app.tests.utils import create_user_with_roles
+from datetime import datetime, timezone
 
 client = TestClient(app)
 
@@ -17,32 +15,7 @@ def _create_user(email: str, password: str, roles: list[str] | None = None):
     """Helper to create user with roles"""
     session = SessionLocal()
     try:
-        user = session.query(User).filter(User.email == email).first()
-        if user:
-            session.delete(user)
-            session.commit()
-
-        user = User(
-            email=email,
-            password_hash=get_password_hash(password),
-            first_name="Unit",
-            last_name="Test",
-            status="active",
-        )
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-
-        for role_name in roles or []:
-            role = session.query(Role).filter(Role.name == role_name).first()
-            if not role:
-                role = Role(name=role_name, description=f"{role_name} role")
-                session.add(role)
-                session.commit()
-                session.refresh(role)
-            user.roles.append(role)
-        session.commit()
-        session.refresh(user)
+        user = create_user_with_roles(session, email=email, password=password, roles=roles)
         session.expunge_all()
         return user
     finally:
@@ -58,7 +31,7 @@ def _create_ledger_entry(user_id, line_type: str, amount_cents: int):
             line_type=line_type,
             amount_cents=amount_cents,
             description=f"Test {line_type}",
-            created_at=datetime.utcnow()
+            created_at=datetime.now(timezone.utc)
         )
         session.add(entry)
         session.commit()

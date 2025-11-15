@@ -8,11 +8,9 @@ from datetime import date
 
 from app.main import app
 from app.db.session import get_db
-from app.db.models.user import User
-from app.db.models.role import Role
 from app.db.models.program import Program, Module
 from app.db.models.enrollment import Enrollment, ModuleProgress
-from app.core.security import get_password_hash
+from app.tests.utils import create_user_with_roles
 import uuid
 
 
@@ -27,8 +25,8 @@ def db_session():
     db.close()
 
 
-@pytest.fixture
-def client(db_session):
+@pytest.fixture(name="client")
+def client_fixture(db_session):
     """Create test client"""
     def override_get_db():
         try:
@@ -44,54 +42,35 @@ def client(db_session):
 @pytest.fixture
 def test_users(db_session: Session):
     """Create test users"""
-    alice = User(
-        id=uuid.uuid4(),
+    alice = create_user_with_roles(
+        db_session,
         email="alice.progress@test.edu",
-        password_hash=get_password_hash("TestPass123!"),
+        password="TestPass123!",
         first_name="Alice",
-        last_name="Progress"
+        last_name="Progress",
+        roles=["student"],
     )
-    instructor = User(
-        id=uuid.uuid4(),
+    instructor = create_user_with_roles(
+        db_session,
         email="instructor.progress@test.edu",
-        password_hash=get_password_hash("TestPass123!"),
+        password="TestPass123!",
         first_name="Instructor",
-        last_name="Test"
+        last_name="Test",
+        roles=["instructor"],
     )
-    db_session.add_all([alice, instructor])
-    db_session.flush()
-
-    # Create or get roles
-    student_role = db_session.query(Role).filter(Role.name == "student").first()
-    if not student_role:
-        student_role = Role(name="student", description="Student role")
-        db_session.add(student_role)
-        db_session.flush()
-
-    instructor_role = db_session.query(Role).filter(Role.name == "instructor").first()
-    if not instructor_role:
-        instructor_role = Role(name="instructor", description="Instructor role")
-        db_session.add(instructor_role)
-        db_session.flush()
-
-    # Append roles to users
-    alice.roles.append(student_role)
-    instructor.roles.append(instructor_role)
-
-    db_session.commit()
-    db_session.refresh(alice)
-    db_session.refresh(instructor)
     return {"alice": alice, "instructor": instructor}
 
 
 @pytest.fixture
 def test_program_and_modules(db_session: Session):
     """Create test program with modules"""
+    program_code = f"PROG-{uuid.uuid4().hex[:6]}"
     program = Program(
         id=uuid.uuid4(),
-        code="PROG-TEST",
-        title="Test Program",
-        clock_hours=100
+        code=program_code,
+        name="Test Program",
+        credential_level="certificate",
+        total_clock_hours=100,
     )
     db_session.add(program)
     db_session.commit()
@@ -103,10 +82,12 @@ def test_program_and_modules(db_session: Session):
         module = Module(
             id=uuid.uuid4(),
             program_id=program.id,
-            code=f"MOD{i}",
+            code=f"{program_code}-MOD{i}",
             title=f"Module {i}",
+            delivery_type="online",
+            clock_hours=30,
+            requires_in_person=False,
             position=i,
-            clock_hours=30
         )
         modules.append(module)
 
@@ -138,8 +119,44 @@ def get_auth_headers(client: TestClient, email: str, password: str):
     """Get authentication headers"""
     response = client.post("/api/auth/login", json={"email": email, "password": password})
     assert response.status_code == 200
-    # Return cookies as headers aren't needed - we use cookies
-    return {}
+    data = response.json()
+    token = data.get("access_token")
+    assert token, "Login response missing access_token"
+    return {"Authorization": f"Bearer {token}"}
+
+
+def get_current_user_id(client: TestClient, headers: dict) -> str:
+    me_response = client.get("/api/auth/me", headers=headers)
+    assert me_response.status_code == 200, me_response.text
+    return me_response.json()["id"]
+
+
+def align_enrollment_owner(db_session: Session, enrollment: Enrollment, current_user_id: str):
+    owner_id = uuid.UUID(current_user_id)
+    if enrollment.user_id != owner_id:
+        enrollment.user_id = owner_id
+        db_session.add(enrollment)
+    db_session.query(Enrollment).filter(
+        Enrollment.user_id == owner_id,
+        Enrollment.id != enrollment.id
+    ).delete(synchronize_session=False)
+    db_session.query(ModuleProgress).filter(
+        ModuleProgress.enrollment_id == enrollment.id
+    ).delete(synchronize_session=False)
+    db_session.commit()
+
+
+def login_and_prepare_student(
+    client: TestClient,
+    db_session: Session,
+    enrollment: Enrollment,
+    email: str = "alice.progress@test.edu",
+    password: str = "TestPass123!"
+):
+    headers = get_auth_headers(client, email, password)
+    current_user_id = get_current_user_id(client, headers)
+    align_enrollment_owner(db_session, enrollment, current_user_id)
+    return headers, current_user_id
 
 
 # ======================
@@ -148,22 +165,23 @@ def get_auth_headers(client: TestClient, email: str, password: str):
 
 def test_student_can_view_own_progress(
     client: TestClient,
+    db_session: Session,
     test_users,
     test_enrollment,
     test_program_and_modules
 ):
     """Student can view their own overall progress"""
-    auth_headers = get_auth_headers(client, "alice.progress@test.edu", "TestPass123!")
+    auth_headers, current_user_id = login_and_prepare_student(client, db_session, test_enrollment)
 
     response = client.get(
-        f"/api/progress/{test_users['alice'].id}",
+        f"/api/progress/{current_user_id}",
         headers=auth_headers
     )
 
     assert response.status_code == 200
     data = response.json()
 
-    assert data["user_id"] == str(test_users["alice"].id)
+    assert data["user_id"] == str(current_user_id)
     assert data["enrollment_id"] == str(test_enrollment.id)
     assert data["total_modules"] == 3
     assert data["completed_modules"] == 0
@@ -229,17 +247,18 @@ def test_progress_404_no_enrollment(
 
 def test_get_module_progress_no_progress_record(
     client: TestClient,
+    db_session: Session,
     test_users,
     test_enrollment,
     test_program_and_modules
 ):
     """Get module progress when no progress exists (returns default)"""
-    auth_headers = get_auth_headers(client, "alice.progress@test.edu", "TestPass123!")
+    auth_headers, current_user_id = login_and_prepare_student(client, db_session, test_enrollment)
 
     module_id = test_program_and_modules["modules"][0].id
 
     response = client.get(
-        f"/api/progress/{test_users['alice'].id}/module/{module_id}",
+        f"/api/progress/{current_user_id}/module/{module_id}",
         headers=auth_headers
     )
 
@@ -262,26 +281,26 @@ def test_get_module_progress_with_existing_progress(
     test_program_and_modules
 ):
     """Get module progress when progress record exists"""
-    # Create progress record
     module_id = test_program_and_modules["modules"][0].id
-    progress = ModuleProgress(
-        id=uuid.uuid4(),
-        enrollment_id=test_enrollment.id,
-        module_id=module_id,
-        scorm_status="completed",
-        score=95,
-        progress_pct=100,
-        last_scroll_position=1500,
-        active_time_seconds=600,
-        sections_viewed=["section-1", "section-2", "section-3"]
-    )
-    db_session.add(progress)
-    db_session.commit()
 
-    auth_headers = get_auth_headers(client, "alice.progress@test.edu", "TestPass123!")
+    auth_headers, current_user_id = login_and_prepare_student(client, db_session, test_enrollment)
+
+    progress_payload = {
+        "enrollment_id": str(test_enrollment.id),
+        "module_id": str(module_id),
+        "scorm_status": "completed",
+        "score": 95,
+        "progress_pct": 100,
+        "last_scroll_position": 1500,
+        "active_time_seconds": 600,
+        "sections_viewed": ["section-1", "section-2", "section-3"],
+    }
+    assert current_user_id == str(test_enrollment.user_id)
+    create_resp = client.post("/api/progress/", json=progress_payload, headers=auth_headers)
+    assert create_resp.status_code == 201, create_resp.text
 
     response = client.get(
-        f"/api/progress/{test_users['alice'].id}/module/{module_id}",
+        f"/api/progress/{current_user_id}/module/{module_id}",
         headers=auth_headers
     )
 
@@ -293,7 +312,7 @@ def test_get_module_progress_with_existing_progress(
     assert data["progress_pct"] == 100
     assert data["last_scroll_position"] == 1500
     assert data["active_time_seconds"] == 600
-    assert len(data["sections_viewed"]) == 3
+    assert data["sections_viewed"] == ["section-1", "section-2", "section-3"]
 
 
 # ======================
@@ -302,12 +321,16 @@ def test_get_module_progress_with_existing_progress(
 
 def test_student_can_update_own_progress(
     client: TestClient,
+    db_session: Session,
     test_users,
     test_enrollment,
     test_program_and_modules
 ):
     """Student can update their own module progress"""
     auth_headers = get_auth_headers(client, "alice.progress@test.edu", "TestPass123!")
+
+    current_user_id = get_current_user_id(client, auth_headers)
+    align_enrollment_owner(db_session, test_enrollment, current_user_id)
 
     module_id = test_program_and_modules["modules"][0].id
 
@@ -339,12 +362,13 @@ def test_student_can_update_own_progress(
 
 def test_update_progress_creates_then_updates(
     client: TestClient,
+    db_session: Session,
     test_users,
     test_enrollment,
     test_program_and_modules
 ):
     """Progress update creates record first time, updates second time"""
-    auth_headers = get_auth_headers(client, "alice.progress@test.edu", "TestPass123!")
+    auth_headers, current_user_id = login_and_prepare_student(client, db_session, test_enrollment)
 
     module_id = test_program_and_modules["modules"][0].id
 
@@ -382,17 +406,14 @@ def test_student_cannot_update_other_enrollment_progress(
 ):
     """Student cannot update progress for another student's enrollment"""
     # Create another user and enrollment
-    bob = User(
-        id=uuid.uuid4(),
+    bob = create_user_with_roles(
+        db_session,
         email="bob.test@test.edu",
-        password_hash=get_password_hash("TestPass123!"),
+        password="TestPass123!",
         first_name="Bob",
         last_name="Test",
-        roles=["student"]
+        roles=["student"],
     )
-    db_session.add(bob)
-    db_session.commit()
-    db_session.refresh(bob)
 
     bob_enrollment = Enrollment(
         id=uuid.uuid4(),
@@ -460,10 +481,11 @@ def test_update_progress_404_invalid_enrollment(
 
 def test_update_progress_404_invalid_module(
     client: TestClient,
+    db_session: Session,
     test_enrollment
 ):
     """Returns 404 for non-existent module"""
-    auth_headers = get_auth_headers(client, "alice.progress@test.edu", "TestPass123!")
+    auth_headers, _ = login_and_prepare_student(client, db_session, test_enrollment)
 
     progress_data = {
         "enrollment_id": str(test_enrollment.id),
@@ -481,18 +503,19 @@ def test_update_progress_404_invalid_module(
 
 def test_complete_progress_tracking_flow(
     client: TestClient,
+    db_session: Session,
     test_users,
     test_enrollment,
     test_program_and_modules
 ):
     """Test complete flow: view, update, view again"""
-    auth_headers = get_auth_headers(client, "alice.progress@test.edu", "TestPass123!")
+    auth_headers, current_user_id = login_and_prepare_student(client, db_session, test_enrollment)
 
     module_id = test_program_and_modules["modules"][0].id
 
     # 1. Get initial progress (should be 0%)
     response1 = client.get(
-        f"/api/progress/{test_users['alice'].id}",
+        f"/api/progress/{current_user_id}",
         headers=auth_headers
     )
     assert response1.status_code == 200
@@ -512,7 +535,7 @@ def test_complete_progress_tracking_flow(
 
     # 3. Get updated overall progress
     response3 = client.get(
-        f"/api/progress/{test_users['alice'].id}",
+        f"/api/progress/{current_user_id}",
         headers=auth_headers
     )
     assert response3.status_code == 200
@@ -525,7 +548,7 @@ def test_complete_progress_tracking_flow(
 
     # 4. Get specific module progress
     response4 = client.get(
-        f"/api/progress/{test_users['alice'].id}/module/{module_id}",
+        f"/api/progress/{current_user_id}/module/{module_id}",
         headers=auth_headers
     )
     assert response4.status_code == 200

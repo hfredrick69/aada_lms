@@ -17,7 +17,7 @@ const inferHostedBackendBase = (): string | null => {
   }
 
   // Local dev fallback: reuse protocol + configurable port
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'host.docker.internal') {
     const apiPort = import.meta.env.VITE_API_PORT || '8000';
     return `${protocol}//${hostname}:${apiPort}`;
   }
@@ -28,11 +28,28 @@ const inferHostedBackendBase = (): string | null => {
 export const resolveApiBaseUrl = (): string => {
   const envValue = import.meta.env.VITE_API_BASE_URL?.trim();
   if (envValue) {
-    // Auto-upgrade to HTTPS if the frontend is served securely
-    if (typeof window !== 'undefined' && window.location.protocol === 'https:' && envValue.startsWith('http://')) {
-      return sanitizeBase(envValue.replace(/^http:/, 'https:'));
+    let normalized = sanitizeBase(envValue);
+
+    if (typeof window !== 'undefined') {
+      try {
+        const parsed = new URL(normalized);
+        const dockerHost = window.location.hostname === 'host.docker.internal';
+        const localhostAlias = ['localhost', '127.0.0.1'].includes(parsed.hostname);
+        if (dockerHost && localhostAlias) {
+          parsed.hostname = window.location.hostname;
+          parsed.protocol = window.location.protocol;
+          normalized = sanitizeBase(parsed.toString());
+        }
+      } catch {
+        // Ignore malformed URLs and fall through to the existing value
+      }
+
+      if (window.location.protocol === 'https:' && normalized.startsWith('http://')) {
+        normalized = sanitizeBase(normalized.replace(/^http:/, 'https:'));
+      }
     }
-    return sanitizeBase(envValue);
+
+    return normalized;
   }
 
   const hostedValue = inferHostedBackendBase();

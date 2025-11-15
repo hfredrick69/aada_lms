@@ -21,7 +21,8 @@ from pathlib import Path
 from typing import Optional
 import logging
 from fastapi import HTTPException
-import PyPDF2
+from pypdf import PdfReader, PdfWriter
+from pypdf.errors import PdfReadError
 from PIL import Image
 
 # Optional ClamAV virus scanning
@@ -188,8 +189,8 @@ def sanitize_pdf(content: bytes) -> bytes:
         pdf_input = BytesIO(content)
         pdf_output = BytesIO()
 
-        reader = PyPDF2.PdfReader(pdf_input)
-        writer = PyPDF2.PdfWriter()
+        reader = PdfReader(pdf_input)
+        writer = PdfWriter()
 
         # Process each page
         for page in reader.pages:
@@ -326,11 +327,11 @@ def validate_pdf(
     # 3.5. Optional virus scan (if ClamAV available)
     scan_for_viruses(content, filename)
 
-    # 4. PDF structure validation using PyPDF2
+    # 4. PDF structure validation using pypdf
     if check_structure:
         try:
             pdf_file = BytesIO(content)
-            reader = PyPDF2.PdfReader(pdf_file)
+            reader = PdfReader(pdf_file)
 
             # Verify we can read metadata
             _ = reader.metadata
@@ -350,7 +351,7 @@ def validate_pdf(
                     detail=f"PDF structure invalid: {str(e)}"
                 )
 
-        except PyPDF2.errors.PdfReadError as e:
+        except PdfReadError as e:
             raise HTTPException(status_code=400, detail=f"Invalid PDF structure: {str(e)}")
         except HTTPException:
             raise

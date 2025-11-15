@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
   Container,
+  Link,
   IconButton,
   InputAdornment,
   Paper,
@@ -130,6 +131,13 @@ export default function LoginPage() {
                 "Sign In"
               )}
             </Button>
+
+            <Typography variant="body2" textAlign="center" color="text.secondary">
+              Need an account?{" "}
+              <Link component={RouterLink} to="/register" underline="hover">
+                Register here
+              </Link>
+            </Typography>
           </Stack>
         </Paper>
       </Container>

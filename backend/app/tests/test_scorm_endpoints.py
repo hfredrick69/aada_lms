@@ -2,12 +2,10 @@
 from uuid import uuid4
 from fastapi.testclient import TestClient
 
-from app.core.security import get_password_hash
-from app.db.models.role import Role
-from app.db.models.user import User
 from app.db.models.program import Program, Module
 from app.db.session import SessionLocal
 from app.main import app
+from app.tests.utils import create_user_with_roles
 
 client = TestClient(app)
 
@@ -16,33 +14,7 @@ def _create_user(email: str, password: str, roles: list[str] | None = None):
     """Helper to create user with roles"""
     session = SessionLocal()
     try:
-        user = session.query(User).filter(User.email == email).first()
-        if user:
-            session.delete(user)
-            session.commit()
-
-        user = User(
-            email=email,
-            password_hash=get_password_hash(password),
-            first_name="Unit",
-            last_name="Test",
-            status="active",
-        )
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-
-        for role_name in roles or []:
-            role = session.query(Role).filter(Role.name == role_name).first()
-            if not role:
-                role = Role(name=role_name, description=f"{role_name} role")
-                session.add(role)
-                session.commit()
-                session.refresh(role)
-            user.roles.append(role)
-        session.commit()
-        session.refresh(user)
-        return user
+        return create_user_with_roles(session, email=email, password=password, roles=roles)
     finally:
         session.close()
 

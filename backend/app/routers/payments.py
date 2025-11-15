@@ -5,7 +5,7 @@ from sqlalchemy import func
 from typing import List, Optional
 from uuid import UUID
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.db.session import get_db
 from app.db.models.user import User
@@ -145,7 +145,7 @@ def record_payment(
         line_type="payment",
         amount_cents=payment.amount_cents,
         description=payment.description or "Payment received",
-        created_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc)
     )
 
     db.add(ledger_entry)

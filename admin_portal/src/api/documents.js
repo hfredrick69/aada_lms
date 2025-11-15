@@ -30,19 +30,21 @@ export const deleteDocumentTemplate = async (templateId) => {
   return data;
 };
 
-// Send Document
+// Legacy send endpoints (unused, kept for compatibility)
 export const sendDocumentToUser = async (templateId, userId) => {
-  const { data } = await axiosClient.post("/documents/send", {
+  const { data } = await axiosClient.post("/documents/enrollment/send", {
     template_id: templateId,
-    user_id: userId
+    user_id: userId,
+    course_type: "twenty_week",
   });
   return data;
 };
 
 export const sendDocumentToLead = async (templateId, leadId) => {
-  const { data } = await axiosClient.post("/documents/send", {
+  const { data } = await axiosClient.post("/documents/enrollment/send", {
     template_id: templateId,
-    lead_id: leadId
+    lead_id: leadId,
+    course_type: "twenty_week",
   });
   return data;
 };

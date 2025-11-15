@@ -11,7 +11,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1, // Single worker to ensure test isolation
-  reporter: 'html',
+  // Disable auto-open so Dockerized runs exit cleanly instead of hanging
+  reporter: [['list'], ['html', { open: 'never' }]],
 
   use: {
     baseURL: 'http://localhost:5173',

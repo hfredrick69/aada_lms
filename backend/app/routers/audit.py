@@ -6,7 +6,7 @@ HIPAA-compliant audit log access and reporting for administrators.
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, List
 from pydantic import BaseModel
 
@@ -126,7 +126,7 @@ def get_compliance_report(
     Shows audit log statistics for the specified time period.
     Requires Admin role.
     """
-    end_date = datetime.utcnow()
+    end_date = datetime.now(timezone.utc)
     start_date = end_date - timedelta(days=days)
 
     # Total requests
@@ -232,7 +232,7 @@ def get_user_activity(
 
     Requires Admin role.
     """
-    start_date = datetime.utcnow() - timedelta(days=days)
+    start_date = datetime.now(timezone.utc) - timedelta(days=days)
 
     logs = db.query(AuditLog).filter(
         and_(

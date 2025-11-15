@@ -21,7 +21,7 @@ def upgrade():
     # users
     op.create_table('users',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column('email', postgresql.CITEXT(), nullable=False, unique=True),
+        sa.Column('email', sa.String(), nullable=False, unique=True),
         sa.Column('password_hash', sa.Text(), nullable=False),
         sa.Column('first_name', sa.String(), nullable=False),
         sa.Column('last_name', sa.String(), nullable=False),

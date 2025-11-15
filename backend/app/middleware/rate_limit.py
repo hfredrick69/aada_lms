@@ -12,7 +12,7 @@ Security Features:
 
 from fastapi import Request, HTTPException, status
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Tuple
 import asyncio
 
@@ -54,7 +54,7 @@ class RateLimiter:
             - Automatic cleanup of old entries
         """
         async with self._lock:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             cutoff = now - timedelta(seconds=window_seconds)
 
             # Get requests for this IP and endpoint
@@ -89,7 +89,7 @@ class RateLimiter:
             - Prevents unbounded memory growth
         """
         async with self._lock:
-            cutoff = datetime.utcnow() - timedelta(hours=max_age_hours)
+            cutoff = datetime.now(timezone.utc) - timedelta(hours=max_age_hours)
 
             # Clean up old IPs
             ips_to_remove = []

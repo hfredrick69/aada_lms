@@ -4,7 +4,7 @@ Unit tests for TokenService
 Tests security and functionality of token generation/validation.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.services.token_service import TokenService
 
 
@@ -46,7 +46,7 @@ class TestTokenService:
 
     def test_calculate_token_expiration_default(self):
         """Test token expiration calculation with default days"""
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         expiration = TokenService.calculate_token_expiration()
 
         assert expiration > now
@@ -56,7 +56,7 @@ class TestTokenService:
 
     def test_calculate_token_expiration_custom_days(self):
         """Test token expiration calculation with custom days"""
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         expiration = TokenService.calculate_token_expiration(days=7)
 
         assert expiration > now
@@ -66,13 +66,13 @@ class TestTokenService:
 
     def test_is_token_expired_valid_token(self):
         """Test that non-expired tokens are validated correctly"""
-        future = datetime.utcnow() + timedelta(days=1)
+        future = datetime.now(timezone.utc) + timedelta(days=1)
 
         assert TokenService.is_token_expired(future) is False
 
     def test_is_token_expired_expired_token(self):
         """Test that expired tokens are detected"""
-        past = datetime.utcnow() - timedelta(days=1)
+        past = datetime.now(timezone.utc) - timedelta(days=1)
 
         assert TokenService.is_token_expired(past) is True
 
@@ -83,7 +83,7 @@ class TestTokenService:
     def test_is_token_expired_exact_expiration(self):
         """Test edge case of exact expiration time"""
         # Token that expires exactly now (should be expired)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         # Due to time precision, this might be expired or not
         # We accept either outcome as long as it's consistent
@@ -93,26 +93,26 @@ class TestTokenService:
     def test_is_token_valid_with_valid_token(self):
         """Test token validation with valid token and expiration"""
         token = "valid_token_string"
-        expiration = datetime.utcnow() + timedelta(days=1)
+        expiration = datetime.now(timezone.utc) + timedelta(days=1)
 
         assert TokenService.is_token_valid(token, expiration) is True
 
     def test_is_token_valid_with_expired_token(self):
         """Test token validation with expired token"""
         token = "valid_token_string"
-        expiration = datetime.utcnow() - timedelta(days=1)
+        expiration = datetime.now(timezone.utc) - timedelta(days=1)
 
         assert TokenService.is_token_valid(token, expiration) is False
 
     def test_is_token_valid_with_none_token(self):
         """Test token validation with None token (security)"""
-        expiration = datetime.utcnow() + timedelta(days=1)
+        expiration = datetime.now(timezone.utc) + timedelta(days=1)
 
         assert TokenService.is_token_valid(None, expiration) is False
 
     def test_is_token_valid_with_empty_token(self):
         """Test token validation with empty token (security)"""
-        expiration = datetime.utcnow() + timedelta(days=1)
+        expiration = datetime.now(timezone.utc) + timedelta(days=1)
 
         assert TokenService.is_token_valid("", expiration) is False
 

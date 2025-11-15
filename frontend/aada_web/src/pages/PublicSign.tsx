@@ -1,9 +1,19 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import axios from "axios";
 
 import { resolveApiBaseUrl } from "@/utils/apiBase";
+import type {
+  AgreementSchema,
+  AgreementSection,
+  SchemaElement,
+  FieldDefinition,
+  FieldGroupElement,
+  TableElement,
+  ListElement,
+  AcknowledgementListElement,
+} from "@/types/enrollmentAgreement";
 
 const API_BASE_URL = `${resolveApiBaseUrl()}/api`;
 
@@ -16,50 +26,204 @@ interface DocumentData {
   course_type?: string;
   course_label?: string;
   form_data?: Record<string, unknown>;
-}
-
-interface EnrollmentFormValues {
-  phone: string;
-  preferred_start: string;
-  emergency_contact: string;
-  housing_needs: string;
-  questions: string;
-  acknowledgements: Record<string, string>;
+  agreement_schema?: AgreementSchema;
 }
 
 const steps = [
-  { id: "overview", title: "Review agreement" },
-  { id: "details", title: "Student details & acknowledgements" },
+  { id: "agreement", title: "Agreement & Details" },
   { id: "signature", title: "Sign" },
 ];
 
-const ACKNOWLEDGEMENT_FIELDS = [
-  {
-    key: "initial_agreement_catalog",
-    label: "I have read and received the enrollment agreement and school catalog.",
-  },
-  {
-    key: "initial_school_outcomes",
-    label: "I reviewed the school's retention, graduation, placement, and licensure results.",
-  },
-  {
-    key: "initial_employment",
-    label: "I understand job placement assistance is offered but employment/salary are not guaranteed.",
-  },
-  {
-    key: "initial_refund_policy",
-    label: "I reviewed the refund policy provided in the catalog.",
-  },
-  {
-    key: "initial_complaint_procedure",
-    label: "I reviewed the complaint procedure and appeal options.",
-  },
-  {
-    key: "initial_authorization",
-    label:
-      "I acknowledge the school's authorization status and that credits may not transfer to other institutions.",
-  },
-];
+const ACK_PATH_PREFIX = "acknowledgements";
+const TODAY_TOKEN = "__today__";
+const formatToday = () => new Date().toISOString().split("T")[0];
+const WIOA_PAYMENT_OPTIONS = ["wioa_grant", "wioa_only"];
+
+type FormValues = Record<string, any>;
+type ValidationErrors = Record<string, string>;
+
+const cloneData = (value?: Record<string, any>): Record<string, any> =>
+  JSON.parse(JSON.stringify(value ?? {}));
+
+const getValueAtPath = (data: FormValues, path: string): any => {
+  if (!path) return undefined;
+  return path.split(".").reduce((acc: any, segment: string) => {
+    if (acc === undefined || acc === null) return undefined;
+    return acc[segment];
+  }, data);
+};
+
+const setValueAtPath = (data: FormValues, path: string, value: any): void => {
+  const segments = path.split(".");
+  let cursor = data;
+  segments.forEach((segment, idx) => {
+    if (idx === segments.length - 1) {
+      cursor[segment] = value;
+    } else {
+      if (typeof cursor[segment] !== "object" || cursor[segment] === null) {
+        cursor[segment] = {};
+      }
+      cursor = cursor[segment];
+    }
+  });
+};
+
+const valueIsPresent = (value: unknown): boolean => {
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+  if (typeof value === "number") {
+    return true;
+  }
+  if (value instanceof Date) {
+    return !Number.isNaN(value.valueOf());
+  }
+  return value !== undefined && value !== null;
+};
+
+const resolveDefaultValue = (field: FieldDefinition): any => {
+  if (field.defaultValue === TODAY_TOKEN) {
+    return formatToday();
+  }
+  return field.defaultValue ?? "";
+};
+
+const initializeFormValues = (
+  schema: AgreementSchema | null,
+  existingFormData?: Record<string, unknown>
+): FormValues => {
+  const initial = cloneData(existingFormData as Record<string, any> | undefined);
+  if (typeof initial[ACK_PATH_PREFIX] !== "object" || initial[ACK_PATH_PREFIX] === null) {
+    initial[ACK_PATH_PREFIX] = {};
+  }
+
+  if (!schema) {
+    return initial;
+  }
+
+  schema.sections.forEach((section) => {
+    section.elements.forEach((element) => {
+      if (element.type === "field_group") {
+        element.fields.forEach((field) => {
+          const currentValue = getValueAtPath(initial, field.name);
+          if (currentValue === undefined) {
+            setValueAtPath(initial, field.name, resolveDefaultValue(field));
+          }
+        });
+      }
+
+      if (element.type === "acknowledgement_list") {
+        element.acknowledgements.forEach((ack) => {
+          if (!initial[ACK_PATH_PREFIX][ack.id]) {
+            initial[ACK_PATH_PREFIX][ack.id] = "";
+          }
+        });
+      }
+    });
+  });
+
+  return initial;
+};
+
+const validateFormValues = (
+  schema: AgreementSchema | null,
+  values: FormValues,
+  paymentSelection: string | undefined
+): ValidationErrors => {
+  if (!schema) {
+    return {};
+  }
+
+  const errors: ValidationErrors = {};
+
+  schema.sections.forEach((section) => {
+    section.elements.forEach((element) => {
+      if (element.type === "field_group") {
+        element.fields.forEach((field) => {
+          if (field.required && !shouldHideField(field, paymentSelection)) {
+            const currentValue = getValueAtPath(values, field.name);
+            if (!valueIsPresent(currentValue)) {
+              errors[field.name] = "This field is required.";
+            }
+          }
+        });
+      }
+
+      if (element.type === "acknowledgement_list") {
+        element.acknowledgements.forEach((ack) => {
+          const ackValue = values?.[ACK_PATH_PREFIX]?.[ack.id];
+          if (ack.required && (!ackValue || !ackValue.trim())) {
+            errors[`${ACK_PATH_PREFIX}.${ack.id}`] = "Initials are required.";
+          }
+        });
+      }
+    });
+  });
+
+  return errors;
+};
+
+const parseCurrency = (value: unknown): number => {
+  if (value === null || value === undefined) return 0;
+  if (typeof value === "number") return value;
+  const sanitized = `${value}`.replace(/[^0-9.-]/g, "");
+  const parsed = parseFloat(sanitized);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const getProgramTotalFromSchema = (schema: AgreementSchema | null): number | null => {
+  if (!schema) return null;
+  for (const section of schema.sections) {
+    for (const element of section.elements) {
+      if (element.type === "table" && element.title?.toLowerCase().includes("program cost")) {
+        for (const row of element.rows) {
+          const label = typeof row[0] === "string" ? row[0].toLowerCase() : null;
+          if (label && label.includes("program total")) {
+            return parseCurrency(row[1]);
+          }
+        }
+      }
+    }
+  }
+  return null;
+};
+
+const shouldHideField = (field: FieldDefinition, paymentSelection: string | undefined) => {
+  if (field.name === "program.wioa_county" || field.name === "program.wioa_advisor_name" || field.name === "program.wioa_advisor_email") {
+    return !WIOA_PAYMENT_OPTIONS.includes(paymentSelection || "");
+  }
+  return false;
+};
+
+const findFieldLabel = (schema: AgreementSchema | null, fieldPath: string): string | null => {
+  if (!schema) {
+    return null;
+  }
+  if (fieldPath.startsWith(`${ACK_PATH_PREFIX}.`)) {
+    const ackId = fieldPath.split(".")[1];
+    for (const section of schema.sections) {
+      for (const element of section.elements) {
+        if (element.type === "acknowledgement_list") {
+          const match = element.acknowledgements.find((ack) => ack.id === ackId);
+          if (match) {
+            return match.label;
+          }
+        }
+      }
+    }
+  }
+  for (const section of schema.sections) {
+    for (const element of section.elements) {
+      if (element.type === "field_group") {
+        const match = element.fields.find((field) => field.name === fieldPath);
+        if (match) {
+          return match.label;
+        }
+      }
+    }
+  }
+  return null;
+};
 
 export default function PublicSign() {
   const { token } = useParams();
@@ -67,6 +231,7 @@ export default function PublicSign() {
 
   const [loading, setLoading] = useState(true);
   const [document, setDocument] = useState<DocumentData | null>(null);
+  const [agreementSchema, setAgreementSchema] = useState<AgreementSchema | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [typedName, setTypedName] = useState("");
   const [signing, setSigning] = useState(false);
@@ -74,17 +239,16 @@ export default function PublicSign() {
   const [signatureError, setSignatureError] = useState("");
   const [activeStep, setActiveStep] = useState(0);
   const [formError, setFormError] = useState<string | null>(null);
-  const [formValues, setFormValues] = useState<EnrollmentFormValues>({
-    phone: "",
-    preferred_start: "",
-    emergency_contact: "",
-    housing_needs: "not_needed",
-    questions: "",
-    acknowledgements: ACKNOWLEDGEMENT_FIELDS.reduce(
-      (acc, field) => ({ ...acc, [field.key]: "" }),
-      {}
-    ),
-  });
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [formValues, setFormValues] = useState<FormValues>({});
+
+  const updateFormValue = useCallback((path: string, value: any) => {
+    setFormValues((prev) => {
+      const draft = cloneData(prev);
+      setValueAtPath(draft, path, value);
+      return draft;
+    });
+  }, []);
 
   const courseLabel = useMemo(() => {
     if (document?.course_label) return document.course_label;
@@ -100,17 +264,8 @@ export default function PublicSign() {
         setLoading(true);
         const response = await axios.get(`${API_BASE_URL}/public/sign/${token}`);
         setDocument(response.data);
+        setAgreementSchema(response.data.agreement_schema || null);
         setTypedName(response.data.signer_name || "");
-        if (response.data.form_data) {
-          setFormValues((prev) => ({
-            ...prev,
-            ...response.data.form_data,
-            acknowledgements: {
-              ...prev.acknowledgements,
-              ...(response.data.form_data.acknowledgements || {}),
-            },
-          }));
-        }
       } catch (err: any) {
         if (err.response?.status === 404) {
           setError("Document not found or link has expired");
@@ -137,33 +292,94 @@ export default function PublicSign() {
     }
   }, [token]);
 
+  useEffect(() => {
+    if (!document) {
+      return;
+    }
+    const schema = document.agreement_schema || agreementSchema;
+    if (!schema) {
+      return;
+    }
+    setFormValues(initializeFormValues(schema, document.form_data as Record<string, unknown>));
+  }, [document, agreementSchema]);
+
+
+  const programTotalAmount = useMemo(() => getProgramTotalFromSchema(agreementSchema), [agreementSchema]);
+  const depositValue = getValueAtPath(formValues, "financial.deposit_amount");
+  const remainingBalanceValue = getValueAtPath(formValues, "financial.remaining_balance");
+  const paymentSelection = useMemo(
+    () => getValueAtPath(formValues, "program.payment_selection"),
+    [formValues]
+  );
+
+  useEffect(() => {
+    if (programTotalAmount === null) {
+      return;
+    }
+    const depositNumber = parseCurrency(depositValue);
+    const computed = Math.max(programTotalAmount - depositNumber, 0);
+    const formatted = computed.toFixed(2);
+
+    if (remainingBalanceValue !== formatted) {
+      setFormValues((prev) => {
+        const next = cloneData(prev);
+        setValueAtPath(next, "financial.remaining_balance", formatted);
+        return next;
+      });
+    }
+  }, [depositValue, remainingBalanceValue, programTotalAmount]);
+
+  useEffect(() => {
+    if (WIOA_PAYMENT_OPTIONS.includes(paymentSelection || "")) {
+      return;
+    }
+    setFormValues((prev) => {
+      const county = getValueAtPath(prev, "program.wioa_county");
+      const advisorName = getValueAtPath(prev, "program.wioa_advisor_name");
+      const advisorEmail = getValueAtPath(prev, "program.wioa_advisor_email");
+      if (!county && !advisorName && !advisorEmail) {
+        return prev;
+      }
+      const next = cloneData(prev);
+      setValueAtPath(next, "program.wioa_county", "");
+      setValueAtPath(next, "program.wioa_advisor_name", "");
+      setValueAtPath(next, "program.wioa_advisor_email", "");
+      return next;
+    });
+  }, [paymentSelection]);
+
   const clearSignature = () => {
     sigPad.current?.clear();
     setSignatureError("");
   };
 
   const handleNextStep = () => {
-    if (activeStep === 1) {
-      if (!formValues.phone.trim()) {
-        setFormError("Please provide a phone number so our team can reach you.");
-        return;
-      }
-      const missingAck = ACKNOWLEDGEMENT_FIELDS.find(
-        (field) => !formValues.acknowledgements[field.key]?.trim()
-      );
-      if (missingAck) {
-        setFormError("Please type your initials for every acknowledgement.");
+    if (activeStep === 0) {
+      const paymentSelection = getValueAtPath(formValues, "program.payment_selection");
+      const errors = validateFormValues(agreementSchema, formValues, paymentSelection);
+      setValidationErrors(errors);
+      if (Object.keys(errors).length) {
+        const firstKey = Object.keys(errors)[0];
+        const label = findFieldLabel(agreementSchema, firstKey);
+        setFormError(
+          label
+            ? `Please complete “${label}” before continuing.`
+            : "Please complete all required fields before continuing."
+        );
         return;
       }
     }
+
     setFormError(null);
     setSignatureError("");
+    setValidationErrors({});
     setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
   const handleBack = () => {
     setFormError(null);
     setSignatureError("");
+    setValidationErrors({});
     setActiveStep((prev) => Math.max(prev - 1, 0));
   };
 
@@ -201,6 +417,224 @@ export default function PublicSign() {
       setSigning(false);
     }
   };
+
+  const renderTextElement = (element: SchemaElement) => {
+    if (element.type !== "text") return null;
+    const baseClass = "text-sm text-slate-700";
+    if (element.style === "heading") {
+      return <p className="text-xl font-semibold text-slate-900">{element.content}</p>;
+    }
+    if (element.style === "subheading") {
+      return <p className="text-lg font-semibold text-slate-800">{element.content}</p>;
+    }
+    return <p className={baseClass}>{element.content}</p>;
+  };
+
+  const renderField = (field: FieldDefinition) => {
+    const paymentSelection = getValueAtPath(formValues, "program.payment_selection");
+    if (shouldHideField(field, paymentSelection)) {
+      return null;
+    }
+    const value = getValueAtPath(formValues, field.name) ?? "";
+    const error = validationErrors[field.name];
+    const commonClasses = "mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-slate-100 disabled:text-slate-500";
+
+    if (field.component === "textarea") {
+      return (
+        <div className={field.width === "full" ? "md:col-span-2" : "md:col-span-1"} key={field.name}>
+          <label className="text-sm font-medium text-slate-700" htmlFor={field.name}>
+            {field.label}
+          </label>
+          <textarea
+            id={field.name}
+            name={field.name}
+            value={value}
+            onChange={(e) => updateFormValue(field.name, e.target.value)}
+            className={commonClasses}
+            rows={4}
+            placeholder={field.placeholder}
+            disabled={field.readOnly}
+          />
+          {field.helperText && <p className="text-xs text-slate-500 mt-1">{field.helperText}</p>}
+          {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+        </div>
+      );
+    }
+
+    if (field.component === "select") {
+      return (
+        <div className={field.width === "full" ? "md:col-span-2" : "md:col-span-1"} key={field.name}>
+          <label className="text-sm font-medium text-slate-700" htmlFor={field.name}>
+            {field.label}
+          </label>
+          <select
+            id={field.name}
+            name={field.name}
+            value={value}
+            onChange={(e) => updateFormValue(field.name, e.target.value)}
+            className={commonClasses}
+            disabled={field.readOnly}
+          >
+            <option value="">Select</option>
+            {field.options?.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {field.helperText && <p className="text-xs text-slate-500 mt-1">{field.helperText}</p>}
+          {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+        </div>
+      );
+    }
+
+    const inputType =
+      field.component === "email"
+        ? "email"
+        : field.component === "tel"
+        ? "tel"
+        : field.component === "date"
+        ? "date"
+        : "text";
+
+    return (
+      <div className={field.width === "full" ? "md:col-span-2" : "md:col-span-1"} key={field.name}>
+        <label className="text-sm font-medium text-slate-700" htmlFor={field.name}>
+          {field.label}
+        </label>
+        <input
+          id={field.name}
+          name={field.name}
+          type={inputType}
+          value={value}
+          onChange={(e) => {
+            if (field.component === "currency") {
+              const sanitized = e.target.value.replace(/[^0-9.]/g, "");
+              updateFormValue(field.name, sanitized);
+              return;
+            }
+            updateFormValue(field.name, e.target.value);
+          }}
+          className={commonClasses}
+          placeholder={field.placeholder}
+          disabled={field.readOnly}
+          inputMode={field.component === "currency" ? "decimal" : undefined}
+          maxLength={field.maxLength}
+        />
+        {field.helperText && <p className="text-xs text-slate-500 mt-1">{field.helperText}</p>}
+        {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+      </div>
+    );
+  };
+
+  const renderFieldGroup = (element: FieldGroupElement) => (
+    <div className="space-y-3">
+      {element.title && <h4 className="text-lg font-semibold text-slate-900">{element.title}</h4>}
+      {element.description && <p className="text-sm text-slate-600">{element.description}</p>}
+      <div
+        className={`grid gap-4 ${
+          element.layout === "two-column" ? "md:grid-cols-2" : "md:grid-cols-1"
+        }`}
+      >
+        {element.fields.map((field) => renderField(field))}
+      </div>
+    </div>
+  );
+
+  const renderTable = (element: TableElement) => (
+    <div className="overflow-hidden rounded-xl border border-slate-200">
+      {element.title && <div className="bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700">{element.title}</div>}
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-slate-100 text-left text-slate-600">
+            {element.headers.map((header) => (
+              <th key={header} className="px-4 py-2 font-medium">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {element.rows.map((row, idx) => (
+            <tr key={`${element.title}-${idx}`} className="border-t border-slate-100">
+              {row.map((cell, cellIdx) => (
+                <td key={`${element.title}-${idx}-${cellIdx}`} className="px-4 py-2 text-slate-700">
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderList = (element: ListElement) => {
+    const ListTag = (element.ordered ? "ol" : "ul") as "ol" | "ul";
+    const listClass = element.ordered ? "list-decimal" : "list-disc";
+    return (
+      <ListTag className={`${listClass} pl-5 text-sm text-slate-700 space-y-2`}>
+        {element.items.map((item, idx) => (
+          <li key={`list-item-${idx}`}>{item}</li>
+        ))}
+      </ListTag>
+    );
+  };
+
+  const renderAcknowledgements = (element: AcknowledgementListElement) => (
+    <div className="space-y-3">
+      {element.acknowledgements.map((ack) => {
+        const path = `${ACK_PATH_PREFIX}.${ack.id}`;
+        const value = formValues?.[ACK_PATH_PREFIX]?.[ack.id] ?? "";
+        const error = validationErrors[path];
+        return (
+          <div key={ack.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+            <div className="flex items-start gap-4">
+              <div className="flex flex-col items-center">
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => updateFormValue(path, e.target.value.toUpperCase())}
+                  className="w-20 text-center uppercase border border-slate-300 rounded-lg px-3 py-2 focus:ring-primary-500 focus:border-primary-500 tracking-wide"
+                  placeholder="ABC"
+                  maxLength={ack.maxLength ?? 4}
+                />
+                <span className="text-xs text-slate-500 mt-1">Initials</span>
+              </div>
+              <p className="text-sm text-slate-700 flex-1">{ack.label}</p>
+            </div>
+            {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const renderSection = (section: AgreementSection) => (
+    <div key={section.id} className="rounded-2xl border border-slate-200 p-5 space-y-4">
+      <div>
+        <h3 className="text-lg font-semibold text-slate-900">{section.title}</h3>
+        {section.description && <p className="text-sm text-slate-600 mt-1">{section.description}</p>}
+      </div>
+      <div className="space-y-4">
+        {section.elements.map((element, idx) => {
+          if (element.type === "field_group") {
+            return <div key={`${section.id}-fields-${idx}`}>{renderFieldGroup(element as FieldGroupElement)}</div>;
+          }
+          if (element.type === "table") {
+            return <div key={`${section.id}-table-${idx}`}>{renderTable(element as TableElement)}</div>;
+          }
+          if (element.type === "list") {
+            return <div key={`${section.id}-list-${idx}`}>{renderList(element as ListElement)}</div>;
+          }
+          if (element.type === "acknowledgement_list") {
+            return <div key={`${section.id}-ack-${idx}`}>{renderAcknowledgements(element as AcknowledgementListElement)}</div>;
+          }
+          return <div key={`${section.id}-text-${idx}`}>{renderTextElement(element)}</div>;
+        })}
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -245,16 +679,15 @@ export default function PublicSign() {
               Your signature has been recorded and the document has been completed.
             </p>
             {document?.template_name && (
-              <p className="mt-4 text-sm text-gray-500">
-                Document: {document.template_name}
-              </p>
+              <p className="mt-4 text-sm text-gray-500">Document: {document.template_name}</p>
             )}
             <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
               <p className="text-sm text-blue-800">
                 <strong>What's next?</strong>
               </p>
               <p className="text-sm text-blue-700 mt-1">
-                You will receive a copy of the signed document via email. A school representative will contact you regarding next steps.
+                You will receive a copy of the signed document via email. A school representative will contact you
+                regarding next steps.
               </p>
             </div>
           </div>
@@ -270,9 +703,7 @@ export default function PublicSign() {
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-sm text-slate-500 uppercase tracking-wide">{courseLabel}</p>
-              <h1 className="text-2xl font-semibold text-slate-900">
-                {document?.template_name || "Enrollment Agreement"}
-              </h1>
+              <h1 className="text-2xl font-semibold text-slate-900">{document?.template_name || "Enrollment Agreement"}</h1>
               {document?.template_description && (
                 <p className="text-sm text-slate-500 mt-1">{document.template_description}</p>
               )}
@@ -282,9 +713,7 @@ export default function PublicSign() {
                 Awaiting signature
               </span>
               {document?.expires_at && (
-                <span className="mt-2">
-                  Link expires {new Date(document.expires_at).toLocaleDateString()}
-                </span>
+                <span className="mt-2">Link expires {new Date(document.expires_at).toLocaleDateString()}</span>
               )}
             </div>
           </div>
@@ -307,206 +736,48 @@ export default function PublicSign() {
                 <div key={step.id} className="flex items-center gap-2 text-sm font-medium">
                   <div
                     className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                      idx <= activeStep
-                        ? "bg-primary-600 text-white"
-                        : "bg-slate-100 text-slate-500"
+                      idx <= activeStep ? "bg-primary-600 text-white" : "bg-slate-100 text-slate-500"
                     }`}
                   >
                     {idx + 1}
                   </div>
-                  <span className={idx === activeStep ? "text-primary-700" : "text-slate-500"}>
-                    {step.title}
-                  </span>
-                  {idx < steps.length - 1 && (
-                    <div className="hidden md:block w-12 h-px bg-slate-200 mx-1" />
-                  )}
+                  <span className={idx === activeStep ? "text-primary-700" : "text-slate-500"}>{step.title}</span>
+                  {idx < steps.length - 1 && <div className="hidden md:block w-12 h-px bg-slate-200 mx-1" />}
                 </div>
               ))}
             </div>
-            <p className="text-xs text-slate-500">
-              Step {activeStep + 1} of {steps.length}
-            </p>
+            <p className="text-xs text-slate-500">Step {activeStep + 1} of {steps.length}</p>
           </div>
 
           <div className="p-6 space-y-6">
             {activeStep === 0 && (
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-slate-900">Review the agreement</h2>
+                <h2 className="text-xl font-semibold text-slate-900">Review and complete the agreement</h2>
                 <p className="text-sm text-slate-600">
-                  Please take a moment to review the summary below. You can download the full PDF
-                  in your welcome email or request a copy from the admissions team.
+                  All content below is rendered from the digital enrollment agreement schema. Provide any missing
+                  details, confirm tuition information, and initial each acknowledgement.
                 </p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs font-semibold text-slate-500 uppercase">Program</p>
-                    <p className="text-lg text-slate-900 mt-1">{courseLabel}</p>
-                    <p className="text-xs text-slate-500 mt-2">
-                      Confirm this is the track you intend to enroll in.
-                    </p>
+                {formError && (
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{formError}</p>
+                )}
+                {agreementSchema ? (
+                  <div className="space-y-4">
+                    {agreementSchema.sections.map((section) => renderSection(section))}
                   </div>
-                  <div className="rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs font-semibold text-slate-500 uppercase">Contact</p>
-                    <p className="text-sm text-slate-900 mt-1">
-                      admissions@aada.edu • (404) 555-1234
-                    </p>
-                    <p className="text-xs text-slate-500 mt-2">
-                      Reach out if anything looks incorrect or you have questions.
-                    </p>
-                  </div>
-                </div>
-                <ul className="list-disc pl-6 text-sm text-slate-600 space-y-2">
-                  <li>Review tuition, fees, and payment schedule outlined in the agreement.</li>
-                  <li>Confirm that your contact information is accurate.</li>
-                  <li>Plan for the listed clinical dates and required equipment.</li>
-                </ul>
+                ) : (
+                  <p className="text-sm text-slate-600">
+                    Agreement schema is unavailable. Please contact the admissions team.
+                  </p>
+                )}
               </div>
             )}
 
             {activeStep === 1 && (
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-slate-900">Tell us about you</h2>
-                <p className="text-sm text-slate-600">
-                  We use this information to finalize your enrollment and connect you with our
-                  student success team.
-                </p>
-                {formError && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
-                    {formError}
-                  </p>
-                )}
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-slate-700" htmlFor="student-phone">
-                      Phone number
-                    </label>
-                  <input
-                    id="student-phone"
-                    name="student-phone"
-                    type="tel"
-                    value={formValues.phone}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({ ...prev, phone: e.target.value }))
-                    }
-                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="(555) 123-4567"
-                  />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700" htmlFor="student-start">
-                      Preferred start date
-                    </label>
-                  <input
-                    id="student-start"
-                    name="student-start"
-                    type="date"
-                    value={formValues.preferred_start}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({ ...prev, preferred_start: e.target.value }))
-                    }
-                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                  />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700" htmlFor="student-emergency">
-                      Emergency contact
-                    </label>
-                  <input
-                    id="student-emergency"
-                    name="student-emergency"
-                    type="text"
-                    value={formValues.emergency_contact}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({ ...prev, emergency_contact: e.target.value }))
-                    }
-                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                    placeholder="Name & phone"
-                  />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700" htmlFor="student-housing">
-                      Housing needs
-                    </label>
-                  <select
-                    id="student-housing"
-                    name="student-housing"
-                    value={formValues.housing_needs}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({ ...prev, housing_needs: e.target.value }))
-                    }
-                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                  >
-                      <option value="not_needed">No housing support needed</option>
-                      <option value="interested">I’d like housing resources</option>
-                      <option value="undecided">Undecided</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label
-                      className="text-sm font-medium text-slate-700"
-                      htmlFor="student-questions"
-                    >
-                      Questions or accessibility requests
-                    </label>
-                  <textarea
-                    id="student-questions"
-                    name="student-questions"
-                    value={formValues.questions}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({ ...prev, questions: e.target.value }))
-                    }
-                    className="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2"
-                    rows={3}
-                    placeholder="Let us know if there’s anything we can prepare before class begins."
-                  />
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-slate-900">Acknowledgements</h3>
-                  <p className="text-sm text-slate-600">
-                    Please type your initials in each box to confirm you have read and understand the statements below.
-                    These acknowledgements will appear on your final enrollment agreement.
-                  </p>
-                  <div className="space-y-4">
-                    {ACKNOWLEDGEMENT_FIELDS.map((field) => (
-                      <div
-                        key={field.key}
-                        className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3"
-                      >
-                        <p className="text-sm text-slate-700">{field.label}</p>
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="text"
-                            maxLength={4}
-                            value={formValues.acknowledgements[field.key] || ""}
-                            onChange={(e) =>
-                              setFormValues((prev) => ({
-                                ...prev,
-                                acknowledgements: {
-                                  ...prev.acknowledgements,
-                                  [field.key]: e.target.value.toUpperCase(),
-                                },
-                              }))
-                            }
-                            className="w-24 text-center uppercase border border-slate-300 rounded-lg px-3 py-2 focus:ring-primary-500 focus:border-primary-500 tracking-wide"
-                            placeholder="ABC"
-                          />
-                          <span className="text-xs text-slate-500">Initials</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {activeStep === 2 && (
-              <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-slate-900">Sign your agreement</h2>
                 <p className="text-sm text-slate-600">
-                  Please type your full legal name and draw your signature. Both will appear on the
-                  final enrollment agreement.
+                  Please type your full legal name and draw your signature. Both will appear on the final enrollment
+                  agreement.
                 </p>
 
                 <div className="space-y-2">
@@ -524,9 +795,7 @@ export default function PublicSign() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Draw signature
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Draw signature</label>
                   <div className="border-2 border-dashed border-slate-300 rounded-xl bg-white">
                     <SignatureCanvas
                       ref={sigPad}
@@ -546,15 +815,13 @@ export default function PublicSign() {
                       Clear signature
                     </button>
                   </div>
-                  {signatureError && (
-                    <p className="text-xs text-red-600 mt-2">{signatureError}</p>
-                  )}
+                  {signatureError && <p className="text-xs text-red-600 mt-2">{signatureError}</p>}
                 </div>
 
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600">
-                  <strong className="text-slate-800">Electronic Signature Consent:</strong> By
-                  submitting this form you agree that your electronic signature is the legal
-                  equivalent of your handwritten signature on this agreement.
+                  <strong className="text-slate-800">Electronic Signature Consent:</strong> By submitting this form you
+                  agree that your electronic signature is the legal equivalent of your handwritten signature on this
+                  agreement.
                 </div>
               </div>
             )}
@@ -575,7 +842,7 @@ export default function PublicSign() {
                   onClick={handleNextStep}
                   className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700"
                 >
-                  Next step
+                  Next
                 </button>
               ) : (
                 <button
@@ -592,8 +859,7 @@ export default function PublicSign() {
         </section>
 
         <footer className="text-center text-xs text-slate-500">
-          This secure workflow meets ESIGN and HIPAA requirements. Need help? Email
-          admissions@aada.edu.
+          This secure workflow meets ESIGN and HIPAA requirements. Need help? Email admissions@aada.edu.
         </footer>
       </div>
     </div>

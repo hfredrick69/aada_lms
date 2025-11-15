@@ -133,6 +133,14 @@ createdb aada_lms
 DATABASE_URL=postgresql://user:password@localhost:5432/aada_lms
 ```
 
+### Registration Email Flow
+
+- `FRONTEND_BASE_URL` controls the verification link host (default `http://localhost:5174`).
+- `EMAIL_PROVIDER` can be `console` (logs links locally), `sendgrid`, or `acs` (Azure Communication Services Email).
+- For SendGrid, configure `SENDGRID_API_KEY` and `SENDGRID_FROM_EMAIL`.
+- For Azure Communication Services, set `ACS_CONNECTION_STRING` and `ACS_SENDER_EMAIL`, and install `azure-communication-email` in your backend environment.
+- Adjust token expiry with `REGISTRATION_EMAIL_EXPIRE_MINUTES` (email link) and `REGISTRATION_COMPLETION_EXPIRE_MINUTES` (account completion).
+
 ## Project Structure
 
 ```

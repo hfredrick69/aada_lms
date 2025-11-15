@@ -16,6 +16,16 @@ def _get_current_user():
     return get_current_user
 
 
+def _get_role_names(user: User) -> List[str]:
+    roles = getattr(user, "roles", []) or []
+    if not roles:
+        return []
+    first = roles[0]
+    if isinstance(first, str):
+        return roles
+    return [r.name for r in roles]
+
+
 def require_roles(allowed_roles: List[str]):
     """
     Dependency factory to require specific roles.
@@ -30,7 +40,7 @@ def require_roles(allowed_roles: List[str]):
         Dependency function that checks user roles
     """
     async def check_roles(current_user: User = Depends(_get_current_user())):
-        user_roles = [r.name for r in current_user.roles]
+        user_roles = _get_role_names(current_user)
 
         if not any(role in user_roles for role in allowed_roles):
             raise HTTPException(
@@ -49,7 +59,7 @@ def require_admin(current_user: User = Depends(_get_current_user())):
     Usage:
         @router.get("/admin-endpoint", dependencies=[Depends(require_admin)])
     """
-    user_roles = [r.name for r in current_user.roles]
+    user_roles = _get_role_names(current_user)
 
     if "admin" not in user_roles:
         raise HTTPException(
@@ -66,7 +76,7 @@ def require_staff(current_user: User = Depends(_get_current_user())):
     Usage:
         @router.get("/staff-endpoint", dependencies=[Depends(require_staff)])
     """
-    user_roles = [r.name for r in current_user.roles]
+    user_roles = _get_role_names(current_user)
     staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
 
     if not any(role in staff_roles for role in user_roles):
@@ -98,7 +108,7 @@ def filter_by_user_access(
     Returns:
         Filtered query
     """
-    user_roles = [r.name for r in current_user.roles]
+    user_roles = _get_role_names(current_user)
     staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
 
     # Staff can see all data
@@ -128,7 +138,7 @@ def can_access_user_data(resource_user_id: str, current_user: User) -> bool:
     Raises:
         HTTPException if access is denied
     """
-    user_roles = [r.name for r in current_user.roles]
+    user_roles = _get_role_names(current_user)
     staff_roles = ["admin", "staff", "registrar", "instructor", "finance"]
 
     # User accessing their own data

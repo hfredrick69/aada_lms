@@ -1,7 +1,7 @@
 """add crm schema and tables for lead management
 
 Revision ID: 0007_crm_schema
-Revises: 0006_enable_encryption_infrastructure
+Revises: 0006_encrypt
 Create Date: 2025-11-06 00:00:00.000000
 """
 # flake8: noqa: E128, E501
@@ -12,7 +12,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = "0007_crm_schema"
-down_revision = "0006_enable_encryption_infrastructure"
+down_revision = "0006_encrypt"
 branch_labels = None
 depends_on = None
 

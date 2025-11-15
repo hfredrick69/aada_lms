@@ -1,6 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 
 describe('Student Payments Page', () => {
   it('renders payment history', () => {

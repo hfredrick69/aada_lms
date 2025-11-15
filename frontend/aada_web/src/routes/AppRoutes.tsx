@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { LoginPage } from '@/features/auth/LoginPage';
-import { DashboardPage } from '@/features/dashboard/DashboardPage';
+import AppLayout from '@/components/layout/AppLayout';
+import LoginPage from '@/features/auth/LoginPage';
+import DashboardPage from '@/features/dashboard/DashboardPage';
 import { ModulesPage } from '@/features/modules/ModulesPage';
 import { ModuleDetailPage } from '@/features/modules/ModuleDetailPage';
 import { PaymentsPage } from '@/features/payments/PaymentsPage';

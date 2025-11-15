@@ -43,6 +43,7 @@ class Settings(BaseModel):
 
     # Backend
     BACKEND_BASE_URL: str = os.getenv("BACKEND_BASE_URL", "http://localhost:8000")
+    FRONTEND_BASE_URL: str = os.getenv("FRONTEND_BASE_URL", "http://localhost:5174")
 
     # CORS - comma-separated list of allowed origins
     ALLOWED_ORIGINS: str = os.getenv(
@@ -51,6 +52,15 @@ class Settings(BaseModel):
         "http://localhost:5174,http://127.0.0.1:5174,"
         "https://localhost:5173,https://localhost:5174"
     )
+
+    # Email / registration
+    EMAIL_PROVIDER: str = os.getenv("EMAIL_PROVIDER", "console")
+    SENDGRID_API_KEY: str | None = os.getenv("SENDGRID_API_KEY")
+    SENDGRID_FROM_EMAIL: str = os.getenv("SENDGRID_FROM_EMAIL", "no-reply@aada.edu")
+    ACS_CONNECTION_STRING: str | None = os.getenv("ACS_CONNECTION_STRING")
+    ACS_SENDER_EMAIL: str = os.getenv("ACS_SENDER_EMAIL", "no-reply@aada.edu")
+    REGISTRATION_EMAIL_EXPIRE_MINUTES: int = int(os.getenv("REGISTRATION_EMAIL_EXPIRE_MINUTES", "30"))
+    REGISTRATION_COMPLETION_EXPIRE_MINUTES: int = int(os.getenv("REGISTRATION_COMPLETION_EXPIRE_MINUTES", "15"))
 
 
 settings = Settings()

@@ -29,7 +29,7 @@ def test_transcript_generation_flow():
 
     client = TestClient(app)
     response = client.post(
-        "/transcripts",
+        "/api/transcripts",
         json={
             "user_id": str(seed["student"].id),
             "program_id": str(seed["program"].id),
@@ -44,11 +44,11 @@ def test_transcript_generation_flow():
     pdf_path = Path(transcript["pdf_url"])
     assert pdf_path.exists(), "Transcript PDF should exist on disk"
 
-    detail = client.get(f"/transcripts/{transcript['id']}")
+    detail = client.get(f"/api/transcripts/{transcript['id']}")
     assert detail.status_code == 200
     assert detail.json()["modules"][0]["module_code"].startswith("MOD-")
 
-    pdf_download = client.get(f"/transcripts/{transcript['id']}/pdf")
+    pdf_download = client.get(f"/api/transcripts/{transcript['id']}/pdf")
     assert pdf_download.status_code == 200
     assert pdf_download.headers["content-type"] == "application/pdf"
 

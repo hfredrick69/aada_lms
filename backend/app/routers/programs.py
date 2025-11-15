@@ -83,7 +83,7 @@ def create_program(
     if existing:
         raise HTTPException(status_code=400, detail="Program code already exists")
 
-    program = Program(**program_data.dict())
+    program = Program(**program_data.model_dump())
     db.add(program)
     db.commit()
     db.refresh(program)
@@ -111,7 +111,7 @@ def update_program(
             raise HTTPException(status_code=400, detail="Program code already exists")
 
     # Update fields
-    for field, value in program_data.dict(exclude_unset=True).items():
+    for field, value in program_data.model_dump(exclude_unset=True).items():
         setattr(program, field, value)
 
     db.commit()
@@ -186,7 +186,7 @@ def create_module(
     if existing:
         raise HTTPException(status_code=400, detail="Module code already exists in this program")
 
-    module = Module(program_id=program_id, **module_data.dict())
+    module = Module(program_id=program_id, **module_data.model_dump())
     db.add(module)
     db.commit()
     db.refresh(module)
@@ -221,7 +221,7 @@ def update_module(
             raise HTTPException(status_code=400, detail="Module code already exists in this program")
 
     # Update fields
-    for field, value in module_data.dict(exclude_unset=True).items():
+    for field, value in module_data.model_dump(exclude_unset=True).items():
         setattr(module, field, value)
 
     db.commit()

@@ -9,7 +9,8 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, R
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict, Any
+import contextlib
 import uuid
 from datetime import datetime, timezone, timedelta
 import json
@@ -17,7 +18,7 @@ import shutil
 
 from app.db.session import get_db
 from app.db.models.user import User
-from app.db.models.crm.lead import Lead
+from app.db.models.crm.lead import Lead, LeadSource
 from app.db.models.document import (
     DocumentTemplate,
     SignedDocument,
@@ -38,10 +39,12 @@ from app.schemas.document import (
     CounterSignRequest,
 )
 from app.services.pdf_service import PDFSignatureService
+from app.services.enrollment_pdf import SchemaDrivenPDFService
 from app.core.file_validation import validate_pdf, validate_file
 from app.utils.encryption import decrypt_value
 from app.core.rbac import require_admin, require_roles
 from app.core.config import settings
+from app.domain.enrollment.schema import get_enrollment_agreement_schema
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -62,6 +65,7 @@ ENROLLMENT_COURSES = {
 ENROLLMENT_RETENTION_YEARS = 5
 admin_or_registrar = require_roles(["admin", "registrar"])
 STAFF_ROLES = {"admin", "staff", "registrar", "instructor", "finance"}
+AD_HOC_LEAD_SOURCE = "Digital Enrollment"
 ACKNOWLEDGEMENT_POSITIONS = [
     ("initial_agreement_catalog", (420, 530)),
     ("initial_school_outcomes", (420, 485)),
@@ -135,8 +139,6 @@ def _generate_signed_pdf(
 ) -> bool:
     """Generate/refresh the final signed PDF with all collected signatures."""
     template_path = _resolve_document_file(template.file_path)
-    if not template_path or not template_path.exists():
-        return False
 
     all_signatures = (
         db.query(DocumentSignature)
@@ -148,49 +150,70 @@ def _generate_signed_pdf(
     if not all_signatures:
         return False
 
-    # Arrange signatures in two columns to avoid overlap
-    signature_list: List[Tuple[str, str, int, int]] = []
-    base_x = 80
-    base_y = 120
-    column_width = 250
-    row_height = 90
-    signatures_per_row = 2
-
-    for index, sig in enumerate(all_signatures):
-        row = index // signatures_per_row
-        column = index % signatures_per_row
-        x_pos = base_x + column * column_width
-        y_pos = base_y + row * row_height
-        signature_list.append((sig.signature_data, sig.signature_type, x_pos, y_pos))
-
-    acknowledgements = []
     form_data = document.form_data if isinstance(document.form_data, dict) else {}
-    ack_values = form_data.get("acknowledgements") if isinstance(form_data, dict) else None
-    if isinstance(ack_values, dict):
-        for key, (ack_x, ack_y) in ACKNOWLEDGEMENT_POSITIONS:
-            value = ack_values.get(key)
-            if isinstance(value, str) and value.strip():
-                initials = value.strip().upper()[:4]
-                acknowledgements.append((initials, ack_x, ack_y))
-
     signed_filename = f"{document.id}_signed.pdf"
     signed_path = SIGNED_DIR / signed_filename
 
-    metadata = {
-        "title": template.name,
-        "author": "AADA LMS",
-        "subject": template.name,
-        "document_id": str(document.id),
-        "signed_date": datetime.now(timezone.utc).isoformat(),
-    }
+    schema = None
+    schema_loaded = False
+    try:
+        schema = get_enrollment_agreement_schema()
+        schema_loaded = True
+    except Exception:  # pragma: no cover - schema file missing or invalid
+        schema_loaded = False
 
-    success = PDFSignatureService.overlay_signatures(
-        template_pdf_path=template_path,
-        output_pdf_path=signed_path,
-        signatures=signature_list,
-        metadata=metadata,
-        acknowledgements=acknowledgements,
-    )
+    use_schema_pdf = schema_loaded and template.name.lower().startswith("enrollment agreement")
+    if use_schema_pdf:
+        schema_service = SchemaDrivenPDFService(schema)
+        success = schema_service.generate_pdf(
+            output_pdf_path=signed_path,
+            document=document,
+            form_data=form_data,
+            signatures=all_signatures,
+        )
+    else:
+        if not template_path or not template_path.exists():
+            return False
+
+        # Arrange signatures in two columns to avoid overlap
+        signature_list: List[Tuple[str, str, int, int]] = []
+        base_x = 80
+        base_y = 120
+        column_width = 250
+        row_height = 90
+        signatures_per_row = 2
+
+        for index, sig in enumerate(all_signatures):
+            row = index // signatures_per_row
+            column = index % signatures_per_row
+            x_pos = base_x + column * column_width
+            y_pos = base_y + row * row_height
+            signature_list.append((sig.signature_data, sig.signature_type, x_pos, y_pos))
+
+        acknowledgements = []
+        ack_values = form_data.get("acknowledgements") if isinstance(form_data, dict) else None
+        if isinstance(ack_values, dict):
+            for key, (ack_x, ack_y) in ACKNOWLEDGEMENT_POSITIONS:
+                value = ack_values.get(key)
+                if isinstance(value, str) and value.strip():
+                    initials = value.strip().upper()[:4]
+                    acknowledgements.append((initials, ack_x, ack_y))
+
+        metadata = {
+            "title": template.name,
+            "author": "AADA LMS",
+            "subject": template.name,
+            "document_id": str(document.id),
+            "signed_date": datetime.now(timezone.utc).isoformat(),
+        }
+
+        success = PDFSignatureService.overlay_signatures(
+            template_pdf_path=template_path,
+            output_pdf_path=signed_path,
+            signatures=signature_list,
+            metadata=metadata,
+            acknowledgements=acknowledgements,
+        )
 
     if not success:
         return False
@@ -273,7 +296,8 @@ def _derive_signer_fields(
     """Determine signer display name and email, falling back to decrypted PHI."""
     decrypted_first = decrypt_value(db, user.first_name) if user.first_name else None
     decrypted_last = decrypt_value(db, user.last_name) if user.last_name else None
-    decrypted_email = decrypt_value(db, user.email) if user.email else None
+    decrypted_email = _normalize_email(_safe_decrypt_email(db, user.email))
+    provided_email = _normalize_email(provided_email)
 
     default_name = " ".join(
         part for part in [decrypted_first, decrypted_last] if part
@@ -384,6 +408,8 @@ def send_enrollment_agreement(
         recipient_lead = db.query(Lead).filter(Lead.id == payload.lead_id).first()
         if not recipient_lead:
             raise HTTPException(status_code=404, detail="Lead not found")
+    elif payload.signer_email:
+        recipient_lead = _create_ad_hoc_lead(db, payload.signer_name, payload.signer_email)
     else:
         raise HTTPException(status_code=400, detail="Recipient is required")
 
@@ -397,7 +423,7 @@ def send_enrollment_agreement(
             payload.signer_name,
             payload.signer_email,
         )
-    else:
+    elif recipient_lead:
         default_name = " ".join(
             part
             for part in [
@@ -411,6 +437,11 @@ def send_enrollment_agreement(
 
         if not signer_email:
             raise HTTPException(status_code=400, detail="Lead email is required to send agreements.")
+    else:
+        signer_email = payload.signer_email
+        if not signer_email:
+            raise HTTPException(status_code=400, detail="Signer email is required to send agreements.")
+        signer_name = payload.signer_name or signer_email
 
     signing_token = TokenService.generate_signing_token(48)
     token_expires_at = datetime.now(timezone.utc) + timedelta(days=14)
@@ -420,6 +451,43 @@ def send_enrollment_agreement(
 
     form_payload = dict(payload.form_data or {})
     form_payload.setdefault("course_label", ENROLLMENT_COURSES[payload.course_type])
+
+    student_defaults: Dict[str, Optional[str]] = {}
+
+    if recipient_user:
+        decrypted_first = decrypt_value(db, recipient_user.first_name) if recipient_user.first_name else None
+        decrypted_last = decrypt_value(db, recipient_user.last_name) if recipient_user.last_name else None
+        decrypted_email = _normalize_email(_safe_decrypt_email(db, recipient_user.email))
+        student_defaults.update(
+            {
+                "first_name": decrypted_first,
+                "last_name": decrypted_last,
+                "email": decrypted_email,
+            }
+        )
+    elif recipient_lead:
+        student_defaults.update(
+            {
+                "first_name": getattr(recipient_lead, "first_name", None),
+                "last_name": getattr(recipient_lead, "last_name", None),
+                "email": getattr(recipient_lead, "email", None),
+                "phone": getattr(recipient_lead, "phone", None),
+                "street_address": getattr(recipient_lead, "address_line1", None),
+                "city": getattr(recipient_lead, "city", None),
+                "state": getattr(recipient_lead, "state", None),
+                "postal_code": getattr(recipient_lead, "zip_code", None),
+            }
+        )
+
+    if signer_name and not student_defaults.get("first_name"):
+        parts = signer_name.split(" ", 1)
+        student_defaults["first_name"] = parts[0]
+        if len(parts) > 1:
+            student_defaults.setdefault("last_name", parts[1])
+    if signer_email:
+        student_defaults.setdefault("email", signer_email)
+
+    _apply_student_defaults(form_payload, student_defaults)
 
     document = SignedDocument(
         template_id=template.id,
@@ -455,7 +523,7 @@ def send_enrollment_agreement(
             {
                 "course_type": payload.course_type,
                 "course_label": ENROLLMENT_COURSES[payload.course_type],
-                "recipient_type": "student" if recipient_user else "lead",
+                "recipient_type": "student" if recipient_user else ("lead" if recipient_lead else "ad_hoc"),
             }
         ),
         ip_address=request.client.host if request.client else None,
@@ -750,6 +818,7 @@ def counter_sign_document(
         ip_address=request.client.host if request.client else "unknown",
         user_agent=request.headers.get("user-agent") or "unknown",
         typed_name=payload.typed_name,
+        signer_email=_normalize_email(_safe_decrypt_email(db, current_user.email)),
     )
     db.add(signature)
 
@@ -1061,3 +1130,90 @@ def get_document_audit_trail(
         "logs": logs,
         "total": len(logs)
     }
+
+
+def _get_or_create_ad_hoc_lead_source(db: Session) -> LeadSource:
+    """Ensure there is a lead source to attribute auto-created prospects."""
+    source = (
+        db.query(LeadSource)
+        .filter(LeadSource.name == AD_HOC_LEAD_SOURCE)
+        .first()
+    )
+    if source:
+        return source
+
+    source = LeadSource(
+        name=AD_HOC_LEAD_SOURCE,
+        description="Auto-created for enrollment agreements sent to ad-hoc contacts.",
+    )
+    db.add(source)
+    db.commit()
+    db.refresh(source)
+    return source
+
+
+def _create_ad_hoc_lead(db: Session, signer_name: Optional[str], signer_email: str) -> Lead:
+    """Create a lightweight lead so ad-hoc agreements comply with FK constraints."""
+    display_name = signer_name or signer_email
+    parts = display_name.strip().split(" ", 1)
+    first_name = parts[0] if parts and parts[0] else signer_email.split("@")[0]
+    last_name = parts[1] if len(parts) > 1 else "Prospect"
+    source = _get_or_create_ad_hoc_lead_source(db)
+
+    lead = Lead(
+        first_name=first_name[:100],
+        last_name=last_name[:100],
+        email=signer_email,
+        lead_source_id=source.id,
+        lead_status="new",
+        notes="Generated automatically for enrollment agreement delivery.",
+    )
+    db.add(lead)
+    db.commit()
+    db.refresh(lead)
+    return lead
+
+
+def _merge_form_data(base: Dict[str, Any], updates: Dict[str, Any]) -> Dict[str, Any]:
+    """Recursively merge nested form payloads."""
+    for key, value in updates.items():
+        if isinstance(value, dict) and isinstance(base.get(key), dict):
+            base[key] = _merge_form_data(base.get(key, {}), value)
+        else:
+            base[key] = value
+    return base
+
+
+def _safe_decrypt_email(db: Session, encrypted_value: Optional[str]) -> Optional[str]:
+    """Best-effort decrypt helper that falls back to the original value."""
+    if not encrypted_value:
+        return None
+    try:
+        return decrypt_value(db, encrypted_value)
+    except Exception:
+        with contextlib.suppress(Exception):
+            db.rollback()
+        return encrypted_value
+
+
+def _normalize_email(value: Optional[str]) -> Optional[str]:
+    if not value:
+        return None
+    value = value.strip()
+    if not value:
+        return None
+    return value if "@" in value else None
+
+
+def _apply_student_defaults(form_payload: Dict[str, Any], defaults: Dict[str, Optional[str]]) -> None:
+    """Merge default student data without overwriting what was already provided."""
+    if not defaults:
+        return
+    student_section = form_payload.get("student") or {}
+    updated = False
+    for key, value in defaults.items():
+        if value and not student_section.get(key):
+            student_section[key] = value
+            updated = True
+    if updated:
+        form_payload["student"] = student_section

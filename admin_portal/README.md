@@ -35,11 +35,11 @@ Configured in `admin_portal/.env` (used at build-time by Vite):
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| `VITE_API_BASE_URL` | Internal URL for backend (Docker network). | `http://backend:8000/api` |
+| `VITE_API_BASE_URL` | Internal URL for backend (Docker network). | `http://backend:8000` |
 | `VITE_APP_NAME` | Display name used inside the UI. | `AADA Admin Portal` |
 | `VITE_JWT_SECRET` | Must match FastAPI `SECRET_KEY` for token validation helpers. | `supersecretkey_change_me` |
 
-> When running outside Docker (e.g., `npm run dev` locally), point `VITE_API_BASE_URL` to `http://localhost:8000/api`.
+> When running outside Docker (e.g., `npm run dev` locally), point `VITE_API_BASE_URL` to `http://localhost:8000`.
 
 ## Roles & Permissions
 

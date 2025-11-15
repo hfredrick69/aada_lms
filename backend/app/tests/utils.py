@@ -10,8 +10,57 @@ from app.db.models.enrollment import Enrollment, ModuleProgress
 from app.db.models.program import Module, Program
 from app.db.models.role import Role
 from app.db.models.user import User
+from app.utils.encryption import encrypt_value
 
 ModuleProgressSeed = dict
+
+
+def create_user_with_roles(
+    db,
+    *,
+    email: str,
+    password: str,
+    first_name: str = "Unit",
+    last_name: str = "Test",
+    roles: Optional[list[str]] = None,
+):
+    """Create (or replace) a user with encrypted fields and optional roles."""
+    encrypted_email = encrypt_value(db, email)
+    encrypted_first = encrypt_value(db, first_name)
+    encrypted_last = encrypt_value(db, last_name)
+
+    user = db.query(User).filter(User.email == encrypted_email).first()
+    if user:
+        user.password_hash = get_password_hash(password)
+        user.first_name = encrypted_first
+        user.last_name = encrypted_last
+        user.status = "active"
+    else:
+        user = User(
+            email=encrypted_email,
+            password_hash=get_password_hash(password),
+            first_name=encrypted_first,
+            last_name=encrypted_last,
+            status="active",
+        )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    for role_name in roles or []:
+        role = db.query(Role).filter(Role.name == role_name).first()
+        if not role:
+            role = Role(name=role_name, description=f"{role_name.title()} role")
+            db.add(role)
+            db.commit()
+            db.refresh(role)
+        if role not in user.roles:
+            user.roles.append(role)
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 def seed_student_program(
@@ -34,43 +83,22 @@ def seed_student_program(
     program_id = uuid4()
     enrollment_id = uuid4()
 
-    student = User(
-        id=student_id,
+    student = create_user_with_roles(
+        db,
         email=f"{student_id.hex[:12]}@student.test",
-        password_hash=get_password_hash("StudentPass!23"),
+        password="StudentPass!23",
         first_name="Test",
         last_name="Student",
+        roles=["student", "registrar"],
     )
-    admin = User(
-        id=admin_id,
+    admin = create_user_with_roles(
+        db,
         email=f"{admin_id.hex[:12]}@admin.test",
-        password_hash=get_password_hash("AdminPass!23"),
+        password="AdminPass!23",
         first_name="Admin",
         last_name="User",
+        roles=["admin"],
     )
-    db.add_all([student, admin])
-    db.commit()
-    db.refresh(student)
-    db.refresh(admin)
-
-    admin_role = db.query(Role).filter(Role.name == "Admin").first()
-    if not admin_role:
-        admin_role = Role(name="Admin")
-        db.add(admin_role)
-
-    registrar_role = db.query(Role).filter(Role.name == "Registrar").first()
-    if not registrar_role:
-        registrar_role = Role(name="Registrar")
-        db.add(registrar_role)
-
-    db.commit()
-    db.refresh(admin_role)
-    db.refresh(registrar_role)
-
-    admin.roles = [admin_role]
-    student.roles = [registrar_role]
-    db.add_all([admin, student])
-    db.commit()
 
     program = Program(
         id=program_id,

@@ -70,6 +70,17 @@ app.add_middleware(AuditLoggingMiddleware)
 
 # CORS middleware - use environment variable for production flexibility
 allowed_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",")]
+default_dev_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
+
+for origin in default_dev_origins:
+    if origin and origin not in allowed_origins:
+        allowed_origins.append(origin)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,

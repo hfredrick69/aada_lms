@@ -40,10 +40,8 @@ services:
     build:
       context: ./admin_portal
       dockerfile: Dockerfile
-    command: npm run dev
+    command: npm run dev -- --host 0.0.0.0
     working_dir: /app
-    environment:
-      - VITE_API_BASE_URL=http://localhost:8000
     volumes:
       - ./admin_portal:/app
       - /app/node_modules
@@ -59,8 +57,6 @@ services:
       dockerfile: Dockerfile
     command: npm run dev -- --host 0.0.0.0
     working_dir: /app
-    environment:
-      - VITE_API_BASE_URL=http://localhost:8000
     volumes:
       - ./frontend/aada_web:/app
       - /app/node_modules

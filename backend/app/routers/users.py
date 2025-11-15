@@ -1,5 +1,6 @@
 """User management router"""
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
@@ -8,7 +9,7 @@ from app.db.session import get_db
 from app.db.models.user import User
 from app.core.security import get_password_hash
 from app.routers.auth import get_current_user
-from app.utils.encryption import decrypt_value
+from app.utils.encryption import decrypt_value, encrypt_value, ENCRYPTION_KEY
 from pydantic import BaseModel, EmailStr
 
 
@@ -42,9 +43,9 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/", response_model=List[UserResponse])
 def list_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """List all users (admin only)"""
-    if not any(role in ["admin"] for role in current_user.roles):
-        raise HTTPException(status_code=403, detail="Admin role required")
+    """List all users (admin/staff only)"""
+    if not any(role in ["admin", "staff"] for role in current_user.roles):
+        raise HTTPException(status_code=403, detail="Admin or Staff role required")
     users = db.query(User).all()
 
     # Decrypt PII before returning
@@ -66,17 +67,22 @@ def create_user(data: UserCreate, db: Session = Depends(get_db), current_user: U
     if not any(role in ["admin"] for role in current_user.roles):
         raise HTTPException(status_code=403, detail="Admin role required")
 
-    # Check if email exists (need to check encrypted value)
-    # Note: This is a simplified check - in production you'd want to decrypt all emails and compare
-    existing = db.query(User).filter(User.email == data.email).first()
+    normalized_email = data.email.strip().lower()
+    existing = db.execute(
+        text(
+            "SELECT 1 FROM users WHERE pgp_sym_decrypt(decode(email, 'base64'), :key) = :email LIMIT 1"
+        ),
+        {"key": ENCRYPTION_KEY, "email": normalized_email},
+    ).fetchone()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    encrypted_email = encrypt_value(db, normalized_email)
     user = User(
-        email=data.email,
+        email=encrypted_email,
         password_hash=get_password_hash(data.password),
-        first_name=data.first_name,
-        last_name=data.last_name
+        first_name=encrypt_value(db, data.first_name),
+        last_name=encrypt_value(db, data.last_name)
     )
     db.add(user)
     db.commit()
@@ -127,16 +133,24 @@ def update_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    if data.email and data.email != user.email:
-        existing = db.query(User).filter(User.email == data.email).first()
-        if existing:
-            raise HTTPException(status_code=400, detail="Email already in use")
-        user.email = data.email
+    if data.email:
+        normalized_email = data.email.strip().lower()
+        encrypted_email = encrypt_value(db, normalized_email)
+        if encrypted_email != user.email:
+            existing = db.execute(
+                text(
+                    "SELECT 1 FROM users WHERE pgp_sym_decrypt(decode(email, 'base64'), :key) = :email LIMIT 1"
+                ),
+                {"key": ENCRYPTION_KEY, "email": normalized_email},
+            ).fetchone()
+            if existing:
+                raise HTTPException(status_code=400, detail="Email already in use")
+            user.email = encrypted_email
 
     if data.first_name:
-        user.first_name = data.first_name
+        user.first_name = encrypt_value(db, data.first_name)
     if data.last_name:
-        user.last_name = data.last_name
+        user.last_name = encrypt_value(db, data.last_name)
     if data.status:
         user.status = data.status
 

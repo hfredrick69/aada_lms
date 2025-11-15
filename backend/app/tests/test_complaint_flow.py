@@ -19,7 +19,7 @@ def _clear_complaints_table() -> None:
 def test_complaint_lifecycle():
     _clear_complaints_table()
     client = TestClient(app)
-    response = client.get("/complaints")
+    response = client.get("/api/complaints")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -28,19 +28,19 @@ def test_complaint_lifecycle():
         "category": "instruction",
         "details": "Instructor missed scheduled labs.",
     }
-    create_resp = client.post("/complaints", json=payload)
+    create_resp = client.post("/api/complaints", json=payload)
     assert create_resp.status_code == 201, create_resp.text
     complaint = create_resp.json()
     assert complaint["status"] == "open"
     assert "gnpec@tcsg.edu" in complaint["gnpec_appeal_info"]
 
     complaint_id = complaint["id"]
-    review_resp = client.put(f"/complaints/{complaint_id}", json={"status": "in_review"})
+    review_resp = client.put(f"/api/complaints/{complaint_id}", json={"status": "in_review"})
     assert review_resp.status_code == 200
     assert review_resp.json()["status"] == "in_review"
 
     resolve_resp = client.put(
-        f"/complaints/{complaint_id}",
+        f"/api/complaints/{complaint_id}",
         json={
             "status": "resolved",
             "resolution_notes": "Provided make-up labs.",
@@ -50,7 +50,7 @@ def test_complaint_lifecycle():
     assert resolve_resp.json()["status"] == "resolved"
 
     appeal_resp = client.put(
-        f"/complaints/{complaint_id}",
+        f"/api/complaints/{complaint_id}",
         json={"status": "appealed"},
     )
     assert appeal_resp.status_code == 200

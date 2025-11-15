@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.db.session import get_db
 from app.db.models.user import User
@@ -59,6 +59,17 @@ class OverallProgressResponse(BaseModel):
 router = APIRouter(prefix="/progress", tags=["progress"])
 
 
+def _has_role(user: User, allowed: set[str]) -> bool:
+    for role in getattr(user, "roles", []) or []:
+        if isinstance(role, str):
+            name = role.lower()
+        else:
+            name = (getattr(role, "name", "") or "").lower()
+        if name in allowed:
+            return True
+    return False
+
+
 @router.get("/{user_id}", response_model=OverallProgressResponse)
 def get_user_progress(
     user_id: UUID,
@@ -67,7 +78,7 @@ def get_user_progress(
 ):
     """Get overall progress for a user"""
     # Students can only see their own progress
-    if user_id != current_user.id and not any(role in ["admin", "instructor"] for role in current_user.roles):
+    if user_id != current_user.id and not _has_role(current_user, {"admin", "instructor"}):
         raise HTTPException(status_code=403, detail="Not authorized to view this progress")
 
     # Get active enrollment
@@ -166,7 +177,7 @@ def get_module_progress(
 ):
     """Get progress for a specific module"""
     # Students can only see their own progress
-    if user_id != current_user.id and not any(role in ["admin", "instructor"] for role in current_user.roles):
+    if user_id != current_user.id and not _has_role(current_user, {"admin", "instructor"}):
         raise HTTPException(status_code=403, detail="Not authorized to view this progress")
 
     # Get active enrollment
@@ -246,7 +257,7 @@ def update_progress(
 
     # Students can only update their own progress
     is_owner = enrollment.user_id == current_user.id
-    is_authorized = any(role in ["admin", "instructor"] for role in current_user.roles)
+    is_authorized = _has_role(current_user, {"admin", "instructor"})
     if not is_owner and not is_authorized:
         raise HTTPException(
             status_code=403,
@@ -274,7 +285,7 @@ def update_progress(
             last_scroll_position=progress_data.last_scroll_position or 0,
             active_time_seconds=progress_data.active_time_seconds or 0,
             sections_viewed=progress_data.sections_viewed or [],
-            last_accessed_at=datetime.utcnow()
+            last_accessed_at=datetime.now(timezone.utc)
         )
         db.add(progress)
     else:
@@ -292,7 +303,7 @@ def update_progress(
             progress.active_time_seconds = progress_data.active_time_seconds
         if progress_data.sections_viewed is not None:
             progress.sections_viewed = progress_data.sections_viewed
-        progress.last_accessed_at = datetime.utcnow()
+        progress.last_accessed_at = datetime.now(timezone.utc)
 
     db.commit()
     db.refresh(progress)

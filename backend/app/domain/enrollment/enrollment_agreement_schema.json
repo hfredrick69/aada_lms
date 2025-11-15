@@ -1,0 +1,402 @@
+{
+  "id": "enrollment_agreement_v1",
+  "version": "2024-12-15",
+  "title": "Atlanta Academy of Dental Assisting Enrollment Agreement",
+  "description": "Schema-driven enrollment agreement used for the public signing workflow and PDF generation.",
+  "brand": {
+    "schoolName": "Atlanta Academy of Dental Assisting",
+    "address": ["2864 Johnson Ferry Rd, Suite 250", "Marietta, GA 30062"],
+    "phone": "(678) 687-2617",
+    "website": "https://atldentalassistant.com",
+    "logoPath": "backend/app/static/branding/aada_logo.png"
+  },
+  "sections": [
+    {
+      "id": "school_overview",
+      "title": "Enrollment Agreement Overview",
+      "elements": [
+        {
+          "type": "text",
+          "style": "heading",
+          "content": "Atlanta Academy of Dental Assisting"
+        },
+        {
+          "type": "text",
+          "style": "subheading",
+          "content": "ENROLLMENT AGREEMENT"
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "The above listed school and student enter into agreement under which the student will pay tuition and fees as indicated below and adhere to the school's rules and regulations as set forth in the school catalog. The academy is authorized by the Georgia Nonpublic Post-Secondary Education Commission. Late registration will not be accepted once classes have begun. Prior year enrollment, graduation, job placement statistics, and accreditation status can be found at https://atlantaregional.org/workforce-economy/services-for-employers-trainers/training-provider-resources."
+        }
+      ]
+    },
+    {
+      "id": "student_information",
+      "title": "Student Enrollment Information",
+      "elements": [
+        {
+          "type": "field_group",
+          "title": "Student Details",
+          "description": "Provide information exactly as it should appear on the agreement.",
+          "layout": "two-column",
+          "fields": [
+            {"name": "student.first_name", "label": "First name", "component": "text", "required": true},
+            {"name": "student.last_name", "label": "Last name", "component": "text", "required": true},
+            {"name": "student.street_address", "label": "Street address", "component": "text", "required": true, "width": "full"},
+            {"name": "student.city", "label": "City", "component": "text", "required": true},
+            {
+              "name": "student.state",
+              "label": "State",
+              "component": "select",
+              "required": true,
+              "options": [
+                {"label": "Alabama (AL)", "value": "AL"},
+                {"label": "Alaska (AK)", "value": "AK"},
+                {"label": "Arizona (AZ)", "value": "AZ"},
+                {"label": "Arkansas (AR)", "value": "AR"},
+                {"label": "California (CA)", "value": "CA"},
+                {"label": "Colorado (CO)", "value": "CO"},
+                {"label": "Connecticut (CT)", "value": "CT"},
+                {"label": "Delaware (DE)", "value": "DE"},
+                {"label": "District of Columbia (DC)", "value": "DC"},
+                {"label": "Florida (FL)", "value": "FL"},
+                {"label": "Georgia (GA)", "value": "GA"},
+                {"label": "Hawaii (HI)", "value": "HI"},
+                {"label": "Idaho (ID)", "value": "ID"},
+                {"label": "Illinois (IL)", "value": "IL"},
+                {"label": "Indiana (IN)", "value": "IN"},
+                {"label": "Iowa (IA)", "value": "IA"},
+                {"label": "Kansas (KS)", "value": "KS"},
+                {"label": "Kentucky (KY)", "value": "KY"},
+                {"label": "Louisiana (LA)", "value": "LA"},
+                {"label": "Maine (ME)", "value": "ME"},
+                {"label": "Maryland (MD)", "value": "MD"},
+                {"label": "Massachusetts (MA)", "value": "MA"},
+                {"label": "Michigan (MI)", "value": "MI"},
+                {"label": "Minnesota (MN)", "value": "MN"},
+                {"label": "Mississippi (MS)", "value": "MS"},
+                {"label": "Missouri (MO)", "value": "MO"},
+                {"label": "Montana (MT)", "value": "MT"},
+                {"label": "Nebraska (NE)", "value": "NE"},
+                {"label": "Nevada (NV)", "value": "NV"},
+                {"label": "New Hampshire (NH)", "value": "NH"},
+                {"label": "New Jersey (NJ)", "value": "NJ"},
+                {"label": "New Mexico (NM)", "value": "NM"},
+                {"label": "New York (NY)", "value": "NY"},
+                {"label": "North Carolina (NC)", "value": "NC"},
+                {"label": "North Dakota (ND)", "value": "ND"},
+                {"label": "Ohio (OH)", "value": "OH"},
+                {"label": "Oklahoma (OK)", "value": "OK"},
+                {"label": "Oregon (OR)", "value": "OR"},
+                {"label": "Pennsylvania (PA)", "value": "PA"},
+                {"label": "Rhode Island (RI)", "value": "RI"},
+                {"label": "South Carolina (SC)", "value": "SC"},
+                {"label": "South Dakota (SD)", "value": "SD"},
+                {"label": "Tennessee (TN)", "value": "TN"},
+                {"label": "Texas (TX)", "value": "TX"},
+                {"label": "Utah (UT)", "value": "UT"},
+                {"label": "Vermont (VT)", "value": "VT"},
+                {"label": "Virginia (VA)", "value": "VA"},
+                {"label": "Washington (WA)", "value": "WA"},
+                {"label": "West Virginia (WV)", "value": "WV"},
+                {"label": "Wisconsin (WI)", "value": "WI"},
+                {"label": "Wyoming (WY)", "value": "WY"}
+              ]
+            },
+            {"name": "student.postal_code", "label": "ZIP code", "component": "text", "required": true},
+            {"name": "student.email", "label": "Email address", "component": "email", "required": true},
+            {"name": "student.phone", "label": "Phone", "component": "tel", "required": true},
+            {"name": "student.date_of_birth", "label": "Date of birth", "component": "date", "required": true},
+            {"name": "student.ssn_last4", "label": "SSN (last 4)", "component": "text", "required": true, "maxLength": 4},
+            {"name": "emergency.first_name", "label": "Emergency contact first name", "component": "text", "required": true},
+            {"name": "emergency.last_name", "label": "Emergency contact last name", "component": "text", "required": true},
+            {"name": "emergency.phone", "label": "Emergency contact phone", "component": "tel", "required": true},
+            {"name": "emergency.relationship", "label": "Relationship", "component": "text", "required": true}
+          ]
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Office hours are 9:00 AM - 5:00 PM, Monday - Friday."
+        }
+      ]
+    },
+    {
+      "id": "program_information",
+      "title": "Program Information",
+      "elements": [
+        {
+          "type": "field_group",
+          "title": "Program Selection",
+          "layout": "two-column",
+          "fields": [
+            {"name": "program.program_name", "label": "Program", "component": "text", "required": true, "defaultValue": "Dental Assisting", "readOnly": true},
+            {
+              "name": "program.discovery_source",
+              "label": "How did you hear about us?",
+              "component": "select",
+              "required": true,
+              "options": [
+                {"label": "Website", "value": "website"},
+                {"label": "Phone", "value": "phone"},
+                {"label": "Walk-In", "value": "walk_in"},
+                {"label": "Referral", "value": "referral"},
+                {"label": "Social Media", "value": "social_media"},
+                {"label": "Google Ads", "value": "google_ads"},
+                {"label": "Career Fair", "value": "career_fair"},
+                {"label": "Other", "value": "other"}
+              ]
+            },
+            {"name": "program.form_date", "label": "Today's date", "component": "date", "required": true, "defaultValue": "__today__"},
+            {"name": "program.length", "label": "Program length", "component": "text", "defaultValue": "20-week program: 180 instruction hours, 40 hours externship", "readOnly": true},
+            {"name": "program.start_date", "label": "Start date", "component": "date", "required": true},
+            {"name": "program.end_date", "label": "End date", "component": "date", "required": true},
+            {
+              "name": "program.class_section",
+              "label": "Select class section",
+              "component": "select",
+              "required": true,
+              "options": [
+                {"label": "Morning", "value": "morning"},
+                {"label": "Evening", "value": "evening"}
+              ]
+            },
+            {
+              "name": "program.class_day",
+              "label": "Class day",
+              "component": "select",
+              "required": true,
+              "options": [
+                {"label": "Monday", "value": "monday"},
+                {"label": "Tuesday", "value": "tuesday"},
+                {"label": "Wednesday", "value": "wednesday"},
+                {"label": "Thursday", "value": "thursday"}
+              ]
+            },
+            {
+              "name": "program.scrub_top",
+              "label": "Scrub top size",
+              "component": "select",
+              "required": true,
+              "options": [
+                {"label": "XS", "value": "xs"},
+                {"label": "S", "value": "s"},
+                {"label": "M", "value": "m"},
+                {"label": "L", "value": "l"},
+                {"label": "XL", "value": "xl"},
+                {"label": "XXL", "value": "xxl"},
+                {"label": "XXXL", "value": "xxxl"}
+              ]
+            },
+            {
+              "name": "program.scrub_bottom",
+              "label": "Scrub bottom size",
+              "component": "select",
+              "required": true,
+              "options": [
+                {"label": "XS", "value": "xs"},
+                {"label": "S", "value": "s"},
+                {"label": "M", "value": "m"},
+                {"label": "L", "value": "l"},
+                {"label": "XL", "value": "xl"},
+                {"label": "XXL", "value": "xxl"},
+                {"label": "XXXL", "value": "xxxl"}
+              ]
+            },
+            {
+              "name": "program.payment_selection",
+              "label": "Tuition payment selection",
+              "component": "select",
+              "required": true,
+              "options": [
+                {"label": "WIOA Grant", "value": "wioa_grant"},
+                {"label": "Student Financing", "value": "student_financing"},
+                {"label": "Full Payment", "value": "full_payment"},
+                {"label": "WIOA Only", "value": "wioa_only"}
+              ]
+            },
+            {"name": "program.wioa_county", "label": "WIOA county", "component": "text"},
+            {"name": "program.wioa_advisor_name", "label": "Advisor name", "component": "text"},
+            {"name": "program.wioa_advisor_email", "label": "Advisor email", "component": "email"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tuition_and_fees",
+      "title": "Tuition and Fees",
+      "elements": [
+        {
+          "type": "table",
+          "title": "Program Cost",
+          "headers": ["Item", "Amount", "Notes"],
+          "rows": [
+            ["Tuition", "$4,500", ""],
+            ["Scrubs (non-refundable)", "$100", ""],
+            ["Portal / Books", "$116", ""],
+            ["Lab Maintenance / Clinic Supplies", "$1,997", ""],
+            ["CPR", "$87", ""],
+            ["PPE", "$200", ""],
+            ["Program Total", "$7,000", ""]
+          ]
+        },
+        {
+          "type": "field_group",
+          "layout": "two-column",
+          "fields": [
+            {"name": "financial.deposit_amount", "label": "Deposit amount", "component": "currency"},
+            {"name": "financial.remaining_balance", "label": "Remaining tuition balance", "component": "currency"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attendance_policy",
+      "title": "Attendance Policy",
+      "elements": [
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Instructors take roll at the beginning of each class lecture and clinic. Students arriving more than five (5) minutes late are considered tardy. After a student accumulates three (3) tardy warnings, they will receive one (1) absence."
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "It is highly recommended that students attend all classes due to the concentrated learning structure of the course. Except for family emergencies and serious illness, students should plan on attending all classes. After three missed classes, the student will be terminated from the program. Refunds do not apply when a student is dropped by the school for attendance."
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Students are required to complete 40 hours of internship/externship in a dental office of their choice. Internship/externship hours are mandatory."
+        }
+      ]
+    },
+    {
+      "id": "refund_policy",
+      "title": "Refund and Cancellation Policy",
+      "elements": [
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Students have 72 hours from the date of the enrollment agreement to cancel or rescind the agreement and receive a refund of the total tuition and fees (not including uniform cost) paid toward tuition at the time of execution."
+        },
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            "Students wishing to withdraw must send an email to c.oliver@atldentalassistant.com requesting a withdrawal form.",
+            "Students must sign and complete a withdrawal form and submit it to the campus president.",
+            "Students shall return any items or equipment to the school.",
+            "The withdrawal form date will be used as the last date of enrollment to calculate any refunds."
+          ]
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Students requesting to withdraw for illness or personal reasons may resume their course of study in the next class series. Refunds are granted at a prorated percentage based on the amount of the program completed, up to 50%. Refunds are processed within 45 days of withdrawal. No refunds are issued after 50% of the program is completed."
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Students financed by external partners will follow the refund and cancellation policies outlined by their financing company."
+        }
+      ]
+    },
+    {
+      "id": "career_services",
+      "title": "Career Services",
+      "elements": [
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Atlanta Academy of Dental Assisting will direct and manage career services to assist all students and alumni with the search for a position as a dental assistant. Students perform mock interviews, prepare resumes and cover letters, and receive job-search preparation."
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "The academy cannot guarantee employment or a specific salary range upon graduation, but will provide placement assistance."
+        }
+      ]
+    },
+    {
+      "id": "complaints",
+      "title": "Complaints",
+      "elements": [
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Students can file a complaint in writing via email addressed to the campus president at info@atldentalassistant.com. The president will review and respond to all complaints within 24 hours."
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "If a student is unhappy with the decision from the president, they have the right to submit the complaint through the GNPEC complaint portal at https://gnpec.georgia.gov/student-resources/complaints-against-institution."
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "GNPEC Office — 2082 E. Exchange Place, Tucker, GA 30084 | Phone: 770-414-3300"
+        }
+      ]
+    },
+    {
+      "id": "acknowledgements",
+      "title": "GNPEC Student Disclosure Form",
+      "elements": [
+        {
+          "type": "text",
+          "style": "body",
+          "content": "I acknowledge that I have read and understood the following disclosures. My initials indicate acceptance and will appear on the final agreement."
+        },
+        {
+          "type": "acknowledgement_list",
+          "acknowledgements": [
+            {
+              "id": "initial_agreement_catalog",
+              "label": "I have read and received the enrollment agreement and school catalog.",
+              "required": true,
+              "maxLength": 4
+            },
+            {
+              "id": "initial_school_outcomes",
+              "label": "I reviewed the school's retention, graduation, placement, and licensure results.",
+              "required": true,
+              "maxLength": 4
+            },
+            {
+              "id": "initial_employment",
+              "label": "I understand job placement assistance is offered but employment and salary are not guaranteed.",
+              "required": true,
+              "maxLength": 4
+            },
+            {
+              "id": "initial_refund_policy",
+              "label": "I reviewed the refund policy provided in the catalog.",
+              "required": true,
+              "maxLength": 4
+            },
+            {
+              "id": "initial_complaint_procedure",
+              "label": "I reviewed the complaint procedure and appeal options.",
+              "required": true,
+              "maxLength": 4
+            },
+            {
+              "id": "initial_authorization",
+              "label": "I acknowledge the school's authorization status and that credits may not transfer to other institutions.",
+              "required": true,
+              "maxLength": 4
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "style": "body",
+          "content": "Student must receive a copy of this form, and a copy must be kept in the student's file."
+        }
+      ]
+    }
+  ]
+}

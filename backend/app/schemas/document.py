@@ -109,6 +109,13 @@ class CounterSignRequest(BaseModel):
     typed_name: str = Field(..., max_length=255)
 
 
+class AdvisorDirectoryEntry(BaseModel):
+    id: str = Field(..., min_length=1)
+    name: str = Field(..., min_length=1, max_length=255)
+    email: str = Field(..., min_length=1, max_length=255)
+    title: Optional[str] = None
+
+
 # ==================== Document Signature Schemas ====================
 
 class DocumentSignatureCreate(BaseModel):

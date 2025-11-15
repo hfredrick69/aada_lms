@@ -1,7 +1,9 @@
 """Tests for enrollment agreement workflow."""
 import base64
-from uuid import uuid4
+from datetime import datetime, timezone
 from pathlib import Path
+from types import SimpleNamespace
+from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
@@ -9,6 +11,8 @@ from app.main import app
 from app.tests.utils import create_user_with_roles
 from app.db.session import SessionLocal
 from app.db.models.document import DocumentTemplate
+from app.domain.enrollment.schema import get_enrollment_agreement_schema
+from app.services.enrollment_pdf import SchemaDrivenPDFService
 
 client = TestClient(app)
 
@@ -152,3 +156,82 @@ def test_admin_can_counter_sign_agreement():
     assert counter_body["status"] == "completed"
     assert counter_body["counter_signed_at"] is not None
     assert counter_body["signing_token"] is None
+
+
+def test_admin_can_send_ad_hoc_enrollment_agreement():
+    admin_email = "agreements.adhoc.admin@test.edu"
+    _create_user(admin_email, "AdminPass!23", ["admin"])
+    template = _create_template()
+    headers = _auth_headers(admin_email, "AdminPass!23")
+
+    payload = {
+        "template_id": str(template.id),
+        "course_type": "twenty_week",
+        "signer_name": "Prospective Student",
+        "signer_email": "prospect@example.com",
+    }
+    response = client.post("/api/documents/enrollment/send", json=payload, headers=headers)
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["lead_id"] is None
+    assert body["user_id"] is None
+    assert body["signer_email"] == "prospect@example.com"
+    assert body["signer_name"] == "Prospective Student"
+
+
+def test_public_sign_endpoint_includes_schema():
+    admin_email = "agreements.schema.admin@test.edu"
+    _create_user(admin_email, "AdminPass!23", ["admin"])
+    student = _create_user("agreements.schema.student@test.edu", "StudentPass!23", ["student"])
+    template = _create_template()
+
+    headers = _auth_headers(admin_email, "AdminPass!23")
+    payload = {
+        "user_id": str(student.id),
+        "template_id": str(template.id),
+        "course_type": "twenty_week",
+    }
+    response = client.post("/api/documents/enrollment/send", json=payload, headers=headers)
+    assert response.status_code == 200
+    signing_token = response.json()["signing_token"]
+
+    public_response = client.get(f"/api/public/sign/{signing_token}")
+    assert public_response.status_code == 200
+    body = public_response.json()
+    schema = body.get("agreement_schema")
+    assert schema, "schema should be included in the public signing payload"
+    section_ids = [section["id"] for section in schema["sections"]]
+    assert "acknowledgements" in section_ids
+
+
+def test_schema_driven_pdf_service_generates(tmp_path):
+    schema = get_enrollment_agreement_schema()
+    pdf_service = SchemaDrivenPDFService(schema)
+    document = SimpleNamespace(id=uuid4())
+    signatures = [
+        SimpleNamespace(
+            signature_data="dGVzdA==",
+            signature_type="student",
+            typed_name="QA Student",
+            signer_email="qa.student@example.edu",
+            signed_at=datetime.now(timezone.utc),
+        )
+    ]
+    output_path = tmp_path / "schema-agreement.pdf"
+    success = pdf_service.generate_pdf(
+        output_pdf_path=output_path,
+        document=document,
+        form_data={"student": {"first_name": "QA", "last_name": "Student"}},
+        signatures=signatures,
+    )
+    assert success
+    assert output_path.exists()
+    assert output_path.stat().st_size > 0
+
+
+def test_public_advisors_endpoint():
+    response = client.get("/api/public/sign/advisors")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert any(entry["id"] == "mary_jones" for entry in data)

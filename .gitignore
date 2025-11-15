@@ -25,6 +25,7 @@ tmp/h5p_build/
 .env.*
 db_data/
 docker-compose.override.yml
+acs_info.sh
 
 # IDE / System
 .vscode/

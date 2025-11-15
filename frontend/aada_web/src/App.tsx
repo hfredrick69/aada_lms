@@ -1,5 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "@/features/auth/LoginPage";
+import RegisterStartPage from "@/features/auth/RegisterStartPage";
+import RegisterVerifyPage from "@/features/auth/RegisterVerifyPage";
+import RegisterCompletePage from "@/features/auth/RegisterCompletePage";
 import DashboardPage from "@/features/dashboard/DashboardPage";
 import DocumentsPage from "@/features/documents/DocumentsPage";
 import ModulesPage from "@/features/modules/ModulesPage";
@@ -18,6 +21,9 @@ export default function App() {
 
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterStartPage />} />
+      <Route path="/register/verify" element={<RegisterVerifyPage />} />
+      <Route path="/register/complete" element={<RegisterCompletePage />} />
       <Route path="/sign/:token" element={<PublicSign />} />
 
       {/* Protected routes */}

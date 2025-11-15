@@ -80,14 +80,14 @@ const DocumentSignatureDialog = ({
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>Sign Document</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ p: 0 }}>
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ m: 3, mb: 0 }}>
             {error}
           </Alert>
         )}
 
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ p: 3, pt: error ? 2 : 3 }}>
           <TextField
             fullWidth
             label="Full Name"

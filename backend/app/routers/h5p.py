@@ -1,4 +1,5 @@
 import io
+import time
 from fastapi import APIRouter, HTTPException, Form
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
 from pathlib import Path
@@ -192,6 +193,7 @@ async def serve_h5p_player(activity_id: str):
     # backend_base_url = os.getenv('BACKEND_BASE_URL', 'http://localhost:8000')
 
     # Return HTML player
+    cache_buster = int(time.time() * 1000)
     return f"""
 <!DOCTYPE html>
 <html>
@@ -270,19 +272,68 @@ async def serve_h5p_player(activity_id: str):
 
             const options = {{
                 h5pJsonPath: '{activity_id}/content',
-                frameJs: 'https://cdn.jsdelivr.net/npm/h5p-standalone@3.6.0/dist/frame.bundle.js',
-                frameCss: 'https://cdn.jsdelivr.net/npm/h5p-standalone@3.6.0/dist/styles/h5p.css',
+                frameJs: 'https://cdn.jsdelivr.net/npm/h5p-standalone@3.6.0/dist/frame.bundle.js?v={cache_buster}',
+                frameCss: 'https://cdn.jsdelivr.net/npm/h5p-standalone@3.6.0/dist/styles/h5p.css?v={cache_buster}',
             }};
 
             console.log('Initializing H5P with path:', options.h5pJsonPath);
             console.log('Document location:', window.location.href);
 
-            const injectSelectionStyles = () => {{
+            let dialogInterval = null;
+
+            const getIframeDoc = () => {{
                 const iframe = el.querySelector('iframe.h5p-iframe');
-                if (!iframe || !iframe.contentDocument) {{
+                return iframe?.contentDocument || null;
+            }};
+
+            const styleDialogElements = () => {{
+                const doc = getIframeDoc();
+                if (!doc) {{
                     return;
                 }}
-                const doc = iframe.contentDocument;
+
+                const applyDialogStyles = (dialog) => {{
+                    dialog.style.setProperty('position', 'fixed', 'important');
+                    dialog.style.setProperty('inset', '0', 'important');
+                    dialog.style.setProperty('margin', 'auto', 'important');
+                    dialog.style.setProperty('maxWidth', '960px', 'important');
+                    dialog.style.setProperty('width', 'min(92vw, 960px)', 'important');
+                    dialog.style.setProperty('maxHeight', '90vh', 'important');
+                    dialog.style.setProperty('transform', 'none', 'important');
+                    dialog.style.setProperty('background', '#fff', 'important');
+                    dialog.style.setProperty('borderRadius', '12px', 'important');
+                    dialog.style.setProperty('boxShadow', '0 18px 45px rgba(15,23,42,0.22)', 'important');
+                    dialog.style.setProperty('padding', '0', 'important');
+                    dialog.style.setProperty('zIndex', '999', 'important');
+                    dialog.style.setProperty('overflow', 'auto', 'important');
+
+                    dialog.querySelectorAll('.h5p-question-content, .h5p-sc-set, .h5p-true-false').forEach((node) => {{
+                        node.style.setProperty('padding', '24px', 'important');
+                        node.style.setProperty('fontSize', '1rem', 'important');
+                        node.style.setProperty('lineHeight', '1.55', 'important');
+                    }});
+
+                    dialog.querySelectorAll('.h5p-dialog-inner, .h5p-dialogbox').forEach((node) => {{
+                        node.style.setProperty('width', '100%', 'important');
+                        node.style.setProperty('maxWidth', '100%', 'important');
+                    }});
+                }};
+
+                doc.querySelectorAll('.h5p-iv-interaction-dialog').forEach((dialog) => {{
+                    applyDialogStyles(dialog);
+                    if (!dialog.dataset.aadaDialogObserver) {{
+                        const dialogWatcher = new MutationObserver(() => applyDialogStyles(dialog));
+                        dialogWatcher.observe(dialog, {{ attributes: true, attributeFilter: ['style', 'class'] }});
+                        dialog.dataset.aadaDialogObserver = 'true';
+                    }}
+                }});
+            }};
+
+            const injectSelectionStyles = () => {{
+                const doc = getIframeDoc();
+                if (!doc) {{
+                    return;
+                }}
                 if (doc.getElementById('aada-h5p-selection-style')) {{
                     return;
                 }}
@@ -300,26 +351,68 @@ async def serve_h5p_player(activity_id: str):
                     .h5p-question-container .h5p-answer.h5p-selected .h5p-alternative-inner {{
                         font-weight: 600;
                     }}
+                    .h5p-iv-interaction-dialog,
+                    .h5p-dialog-open .h5p-iv-interaction-dialog {{
+                        position: fixed !important;
+                        inset: 0 !important;
+                        margin: auto !important;
+                        width: min(92vw, 960px) !important;
+                        max-width: 960px !important;
+                        max-height: 90vh !important;
+                        transform: none !important;
+                        border-radius: 12px !important;
+                        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22) !important;
+                        background: #fff !important;
+                        overflow: auto !important;
+                    }}
+                    .h5p-iv-interaction-dialog .h5p-question-content,
+                    .h5p-iv-interaction-dialog .h5p-sc-set,
+                    .h5p-iv-interaction-dialog .h5p-true-false {{
+                        padding: 24px !important;
+                        font-size: 1rem !important;
+                        line-height: 1.55 !important;
+                    }}
+                    .h5p-iv-interaction-dialog .h5p-dialog-inner,
+                    .h5p-iv-interaction-dialog .h5p-dialogbox {{
+                        width: 100% !important;
+                        max-width: none !important;
+                    }}
+                    .h5p-iv-interaction-dialog .h5p-interaction-label-text,
+                    .h5p-iv-interaction-dialog .h5p-interaction-label-text * {{
+                        white-space: normal !important;
+                    }}
+                    .h5p-iv-interaction-dialog .h5p-sc-set .h5p-answer .h5p-alternative-container {{
+                        font-size: 1rem !important;
+                    }}
                 `;
                 doc.head.appendChild(style);
+                styleDialogElements();
             }};
 
             const stripIframeBlockers = () => {{
-                const iframe = el.querySelector('iframe.h5p-iframe');
-                if (!iframe || !iframe.contentDocument) {{
+                const iframeDoc = getIframeDoc();
+                if (!iframeDoc) {{
                     return;
                 }}
-                const iframeDoc = iframe.contentDocument;
                 const removeBlockers = () => {{
                     iframeDoc.querySelectorAll('.h5p-prevent-interaction').forEach((node) => node.remove());
                 }};
                 removeBlockers();
+                styleDialogElements();
 
                 const iframeObserver = new MutationObserver(removeBlockers);
                 iframeObserver.observe(iframeDoc.documentElement, {{
                     childList: true,
                     subtree: true
                 }});
+                const dialogObserver = new MutationObserver(styleDialogElements);
+                dialogObserver.observe(iframeDoc.documentElement, {{
+                    childList: true,
+                    subtree: true
+                }});
+                if (!dialogInterval) {{
+                    dialogInterval = setInterval(styleDialogElements, 250);
+                }}
                 injectSelectionStyles();
             }};
             const containerObserver = new MutationObserver(stripIframeBlockers);
@@ -375,6 +468,9 @@ async def serve_h5p_player(activity_id: str):
                     setTimeout(bootstrapInstance, 800);
                 }} else {{
                     console.error('H5PStandalone not loaded');
+                }}
+                if (!dialogInterval) {{
+                    dialogInterval = setInterval(styleDialogElements, 250);
                 }}
             }} catch (error) {{
                 console.error('Error initializing H5P:', error);

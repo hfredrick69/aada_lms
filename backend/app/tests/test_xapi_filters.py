@@ -19,6 +19,7 @@ def _clear_xapi() -> None:
 def test_xapi_filters_by_agent_and_since():
     _clear_xapi()
     client = TestClient(app)
+    endpoint = "/api/xapi/statements"
     base_payload = {
         "actor": {"name": "Student One", "mbox": "mailto:student1@example.com"},
         "object": {"id": "activity-1", "definition": {"name": "Module 1"}},
@@ -34,11 +35,11 @@ def test_xapi_filters_by_agent_and_since():
     ]
 
     client.post(
-        "/xapi/statements",
+        endpoint,
         json={**base_payload, "verb": verbs[0], "timestamp": first_timestamp.isoformat()},
     )
     client.post(
-        "/xapi/statements",
+        endpoint,
         json={
             **base_payload,
             "verb": verbs[1],
@@ -48,7 +49,7 @@ def test_xapi_filters_by_agent_and_since():
     )
 
     filtered = client.get(
-        "/xapi/statements",
+        endpoint,
         params={"agent": "student1@example.com", "since": "2023-12-31T00:00:00Z"},
     )
     assert filtered.status_code == 200
@@ -57,7 +58,7 @@ def test_xapi_filters_by_agent_and_since():
     assert statements[0]["verb"]["id"] == verbs[0]["id"]
 
     verb_filter = client.get(
-        "/xapi/statements",
+        endpoint,
         params={"verb": "completed"},
     )
     assert verb_filter.status_code == 200

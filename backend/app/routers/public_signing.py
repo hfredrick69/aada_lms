@@ -11,19 +11,48 @@ Security features:
 
 from fastapi import APIRouter, HTTPException, status, Request, Depends
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List, Dict, Any
 import base64
+import copy
 import json
 from datetime import datetime, timezone
 
 from app.db.session import get_db
-from app.db.models.document import SignedDocument, DocumentSignature, DocumentAuditLog
+from app.db.models.document import (
+    SignedDocument,
+    DocumentSignature,
+    DocumentAuditLog,
+    DocumentTemplate,
+)
 from app.services.token_service import TokenService
 from app.middleware.rate_limit import rate_limit_public_endpoints, get_client_ip
-from app.schemas.document import DocumentSignRequest, DocumentSignResponse
+from app.schemas.document import (
+    DocumentSignRequest,
+    DocumentSignResponse,
+    AdvisorDirectoryEntry,
+)
+from app.routers.documents import _generate_signed_pdf
+from app.domain.enrollment.schema import get_enrollment_agreement_schema
+from app.domain.enrollment.advisors import list_advisors
 
 
 router = APIRouter(prefix="/public/sign", tags=["Public Signing"])
+
+
+@router.get("/advisors", response_model=List[AdvisorDirectoryEntry])
+async def get_advisors_directory():
+    """Return advisor directory for the public signing experience."""
+    return list_advisors()
+
+
+def _merge_form_data(base: Dict[str, Any], updates: Dict[str, Any]) -> Dict[str, Any]:
+    """Recursively merge dictionaries so nested schema values persist."""
+    for key, value in updates.items():
+        if isinstance(value, dict) and isinstance(base.get(key), dict):
+            base[key] = _merge_form_data(base[key], value)
+        else:
+            base[key] = value
+    return base
 
 
 def get_document_by_token(token: str, db: Session) -> SignedDocument:
@@ -157,7 +186,8 @@ async def get_document_for_signing(
         "status": document.status,
         "created_at": document.created_at.isoformat(),
         "expires_at": document.token_expires_at.isoformat() if document.token_expires_at else None,
-        "unsigned_file_url": f"/api/public/sign/{token}/preview"  # Separate endpoint for PDF
+        "unsigned_file_url": f"/api/public/sign/{token}/preview",  # Separate endpoint for PDF
+        "agreement_schema": get_enrollment_agreement_schema(),
     }
 
 
@@ -277,9 +307,10 @@ async def submit_signature(
     # Update document status
     document.student_signed_at = datetime.now(timezone.utc)
     if sign_request.form_data:
-        existing_form = document.form_data or {}
-        existing_form.update(sign_request.form_data)
-        document.form_data = existing_form
+        # Copy existing form data so SQLAlchemy detects the mutation when persisting JSONB.
+        existing_form = copy.deepcopy(document.form_data) if document.form_data else {}
+        merged = _merge_form_data(existing_form, sign_request.form_data)
+        document.form_data = merged
 
     # If counter-signature required, move to counter_signed status
     # Otherwise, mark as completed
@@ -304,6 +335,16 @@ async def submit_signature(
 
     db.commit()
     db.refresh(document)
+
+    template = document.template
+    if not template:
+        template = (
+            db.query(DocumentTemplate)
+            .filter(DocumentTemplate.id == document.template_id)
+            .first()
+        )
+    if template:
+        _generate_signed_pdf(document, template, db, current_user=None, request=request)
 
     return DocumentSignResponse(
         success=True,

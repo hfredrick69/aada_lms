@@ -2,7 +2,13 @@ import axiosClient from "./axiosClient.js";
 
 export const listStudents = async () => {
   const { data } = await axiosClient.get("/students");
-  return data;
+  if (Array.isArray(data)) {
+    return data;
+  }
+  if (Array.isArray(data?.students)) {
+    return data.students;
+  }
+  return [];
 };
 
 export const createStudent = async (payload) => {

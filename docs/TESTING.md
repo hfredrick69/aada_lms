@@ -311,15 +311,16 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e-tests',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:5174',
+    baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {
@@ -327,14 +328,20 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'docker-compose up',
-    url: 'http://localhost:8000/health',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
 });
 ```
+
+**Running locally (Docker-required browsers)**:
+1. Ensure the Docker stack is up: `docker compose up -d`.
+2. Execute tests through the wrapper (runs the official Playwright container, pointing back to the host services):
+   ```bash
+   ./scripts/run_playwright.sh e2e-tests/admin-portal.spec.ts
+   ./scripts/run_playwright.sh e2e-tests/student-portal.spec.ts
+   ```
+   The script sets `E2E_HOST=host.docker.internal` so the container reaches the host’s backend (`:8000`) and portals (`:5173` / `:5174`). Override any of the following if needed:
+   - `E2E_HOST`
+   - `ADMIN_PORTAL_URL`, `STUDENT_PORTAL_URL`
+   - `PLAYWRIGHT_API_ORIGIN`, `PLAYWRIGHT_API_BASE_URL`
 
 ### Test Structure
 
@@ -344,7 +351,8 @@ import { test, expect } from '@playwright/test';
 
 const STUDENT_EMAIL = 'alice.student@aada.edu';
 const STUDENT_PASSWORD = 'AlicePass!23';
-const STUDENT_PORTAL_URL = 'http://localhost:5174';
+const E2E_HOST = process.env.E2E_HOST ?? 'localhost';
+const STUDENT_PORTAL_URL = process.env.STUDENT_PORTAL_URL ?? `http://${E2E_HOST}:5174`;
 
 test.describe('Student Portal - Authentication', () => {
   test('should login with valid credentials', async ({ page }) => {

@@ -4,7 +4,7 @@ Log rotation utility for audit logs.
 HIPAA requires audit logs be retained for 6 years, but we can archive older logs
 to cheaper storage and keep recent logs in the database for faster queries.
 """
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
 from app.db.models.audit_log import AuditLog
@@ -40,7 +40,7 @@ def rotate_audit_logs(
         close_session = False
 
     try:
-        cutoff_date = datetime.utcnow() - timedelta(days=retention_days)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=retention_days)
 
         # Count logs to be archived
         old_logs_count = db.query(AuditLog).filter(

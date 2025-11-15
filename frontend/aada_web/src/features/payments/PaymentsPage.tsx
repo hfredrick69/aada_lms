@@ -36,8 +36,9 @@ const formatDate = (value?: string | null) => {
 
 export const PaymentsPage = () => {
   const { data: currentUser } = useMeQuery();
-  const balanceQuery = useStudentBalance(currentUser?.id);
-  const historyQuery = usePaymentHistory(currentUser?.id);
+  const userId = currentUser?.data?.id;
+  const balanceQuery = useStudentBalance(userId);
+  const historyQuery = usePaymentHistory(userId);
 
   const paymentHistory = useMemo(
     () => (historyQuery.data ?? []).slice().sort((a, b) =>

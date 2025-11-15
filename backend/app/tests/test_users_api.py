@@ -1,6 +1,8 @@
 """Test users API endpoints"""
 from uuid import uuid4
 
+from app.tests.utils import create_user_with_roles
+
 
 def test_list_users(client, admin_token):
     """Test GET /users"""
@@ -12,21 +14,21 @@ def test_list_users(client, admin_token):
 def test_create_user(client, admin_token):
     """Test POST /users"""
     data = {
-        "email": "newuser@aada.edu",
-        "password": "securepass123",
+        "email": f"newuser.{uuid4()}@aada.edu",
+        "password": "SecurePass123!",
         "first_name": "New",
         "last_name": "User"
     }
     response = client.post("/users", json=data, headers={"Authorization": f"Bearer {admin_token}"})
-    assert response.status_code == 201
-    assert response.json()["email"] == "newuser@aada.edu"
+    assert response.status_code == 201, response.text
+    assert response.json()["email"] == data["email"]
 
 
 def test_create_duplicate_user(client, admin_token, test_user):
     """Test creating user with duplicate email fails"""
     data = {
         "email": test_user.email,
-        "password": "password",
+        "password": "SecurePass123!",
         "first_name": "Dupe",
         "last_name": "User"
     }
@@ -51,19 +53,14 @@ def test_update_user(client, admin_token, test_user):
 
 def test_delete_user(client, admin_token, db):
     """Test DELETE /users/{user_id}"""
-    from app.db.models.user import User
-    from app.core.security import hash_password
-
-    # Create temp user to delete
-    temp_user = User(
-        id=uuid4(),
+    temp_user = create_user_with_roles(
+        db,
         email="deleteme@aada.edu",
-        password_hash=hash_password("password"),
+        password="DeleteMe123!",
         first_name="Delete",
-        last_name="Me"
+        last_name="Me",
+        roles=["student"],
     )
-    db.add(temp_user)
-    db.commit()
 
     response = client.delete(f"/users/{temp_user.id}", headers={"Authorization": f"Bearer {admin_token}"})
     assert response.status_code == 204

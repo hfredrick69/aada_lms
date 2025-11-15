@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from uuid import UUID
 
@@ -28,3 +29,23 @@ class AuthUser(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class RegistrationRequestPayload(BaseModel):
+    email: EmailStr
+
+
+class RegistrationVerifyPayload(BaseModel):
+    token: str
+
+
+class RegistrationVerifyResponse(BaseModel):
+    registration_token: str
+    expires_at: datetime
+
+
+class RegistrationCompletePayload(BaseModel):
+    registration_token: str
+    first_name: str
+    last_name: str
+    password: str

@@ -9,7 +9,7 @@ Security features:
 """
 
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 
@@ -48,7 +48,7 @@ class TokenService:
             - Default 30 days balances security vs usability
             - Configurable for different use cases
         """
-        return datetime.utcnow() + timedelta(days=days)
+        return datetime.now(timezone.utc) + timedelta(days=days)
 
     @staticmethod
     def is_token_expired(expires_at: Optional[datetime]) -> bool:
@@ -68,7 +68,11 @@ class TokenService:
         if not expires_at:
             return True
 
-        return datetime.utcnow() > expires_at
+        expires_at_utc = expires_at
+        if expires_at_utc.tzinfo is None:
+            expires_at_utc = expires_at_utc.replace(tzinfo=timezone.utc)
+
+        return datetime.now(timezone.utc) > expires_at_utc
 
     @staticmethod
     def is_token_valid(token: Optional[str], expires_at: Optional[datetime]) -> bool:

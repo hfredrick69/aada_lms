@@ -1,16 +1,63 @@
 import axios from "axios";
 
-const envBase = import.meta.env.VITE_API_BASE_URL;
+const buildEnvBase = () => {
+  const rawValue = import.meta.env.VITE_API_BASE_URL?.trim();
+  if (!rawValue) {
+    return null;
+  }
+
+  let normalized = rawValue.replace(/\/$/, "");
+  const isBrowser = typeof window !== "undefined";
+  const needsHttps = isBrowser && window.location.protocol === "https:";
+
+  if (isBrowser) {
+    try {
+      const parsed = new URL(`${normalized}`);
+      const dockerHost = window.location.hostname === "host.docker.internal";
+      const localhostAlias = ["localhost", "127.0.0.1"].includes(parsed.hostname);
+      if (dockerHost && localhostAlias) {
+        parsed.hostname = window.location.hostname;
+        parsed.protocol = window.location.protocol;
+        normalized = parsed.origin;
+      }
+    } catch {
+      // Ignore parse errors and fall back to the raw normalized value
+    }
+  }
+
+  if (needsHttps && normalized.startsWith("http://")) {
+    console.warn("Upgrading VITE_API_BASE_URL to HTTPS to avoid mixed content");
+    return `${normalized.replace(/^http:/, "https:")}/api`;
+  }
+
+  if (needsHttps && !normalized.startsWith("https://")) {
+    console.error("VITE_API_BASE_URL must be HTTPS when the app is served over HTTPS");
+    return null;
+  }
+
+  return `${normalized}/api`;
+};
+
 const inferBrowserBase = () => {
   if (typeof window === "undefined") {
     return "http://localhost:8000/api";
   }
-  const { protocol, hostname } = window.location;
-  const apiPort = import.meta.env.VITE_API_PORT || "8000";
-  return `${protocol}//${hostname}:${apiPort}/api`;
+
+  if (window.location.hostname === "localhost") {
+    const apiPort = import.meta.env.VITE_API_PORT || "8000";
+    return `${window.location.protocol}//${window.location.hostname}:${apiPort}/api`;
+  }
+
+  console.error("VITE_API_BASE_URL missing for production deployment; falling back to localhost");
+  return "http://localhost:8000/api";
 };
 
-const baseURL = envBase || inferBrowserBase();
+const baseURL = buildEnvBase() || inferBrowserBase();
+
+if (typeof window !== "undefined") {
+  window.__AADA_BASE_URL = baseURL;
+  console.info("[AADA] API base URL:", baseURL);
+}
 
 const axiosClient = axios.create({
   baseURL,
