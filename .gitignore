@@ -32,3 +32,9 @@ acs_info.sh
 .idea/
 .DS_Store
 test_credentials.txt
+
+# Azure CLI cache with tokens
+.azure-tmp/
+
+# Test files with credentials
+playwright_issue.txt
