@@ -3,6 +3,7 @@ Security middleware for HIPAA/NIST compliance.
 
 Implements:
 - Security headers (HSTS, CSP, X-Frame-Options, etc.)
+- User context population from JWT
 - Audit logging for PHI access
 - Request/response logging
 """
@@ -11,10 +12,14 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 import time
 import logging
+import jwt
+import uuid
 
 from app.core.config import settings
 from app.db.models.audit_log import AuditLog
+from app.db.models.user import User
 from app.db.session import SessionLocal
+from app.utils.encryption import decrypt_value
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +98,91 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "geolocation=(), microphone=(), camera=()"
         )
 
+        return response
+
+
+class UserContextMiddleware(BaseHTTPMiddleware):
+    """
+    Populate request.state with user context from JWT token.
+
+    This middleware extracts the JWT token from either:
+    - Authorization header (Bearer token)
+    - access_token cookie
+
+    And populates:
+    - request.state.user_id
+    - request.state.user_email
+
+    This allows AuditLoggingMiddleware to log the user without re-parsing the JWT.
+
+    Security: This middleware does NOT enforce authentication. It only populates
+    user context for logging purposes. Authentication is still enforced by
+    route-level dependencies (get_current_user).
+    """
+
+    def __init__(self, app: ASGIApp):
+        super().__init__(app)
+
+    async def dispatch(self, request: Request, call_next):
+        # Initialize user context as None
+        request.state.user_id = None
+        request.state.user_email = None
+
+        # Try to extract JWT token
+        token = None
+
+        # Try Authorization header first (Bearer token)
+        auth_header = request.headers.get("authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.replace("Bearer ", "")
+
+        # Fall back to cookie
+        if not token:
+            token = request.cookies.get("access_token")
+
+        # If we have a token, try to decode it and populate user context
+        if token:
+            try:
+                # Decode JWT without verification (just for logging context)
+                # Actual auth verification happens in get_current_user dependency
+                payload = jwt.decode(
+                    token,
+                    settings.SECRET_KEY,
+                    algorithms=["HS256"],
+                    options={"verify_exp": False}  # Don't fail on expired tokens for audit logging
+                )
+
+                user_id_str = payload.get("sub")
+                if user_id_str:
+                    try:
+                        user_id = uuid.UUID(user_id_str)
+
+                        # Fetch user from database to get email
+                        db = SessionLocal()
+                        try:
+                            user = db.query(User).filter(User.id == user_id).first()
+                            if user:
+                                request.state.user_id = user_id
+                                # Decrypt email for audit logging
+                                try:
+                                    request.state.user_email = decrypt_value(db, user.email)
+                                except Exception:
+                                    # If decryption fails, use encrypted value (better than nothing for audit)
+                                    request.state.user_email = f"user_{user_id}"
+                        finally:
+                            db.close()
+                    except (ValueError, TypeError):
+                        # Invalid user_id format, skip
+                        pass
+            except jwt.InvalidTokenError:
+                # Invalid token, skip - will be caught by auth dependency later
+                pass
+            except Exception:
+                # Silently skip errors - don't fail the request
+                pass
+
+        # Continue with request
+        response = await call_next(request)
         return response
 
 

@@ -8,6 +8,7 @@ from app.db import models  # noqa: F401 ensure model registration
 from app.core.config import settings
 from app.middleware.security import (
     SecurityHeadersMiddleware,
+    UserContextMiddleware,
     AuditLoggingMiddleware
 )
 from app.routers import (
@@ -85,6 +86,7 @@ async def add_cache_headers(request: Request, call_next):
 
 # Security middleware (order matters - first added = outermost layer)
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(UserContextMiddleware)  # Must be BEFORE AuditLoggingMiddleware
 app.add_middleware(AuditLoggingMiddleware)
 
 # CORS middleware - use environment variable for production flexibility
