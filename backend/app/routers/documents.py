@@ -95,27 +95,62 @@ def _normalize_template_path(template_path: str) -> Path:
 
 
 def _resolve_document_file(path_value: Optional[str]) -> Optional[Path]:
-    """Resolve stored document/template paths to absolute filesystem paths."""
+    """
+    Securely resolve stored document/template paths to absolute filesystem paths.
+
+    Security: Prevents path traversal attacks by validating paths stay within allowed directories.
+
+    Args:
+        path_value: Relative path to document file
+
+    Returns:
+        Absolute Path to file if valid and exists, None if path_value is None
+
+    Raises:
+        HTTPException: 400 for invalid paths, 403 for unauthorized access, 404 if not found
+    """
     if not path_value:
         return None
 
+    # Security: Block path traversal attempts
+    if ".." in path_value or path_value.startswith("/"):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file path"
+        )
+
     candidate = Path(path_value)
-    if candidate.is_absolute() and candidate.exists():
-        return candidate
 
-    search_roots = [
-        DOCUMENTS_BASE.parent,  # app/static
-        Path("app"),
-        Path("."),
-    ]
+    # Security: Block absolute paths from user input
+    if candidate.is_absolute():
+        raise HTTPException(
+            status_code=400,
+            detail="Absolute paths not allowed"
+        )
 
-    for root in search_roots:
-        resolved = (root / candidate).resolve()
-        if resolved.exists():
-            return resolved
+    # Define allowed base directory (app/static)
+    allowed_base = DOCUMENTS_BASE.parent.resolve()
 
-    # Fall back to app/static root even if file is missing to keep previous behavior.
-    return (DOCUMENTS_BASE.parent / candidate).resolve()
+    # Resolve path relative to allowed base
+    resolved = (allowed_base / candidate).resolve()
+
+    # Security: Verify resolved path is within allowed directory
+    try:
+        resolved.relative_to(allowed_base)
+    except ValueError:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied"
+        )
+
+    # Check if file exists
+    if not resolved.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="File not found"
+        )
+
+    return resolved
 
 
 def _copy_template_to_unsigned(document_id: uuid.UUID, template_path: str) -> str:
