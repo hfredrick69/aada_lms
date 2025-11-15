@@ -5,7 +5,8 @@ Document and E-Signature Schemas
 from typing import Optional, List, Dict, Any, Literal
 from uuid import UUID
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+import html
 
 
 # ==================== Document Template Schemas ====================
@@ -180,7 +181,40 @@ class DocumentSignRequest(BaseModel):
     """Request to sign a document via public endpoint"""
     signature_data: str = Field(..., min_length=1)  # Base64 encoded signature image
     typed_name: str = Field(..., min_length=1, max_length=255)
-    form_data: Optional[Dict[str, Any]] = None
+    form_data: Optional[Dict[str, Any]] = Field(None, max_length=100)
+
+    @field_validator('form_data')
+    @classmethod
+    def validate_and_sanitize_form_data(cls, v: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+        """
+        Validate and sanitize form data to prevent XSS and limit abuse
+
+        Security measures:
+        - All values must be strings
+        - Maximum 100 fields
+        - Maximum 1000 characters per field
+        - HTML escape all values to prevent XSS
+        """
+        if not v:
+            return v
+
+        if len(v) > 100:
+            raise ValueError("form_data cannot contain more than 100 fields")
+
+        sanitized = {}
+        for key, value in v.items():
+            # Ensure all values are strings
+            if not isinstance(value, str):
+                raise ValueError(f"Form field '{key}' must be a string, got {type(value).__name__}")
+
+            # Limit field length
+            if len(value) > 1000:
+                raise ValueError(f"Form field '{key}' exceeds maximum length of 1000 characters")
+
+            # HTML escape to prevent XSS attacks
+            sanitized[key] = html.escape(value)
+
+        return sanitized
 
 
 class DocumentSignResponse(BaseModel):

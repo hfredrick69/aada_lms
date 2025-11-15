@@ -1,5 +1,5 @@
 import os
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class Settings(BaseModel):
@@ -61,6 +61,39 @@ class Settings(BaseModel):
     ACS_SENDER_EMAIL: str = os.getenv("ACS_SENDER_EMAIL", "no-reply@aada.edu")
     REGISTRATION_EMAIL_EXPIRE_MINUTES: int = int(os.getenv("REGISTRATION_EMAIL_EXPIRE_MINUTES", "30"))
     REGISTRATION_COMPLETION_EXPIRE_MINUTES: int = int(os.getenv("REGISTRATION_COMPLETION_EXPIRE_MINUTES", "15"))
+
+    # Encryption (PII/PHI encryption key)
+    ENCRYPTION_KEY: str = os.getenv("ENCRYPTION_KEY", "change_this_key_in_production_32bytes")
+
+    # Environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+
+    @field_validator('SECRET_KEY')
+    @classmethod
+    def validate_secret_key(cls, v: str) -> str:
+        """Validate JWT secret key strength"""
+        if not v or v == "change_me":
+            raise ValueError(
+                "JWT_SECRET_KEY must be set to a strong value. "
+                "Generate with: python3 -c \"import secrets; print(secrets.token_urlsafe(64))\""
+            )
+        if len(v) < 32:
+            raise ValueError("SECRET_KEY must be at least 32 characters for security")
+        return v
+
+    @field_validator('ENCRYPTION_KEY')
+    @classmethod
+    def validate_encryption_key(cls, v: str) -> str:
+        """Validate encryption key strength"""
+        if not v or v.startswith("change_"):
+            raise ValueError(
+                "ENCRYPTION_KEY must be set from environment variables. "
+                "Never use default values. "
+                "Generate with: python3 -c \"import secrets; print(secrets.token_urlsafe(32))\""
+            )
+        if len(v) < 32:
+            raise ValueError("ENCRYPTION_KEY must be at least 32 characters for security")
+        return v
 
 
 settings = Settings()

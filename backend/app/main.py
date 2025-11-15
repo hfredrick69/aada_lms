@@ -100,12 +100,24 @@ for origin in default_dev_origins:
     if origin and origin not in allowed_origins:
         allowed_origins.append(origin)
 
+# Restrict CORS methods and headers for security
+ALLOWED_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+ALLOWED_HEADERS = [
+    "Content-Type",
+    "Authorization",
+    "Accept",
+    "Origin",
+    "User-Agent",
+    "X-Requested-With",
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=ALLOWED_METHODS,  # Explicit whitelist
+    allow_headers=ALLOWED_HEADERS,  # Explicit whitelist
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 api_prefix = "/api"

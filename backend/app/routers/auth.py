@@ -50,11 +50,21 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
-# Cookie settings for httpOnly tokens
+# Cookie settings for httpOnly tokens (environment-based security)
+SECURE_COOKIES = os.getenv("SECURE_COOKIES", "true").lower() == "true"
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+# Enforce secure cookies in production
+if not SECURE_COOKIES and ENVIRONMENT == "production":
+    raise RuntimeError(
+        "SECURE_COOKIES must be True in production. "
+        "Set SECURE_COOKIES=true in environment variables."
+    )
+
 COOKIE_SETTINGS = {
     "httponly": True,
-    "secure": False,  # Set to True in production with HTTPS
-    "samesite": "lax",
+    "secure": SECURE_COOKIES,  # True in production, configurable in dev
+    "samesite": "strict",  # Stronger CSRF protection
     "path": "/",
 }
 

@@ -1,5 +1,5 @@
 """Payment and invoice management router"""
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
@@ -7,11 +7,21 @@ from uuid import UUID
 from pydantic import BaseModel
 from datetime import datetime, timezone
 
+from app.core.config import settings
 from app.db.session import get_db
 from app.db.models.user import User
 from app.db.models.compliance.finance import FinancialLedger
 from app.routers.auth import get_current_user
 from app.utils.encryption import decrypt_value
+
+
+async def require_https(request: Request):
+    """Enforce HTTPS for payment endpoints in production"""
+    if request.url.scheme != "https" and settings.ENVIRONMENT == "production":
+        raise HTTPException(
+            status_code=400,
+            detail="HTTPS is required for payment operations"
+        )
 
 
 class PaymentCreate(BaseModel):
@@ -122,13 +132,13 @@ def get_student_balance(
     )
 
 
-@router.post("/", response_model=InvoiceLineItem, status_code=201)
+@router.post("/", response_model=InvoiceLineItem, status_code=201, dependencies=[Depends(require_https)])
 def record_payment(
     payment: PaymentCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Record a payment (admin/finance only)"""
+    """Record a payment (admin/finance only, HTTPS required in production)"""
     # Only admin/finance can record payments
     if not any(role in ["admin", "finance"] for role in current_user.roles):
         raise HTTPException(status_code=403, detail="Not authorized to record payments")
