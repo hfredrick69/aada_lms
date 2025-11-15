@@ -63,12 +63,6 @@ def upgrade() -> None:
         ['status'],
         if_not_exists=True
     )
-    op.create_index(
-        'idx_payments_status',
-        'payments',
-        ['status'],
-        if_not_exists=True
-    )
 
     # Composite indexes for common query patterns
     op.create_index(
@@ -84,23 +78,29 @@ def upgrade() -> None:
         if_not_exists=True
     )
 
-    # XAPI JSONB index for faster JSONB queries
+    # XAPI JSONB index for faster JSONB queries (only if table exists)
     op.execute("""
-        CREATE INDEX IF NOT EXISTS idx_xapi_actor_gin
-        ON xapi_statements USING gin (actor)
+        DO $$ BEGIN
+            IF EXISTS (SELECT 1 FROM information_schema.tables
+                      WHERE table_name = 'xapi_statements') THEN
+                CREATE INDEX IF NOT EXISTS idx_xapi_actor_gin
+                ON xapi_statements USING gin (actor);
+            END IF;
+        END $$;
     """)
 
 
 def downgrade() -> None:
-    # Drop all indexes in reverse order
+    # Drop all indexes in reverse order (if they exist)
     op.execute("DROP INDEX IF EXISTS idx_xapi_actor_gin")
-    op.drop_index('idx_audit_logs_user_created', 'audit_logs')
-    op.drop_index('idx_enrollments_user_program', 'enrollments')
-    op.drop_index('idx_payments_status', 'payments')
-    op.drop_index('idx_enrollments_status', 'enrollments')
-    op.drop_index('idx_users_status', 'users')
-    op.drop_index('idx_signed_documents_user_id', 'signed_documents')
-    op.drop_index('idx_audit_logs_user_id', 'audit_logs')
-    op.drop_index('idx_refresh_tokens_user_id', 'refresh_tokens')
-    op.drop_index('idx_enrollments_program_id', 'enrollments')
-    op.drop_index('idx_enrollments_user_id', 'enrollments')
+    op.drop_index('idx_audit_logs_user_created', 'audit_logs', if_exists=True)
+    op.drop_index('idx_enrollments_user_program', 'enrollments', if_exists=True)
+    op.drop_index('idx_enrollments_status', 'enrollments', if_exists=True)
+    op.drop_index('idx_users_status', 'users', if_exists=True)
+    op.drop_index('idx_signed_documents_user_id', 'signed_documents',
+                  if_exists=True)
+    op.drop_index('idx_audit_logs_user_id', 'audit_logs', if_exists=True)
+    op.drop_index('idx_refresh_tokens_user_id', 'refresh_tokens',
+                  if_exists=True)
+    op.drop_index('idx_enrollments_program_id', 'enrollments', if_exists=True)
+    op.drop_index('idx_enrollments_user_id', 'enrollments', if_exists=True)
