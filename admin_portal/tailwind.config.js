@@ -6,17 +6,20 @@ export default {
     extend: {
       colors: {
         primary: {
-          50: '#FFFBEB',
-          100: '#FFF4C7',
-          200: '#FFE083',
-          300: '#FFD055',
-          400: '#FFC12F',
-          500: '#F5B800',
-          600: '#D99F00',
-          700: '#AD7A00',
-          800: '#815600',
-          900: '#573800',
+          50: '#FBF8F0',   // AADA Brand Gold palette
+          100: '#F5EDD8',
+          200: '#E9D9B0',
+          300: '#DDC588',
+          400: '#D1AD54',  // AADA Brand Gold (main)
+          500: '#D1AD54',  // AADA Brand Gold
+          600: '#B8964A',
+          700: '#9A7D3D',
+          800: '#7C6431',
+          900: '#5E4B25',
         },
+      },
+      fontFamily: {
+        heading: ["'Georgia Pro'", 'Georgia', 'serif'],
       },
     },
   },

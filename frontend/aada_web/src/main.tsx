@@ -11,11 +11,18 @@ const queryClient = new QueryClient();
 const theme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: "#F5B800" },
+    primary: { main: "#D1AD54" },  // AADA Brand Gold
+    secondary: { main: "#000000" }, // AADA Black
     background: { default: "#F9FAFB" },
   },
   typography: {
     fontFamily: "'Inter', sans-serif",
+    h1: { fontFamily: "'Georgia Pro', Georgia, serif" },
+    h2: { fontFamily: "'Georgia Pro', Georgia, serif" },
+    h3: { fontFamily: "'Georgia Pro', Georgia, serif" },
+    h4: { fontFamily: "'Georgia Pro', Georgia, serif" },
+    h5: { fontFamily: "'Georgia Pro', Georgia, serif" },
+    h6: { fontFamily: "'Georgia Pro', Georgia, serif" },
   },
 });
 

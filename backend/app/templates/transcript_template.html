@@ -1,17 +1,98 @@
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>Transcript</title></head>
+<head>
+  <meta charset="utf-8">
+  <title>AADA Transcript</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9fafb;
+      color: #000000;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-family: 'Georgia Pro', Georgia, serif;
+      color: #D1AD54;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #D1AD54;
+      padding-bottom: 10px;
+    }
+    .info {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    .info strong {
+      color: #000000;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th {
+      background-color: #D1AD54;
+      color: #ffffff;
+      font-family: 'Georgia Pro', Georgia, serif;
+      padding: 12px;
+      text-align: left;
+    }
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #CECECE;
+    }
+    tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #CECECE;
+      text-align: center;
+      color: #666666;
+      font-size: 14px;
+    }
+  </style>
+</head>
 <body>
-  <h1>AADA Transcript</h1>
-  <p>Student: {{ student_name }}</p>
-  <p>Program: {{ program_name }}</p>
-  <table border="1" cellspacing="0" cellpadding="6">
-    <thead><tr><th>Module</th><th>Score</th><th>Status</th><th>Completed</th></tr></thead>
-    <tbody>
-      {% for row in rows %}
-      <tr><td>{{ row.title }}</td><td>{{ row.score }}</td><td>{{ row.status }}</td><td>{{ row.completed_at }}</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="container">
+    <h1>Atlanta Academy of Dental Assisting - Transcript</h1>
+    <div class="info">
+      <p><strong>Student:</strong> {{ student_name }}</p>
+      <p><strong>Program:</strong> {{ program_name }}</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Score</th>
+          <th>Status</th>
+          <th>Completed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td>{{ row.title }}</td>
+          <td>{{ row.score }}</td>
+          <td>{{ row.status }}</td>
+          <td>{{ row.completed_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="footer">
+      Atlanta Academy of Dental Assisting<br>
+      www.atlantaacademyofdentalassisting.com
+    </div>
+  </div>
 </body>
 </html>
