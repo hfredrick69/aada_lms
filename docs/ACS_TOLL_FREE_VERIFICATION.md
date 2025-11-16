@@ -29,14 +29,9 @@
 ### Program Description
 
 ```
-Atlanta Academy of Dental Assisting (AADA) is a vocational training school that provides dental assisting certification programs. We use SMS messaging to send transactional notifications to enrolled and prospective students including:
-- Enrollment agreement signing reminders
-- Class schedule reminders
-- Appointment confirmations
-- Important administrative updates
-
-All messages are transactional/informational in nature and sent only to individuals who have actively provided their phone number and consent through our student portal enrollment process.
+AADA is a vocational dental assisting school. We send transactional SMS notifications to enrolled/prospective students: enrollment agreement signing reminders, class schedule reminders, appointment confirmations, and administrative updates. All messages are informational and sent only to individuals who provide phone number and explicit consent during enrollment.
 ```
+**(~330 chars)**
 
 ### Opt-In Method
 
@@ -45,12 +40,9 @@ All messages are transactional/informational in nature and sent only to individu
 ### Opt-In Process Description
 
 ```
-Students and prospective students opt-in during the enrollment inquiry process on our student portal. When submitting their contact information, they must check a consent checkbox that explicitly states:
-
-"[ ] I consent to receive SMS text messages from Atlanta Academy of Dental Assisting regarding my enrollment, class schedules, and important updates. Message frequency varies. Message and data rates may apply. Reply STOP to opt out at any time. Reply HELP for assistance."
-
-This consent is collected at the time of phone number collection. The checkbox is NOT pre-checked and requires active user selection to submit the form.
+Users opt-in via enrollment form with unchecked consent checkbox: "I consent to receive SMS from AADA regarding enrollment, schedules, and updates. Message frequency varies. Msg&data rates apply. Reply STOP to opt out. Reply HELP for help." Checkbox must be actively selected to submit; not pre-checked.
 ```
+**(~295 chars)**
 
 ### Required Screenshot
 
