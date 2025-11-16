@@ -84,10 +84,11 @@ async def add_cache_headers(request: Request, call_next):
     return response
 
 
-# Security middleware (order matters - first added = outermost layer)
+# Security middleware (order matters - LAST added = FIRST executed)
+# AuditLoggingMiddleware needs user context, so add it BEFORE UserContextMiddleware
 app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(UserContextMiddleware)  # Must be BEFORE AuditLoggingMiddleware
-app.add_middleware(AuditLoggingMiddleware)
+app.add_middleware(AuditLoggingMiddleware)  # Needs to run after UserContext populates request.state
+app.add_middleware(UserContextMiddleware)   # Runs first to populate request.state
 
 # CORS middleware - use environment variable for production flexibility
 allowed_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",")]
