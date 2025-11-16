@@ -166,20 +166,28 @@ class UserContextMiddleware(BaseHTTPMiddleware):
                                 # Decrypt email for audit logging
                                 try:
                                     request.state.user_email = decrypt_value(db, user.email)
-                                except Exception:
+                                    logger.debug(
+                                        f"UserContext: Populated user_email={request.state.user_email} "
+                                        f"for user_id={user_id}"
+                                    )
+                                except Exception as e:
                                     # If decryption fails, use encrypted value (better than nothing for audit)
                                     request.state.user_email = f"user_{user_id}"
+                                    logger.warning(
+                                        f"UserContext: Decryption failed for user {user_id}, "
+                                        f"using fallback: {e}"
+                                    )
                         finally:
                             db.close()
-                    except (ValueError, TypeError):
+                    except (ValueError, TypeError) as e:
                         # Invalid user_id format, skip
-                        pass
-            except jwt.InvalidTokenError:
+                        logger.debug(f"UserContext: Invalid user_id format: {e}")
+            except jwt.InvalidTokenError as e:
                 # Invalid token, skip - will be caught by auth dependency later
-                pass
-            except Exception:
-                # Silently skip errors - don't fail the request
-                pass
+                logger.debug(f"UserContext: Invalid JWT token: {e}")
+            except Exception as e:
+                # Log errors but don't fail the request
+                logger.error(f"UserContext: Unexpected error: {e}", exc_info=True)
 
         # Continue with request
         response = await call_next(request)

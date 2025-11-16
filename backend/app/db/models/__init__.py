@@ -8,6 +8,7 @@ from .audit_log import AuditLog  # noqa: F401
 from .refresh_token import RefreshToken  # noqa: F401
 from .document import DocumentTemplate, SignedDocument, DocumentSignature, DocumentAuditLog  # noqa: F401
 from .registration_request import RegistrationRequest  # noqa: F401
+from .login_attempt import LoginAttempt  # noqa: F401
 
 # Compliance models
 from .compliance.attendance import AttendanceLog  # noqa: F401

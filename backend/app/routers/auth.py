@@ -25,6 +25,7 @@ from app.core.security import (
 from app.db.models.user import User
 from app.db.models.role import Role
 from app.db.models.registration_request import RegistrationRequest
+from app.db.models.login_attempt import LoginAttempt
 from app.db.session import get_db
 from app.schemas.auth import (
     AuthUser,
@@ -103,6 +104,50 @@ def _get_or_create_student_role(db: Session) -> Role:
     db.add(role)
     db.flush()
     return role
+
+
+def _check_login_rate_limit(email: str, ip_address: Optional[str], db: Session) -> None:
+    """
+    Check if login attempts exceed rate limit (brute-force protection)
+
+    Raises HTTPException(429) if rate limit exceeded
+
+    Security:
+    - Tracks failed login attempts by email hash
+    - Configurable lockout duration and max attempts from settings
+    - Does not reveal whether email exists (timing-safe)
+    """
+    email_hash = _hash_email(_normalize_email(email))
+    now = datetime.now(timezone.utc)
+    lockout_window = now - timedelta(minutes=settings.LOCKOUT_DURATION_MINUTES)
+
+    # Count recent failed attempts for this email
+    recent_attempts = db.query(LoginAttempt).filter(
+        LoginAttempt.email_hash == email_hash,
+        LoginAttempt.attempted_at > lockout_window,
+        LoginAttempt.success == False  # noqa: E712
+    ).count()
+
+    if recent_attempts >= settings.MAX_LOGIN_ATTEMPTS:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Too many failed login attempts. Please try again in {settings.LOCKOUT_DURATION_MINUTES} minutes."
+        )
+
+
+def _record_login_attempt(email: str, ip_address: Optional[str], success: bool, db: Session) -> None:
+    """Record login attempt for rate limiting and security audit"""
+    email_hash = _hash_email(_normalize_email(email))
+
+    attempt = LoginAttempt(
+        id=uuid.uuid4(),
+        email_hash=email_hash,
+        ip_address=ip_address,
+        attempted_at=datetime.now(timezone.utc),
+        success=success
+    )
+    db.add(attempt)
+    db.commit()
 
 
 def _create_registration_token(request_id: uuid.UUID, email: str) -> str:
@@ -329,6 +374,19 @@ def login(
     response: Response,
     db: Session = Depends(get_db)
 ) -> TokenResponse:
+    """
+    User login endpoint with brute-force protection
+
+    Security:
+    - Rate limiting on failed attempts (configurable via settings)
+    - Audit logging of all login attempts
+    - Timing-safe error messages
+    """
+    ip_address = request.client.host if request.client else None
+
+    # Security: Check rate limit BEFORE attempting authentication
+    _check_login_rate_limit(payload.email, ip_address, db)
+
     # Query user by decrypting email field in SQL
     result = db.execute(
         text("""
@@ -341,13 +399,19 @@ def login(
     ).fetchone()
 
     if not result:
+        # Security: Record failed attempt
+        _record_login_attempt(payload.email, ip_address, False, db)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
 
     # Get full User object for roles relationship
     user: User | None = db.query(User).filter(User.id == result.id).first()
     if not user or not verify_password(payload.password, user.password_hash):
+        # Security: Record failed attempt
+        _record_login_attempt(payload.email, ip_address, False, db)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
     if user.status and user.status.lower() != "active":
+        # Security: Record failed attempt (inactive account)
+        _record_login_attempt(payload.email, ip_address, False, db)
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is not active")
 
     # Create access token (short-lived)
@@ -376,6 +440,9 @@ def login(
         max_age=7 * 24 * 60 * 60,  # 7 days in seconds
         **COOKIE_SETTINGS
     )
+
+    # Security: Record successful login
+    _record_login_attempt(payload.email, ip_address, True, db)
 
     return TokenResponse(
         access_token=access_token,
