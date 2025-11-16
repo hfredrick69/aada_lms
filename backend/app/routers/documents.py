@@ -32,6 +32,7 @@ from app.services.email import (
     send_completed_agreement_email,
     EmailDeliveryError,
 )
+from app.services.sms import send_enrollment_agreement_sms
 from app.routers.auth import get_current_user
 from app.schemas.document import (
     DocumentTemplateResponse,
@@ -584,6 +585,20 @@ def send_enrollment_agreement(
         )
     except EmailDeliveryError as exc:
         raise HTTPException(status_code=502, detail=f"Failed to send enrollment email: {exc}") from exc
+
+    # Also send SMS if phone number is available (non-blocking)
+    signer_phone = student_defaults.get("phone") or form_payload.get("phone")
+    if signer_phone:
+        try:
+            send_enrollment_agreement_sms(
+                to_phone=signer_phone,
+                signer_name=signer_name or "",
+                course_label=course_label,
+                signing_url=signing_url,
+            )
+        except Exception as sms_exc:
+            # Log SMS failure but don't fail the request - email was sent successfully
+            logger.warning(f"SMS notification failed for enrollment agreement {document.id}: {sms_exc}")
 
     return document
 
