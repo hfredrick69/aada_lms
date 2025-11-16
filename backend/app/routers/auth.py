@@ -39,6 +39,7 @@ from app.schemas.auth import (
 )
 from app.services.email import EmailDeliveryError, send_registration_verification_email
 from app.utils.encryption import decrypt_value, encrypt_value
+from app.middleware.rate_limit import rate_limit_public_endpoints
 
 # Get encryption key from environment
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", "dev_encryption_key_change_in_production_32bytes")
@@ -177,10 +178,11 @@ def _decode_registration_token(token: str) -> dict:
 
 
 @router.post("/register/request", status_code=status.HTTP_202_ACCEPTED)
-def request_registration(
+async def request_registration(
     payload: RegistrationRequestPayload,
     request: Request,
     db: Session = Depends(get_db),
+    _: None = Depends(rate_limit_public_endpoints),  # 10 req/min per IP
 ) -> dict:
     email = _normalize_email(payload.email)
 
@@ -235,9 +237,11 @@ def request_registration(
 
 
 @router.post("/register/verify", response_model=RegistrationVerifyResponse)
-def verify_registration(
+async def verify_registration(
     payload: RegistrationVerifyPayload,
+    request: Request,
     db: Session = Depends(get_db),
+    _: None = Depends(rate_limit_public_endpoints),  # 10 req/min per IP
 ) -> RegistrationVerifyResponse:
     token_hash = hash_token(payload.token)
     registration = (
@@ -270,7 +274,12 @@ def verify_registration(
 
 
 @router.post("/register/complete", status_code=status.HTTP_201_CREATED)
-def complete_registration(payload: RegistrationCompletePayload, db: Session = Depends(get_db)) -> dict:
+async def complete_registration(
+    payload: RegistrationCompletePayload,
+    request: Request,
+    db: Session = Depends(get_db),
+    _: None = Depends(rate_limit_public_endpoints),  # 10 req/min per IP
+) -> dict:
     token_data = _decode_registration_token(payload.registration_token)
     registration_id = token_data.get("sub")
     email = _normalize_email(token_data.get("email", ""))
