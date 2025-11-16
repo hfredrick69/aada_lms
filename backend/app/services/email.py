@@ -45,7 +45,13 @@ def _send_via_sendgrid(to_email: str, subject: str, plain: str, html: str) -> No
         raise EmailDeliveryError(str(exc)) from exc
 
 
-def _send_via_acs(to_email: str, subject: str, plain: str, html: str) -> None:
+def _send_via_acs(
+    to_email: str,
+    subject: str,
+    plain: str,
+    html: str,
+    attachments: list | None = None
+) -> None:
     if not settings.ACS_CONNECTION_STRING:
         raise EmailDeliveryError("ACS_CONNECTION_STRING is not configured")
     if not settings.ACS_SENDER_EMAIL:
@@ -67,6 +73,9 @@ def _send_via_acs(to_email: str, subject: str, plain: str, html: str) -> None:
             "html": html,
         },
     }
+
+    if attachments:
+        message["attachments"] = attachments
 
     try:
         client = EmailClient.from_connection_string(settings.ACS_CONNECTION_STRING)
@@ -175,3 +184,69 @@ def send_enrollment_agreement_email(
     ).strip()
 
     send_email(to_email, subject, plain, html)
+
+
+def send_completed_agreement_email(
+    to_email: str,
+    signer_name: str,
+    course_label: str,
+    pdf_content: bytes,
+    pdf_filename: str
+) -> None:
+    """Send the completed and counter-signed enrollment agreement PDF to the signer."""
+    import base64
+
+    friendly_name = signer_name or "there"
+
+    subject = f"Your signed {course_label} enrollment agreement"
+    plain = dedent(
+        f"""
+        Hi {friendly_name},
+
+        Great news! Your enrollment agreement for the {course_label} has been fully executed.
+        The attached PDF contains your signed agreement with the AADA counter-signature.
+
+        Please save this document for your records. It serves as proof of your enrollment terms
+        and is legally binding.
+
+        If you have any questions, please contact the AADA admissions team.
+
+        Welcome to AADA!
+        Atlanta Academy of Dental Assisting
+        """
+    ).strip()
+
+    html = dedent(
+        f"""
+        <p>Hi {friendly_name},</p>
+        <p><strong>Great news!</strong> Your enrollment agreement for the <strong>{course_label}</strong>
+        has been fully executed.</p>
+        <p>The attached PDF contains your signed agreement with the AADA counter-signature.
+        Please save this document for your records. It serves as proof of your enrollment terms
+        and is legally binding.</p>
+        <p>If you have any questions, please contact the AADA admissions team.</p>
+        <p><strong>Welcome to AADA!</strong><br/>Atlanta Academy of Dental Assisting</p>
+        """
+    ).strip()
+
+    provider = settings.EMAIL_PROVIDER.lower()
+    if provider in {"acs", "azure"}:
+        # ACS attachment format
+        attachments = [
+            {
+                "name": pdf_filename,
+                "contentType": "application/pdf",
+                "contentInBase64": base64.b64encode(pdf_content).decode("utf-8"),
+            }
+        ]
+        _send_via_acs(to_email, subject, plain, html, attachments)
+    else:
+        # For console/development, just log the email
+        logger.info(
+            "EMAIL (console) to %s\nSubject: %s\n%s\nAttachment: %s (%d bytes)",
+            to_email,
+            subject,
+            plain,
+            pdf_filename,
+            len(pdf_content),
+        )

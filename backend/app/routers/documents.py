@@ -15,6 +15,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 import json
 import shutil
+import logging
 
 from app.db.session import get_db
 from app.db.models.user import User
@@ -26,7 +27,11 @@ from app.db.models.document import (
     DocumentAuditLog
 )
 from app.services.token_service import TokenService
-from app.services.email import send_enrollment_agreement_email, EmailDeliveryError
+from app.services.email import (
+    send_enrollment_agreement_email,
+    send_completed_agreement_email,
+    EmailDeliveryError,
+)
 from app.routers.auth import get_current_user
 from app.schemas.document import (
     DocumentTemplateResponse,
@@ -45,6 +50,8 @@ from app.utils.encryption import decrypt_value
 from app.core.rbac import require_admin, require_roles
 from app.core.config import settings
 from app.domain.enrollment.schema import get_enrollment_agreement_schema
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -888,6 +895,43 @@ def counter_sign_document(
         document.signed_file_path = document.unsigned_file_path
         db.commit()
         db.refresh(document)
+
+    # Send the completed agreement PDF to the original signer
+    if document.signed_file_path and document.signer_email:
+        try:
+            pdf_path = Path(document.signed_file_path)
+            if pdf_path.exists():
+                pdf_content = pdf_path.read_bytes()
+                course_label = template.title if template else "Dental Assisting"
+
+                # Get signer name from the first signature (student/lead signature)
+                first_sig = (
+                    db.query(DocumentSignature)
+                    .filter(
+                        DocumentSignature.document_id == document.id,
+                        DocumentSignature.signature_type != "school_official"
+                    )
+                    .order_by(DocumentSignature.signed_at.asc())
+                    .first()
+                )
+                signer_name = first_sig.typed_name if first_sig else "Student"
+
+                send_completed_agreement_email(
+                    to_email=document.signer_email,
+                    signer_name=signer_name,
+                    course_label=course_label,
+                    pdf_content=pdf_content,
+                    pdf_filename=f"AADA_Enrollment_Agreement_{document.id}.pdf"
+                )
+                logger.info(
+                    f"Sent completed agreement email to {document.signer_email} "
+                    f"for document {document.id}"
+                )
+        except EmailDeliveryError as e:
+            logger.error(f"Failed to send completed agreement email: {e}")
+            # Don't fail the counter-signature, just log the error
+        except Exception as e:
+            logger.error(f"Unexpected error sending completed agreement email: {e}")
 
     return document
 
