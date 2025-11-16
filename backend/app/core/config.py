@@ -59,6 +59,7 @@ class Settings(BaseModel):
     SENDGRID_FROM_EMAIL: str = os.getenv("SENDGRID_FROM_EMAIL", "no-reply@aada.edu")
     ACS_CONNECTION_STRING: str | None = os.getenv("ACS_CONNECTION_STRING")
     ACS_SENDER_EMAIL: str = os.getenv("ACS_SENDER_EMAIL", "no-reply@aada.edu")
+    ACS_SENDER_PHONE: str | None = os.getenv("ACS_SENDER_PHONE")  # Toll-free SMS number
     REGISTRATION_EMAIL_EXPIRE_MINUTES: int = int(os.getenv("REGISTRATION_EMAIL_EXPIRE_MINUTES", "30"))
     REGISTRATION_COMPLETION_EXPIRE_MINUTES: int = int(os.getenv("REGISTRATION_COMPLETION_EXPIRE_MINUTES", "15"))
 
